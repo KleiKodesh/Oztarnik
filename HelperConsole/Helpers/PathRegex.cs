@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oztarnik
+namespace HelperConsole.Helpers
 {
-    public class Class1
+    public static class PathRegex
     {
+        
     }
 }
