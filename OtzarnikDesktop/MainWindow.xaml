@@ -6,8 +6,7 @@
         xmlns:local="clr-namespace:OtzarnikDesktop"
         xmlns:oz="clr-namespace:Oztarnik.Main;assembly=Oztarnik"
         mc:Ignorable="d"
-        SizeToContent="WidthAndHeight"
-        Title="MainWindow" MinHeight="450" MinWidth="350"
+        Title="MainWindow" Height="450" MinWidth="350"
         FlowDirection="RightToLeft">
 
     <Grid>

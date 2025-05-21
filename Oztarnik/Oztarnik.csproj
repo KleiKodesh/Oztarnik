@@ -115,6 +115,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileViewer\ContentParser.cs" />
+    <Compile Include="FileViewer\FileView.xaml.cs">
+      <DependentUpon>FileView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FsViewer\HeadersListBox.cs" />
+    <Compile Include="FileViewer\WebView.cs" />
     <Compile Include="FsViewer\FsListBox.cs" />
     <Compile Include="FsViewer\TreeHelper.cs" />
     <Compile Include="FsViewer\TreeItem.cs" />
@@ -133,15 +139,25 @@
       <Project>{e2affb7b-195d-4cd7-90e4-e32564962d61}</Project>
       <Name>IndexerLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\WebViewLib\WebViewLib\WebViewLib.csproj">
+      <Project>{a50d2909-20e5-4142-9392-3546812c916a}</Project>
+      <Name>WebViewLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\WpfLib\WpfLib\WpfLib.csproj">
       <Project>{494b02c1-54f2-4244-9a90-23c9984970e7}</Project>
       <Name>WpfLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Library\" />
+    <Content Include="Resources\LoaderAnimation.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="FileViewer\FileView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="FsViewer\FsDictionary.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -149,6 +165,10 @@
     <Page Include="Main\OtzarnikView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileViewer\FileViewDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

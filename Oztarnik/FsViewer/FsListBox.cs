@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -11,45 +12,45 @@ using WpfLib.ViewModels;
 
 namespace Otzarnik.FsViewer
 {
-    public class FsListBox : ListBox
+    public class FsListView : ListView
     {
-        private TreeItem _root;
+        protected TreeItem _root;
         private TreeItem _previousItem;
 
         public static readonly DependencyProperty SourceProperty =
             DependencyProperty.Register(
                 nameof(Source),
                 typeof(string),
-                typeof(FsListBox),
+                typeof(FsListView),
                 new PropertyMetadata(string.Empty, OnSourceChanged));
 
         public static readonly DependencyProperty SourceCollectionProperty =
             DependencyProperty.Register(
                 nameof(SourceCollection),
                 typeof(IEnumerable<string>),
-                typeof(FsListBox),
+                typeof(FsListView),
                 new PropertyMetadata(null, OnSourceCollectionChanged));
 
         public static readonly DependencyProperty CurrentItemProperty =
             DependencyProperty.Register(
                 nameof(CurrentItem),
                 typeof(TreeItem),
-                typeof(FsListBox),
+                typeof(FsListView),
                 new PropertyMetadata(null));
 
         public static readonly DependencyProperty SearchStringProperty =
           DependencyProperty.Register(
               nameof(SearchString),
               typeof(string),
-              typeof(FsListBox),
+              typeof(FsListView),
               new PropertyMetadata(string.Empty, OnSearchStringChanged));
 
-        public static readonly RoutedEvent NavigationRaisedEvent =
+        public static readonly RoutedEvent NavigationRequestedEvent =
             EventManager.RegisterRoutedEvent(
-                nameof(NavigationRaised),
+                nameof(NavigationRequested),
                 RoutingStrategy.Bubble,
                 typeof(RoutedEventHandler),
-                typeof(FsListBox));
+                typeof(FsListView));
 
         public string Source
         {
@@ -94,24 +95,24 @@ namespace Otzarnik.FsViewer
         }
 
 
-        public event RoutedEventHandler NavigationRaised
+        public event RoutedEventHandler NavigationRequested
         {
-            add => AddHandler(NavigationRaisedEvent, value);
-            remove => RemoveHandler(NavigationRaisedEvent, value);
+            add => AddHandler(NavigationRequestedEvent, value);
+            remove => RemoveHandler(NavigationRequestedEvent, value);
         }
 
-        protected void OnNavigationRaised(TreeItem selectedItem) =>
-            RaiseEvent(new RoutedEventArgs(NavigationRaisedEvent, selectedItem));
+        protected void OnNavigationRequested(TreeItem selectedItem) =>
+            RaiseEvent(new RoutedEventArgs(NavigationRequestedEvent, selectedItem));
 
         private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is FsListBox viewer && e.NewValue is string newValue)
+            if (d is FsListView viewer && e.NewValue is string newValue)
                 viewer.Root = TreeHelper.BuildTree(null, newValue, newValue);
         }
 
         private static void OnSourceCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is FsListBox viewer && e.NewValue is IEnumerable<string> sources)
+            if (d is FsListView viewer && e.NewValue is IEnumerable<string> sources)
             {
                 var root = new TreeItem { Name = "Root" };
 
@@ -129,7 +130,7 @@ namespace Otzarnik.FsViewer
 
         private static void OnSearchStringChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is FsListBox viewer && e.NewValue is string newValue)
+            if (d is FsListView viewer && e.NewValue is string newValue)
                 viewer.Search(newValue);
         }
 
@@ -140,13 +141,13 @@ namespace Otzarnik.FsViewer
         public RelayCommand SearchCommand => new RelayCommand(() => Search(SearchString));
         public RelayCommand FocusCommand => new RelayCommand(() => SearchString = string.Empty);
 
-        public FsListBox()
+        public FsListView()
         {
-            this.SelectionChanged += FsListBox_SelectionChanged;
-            PreviewKeyDown += FsListBox_PreviewKeyDown;
+            this.SelectionChanged += FsListView_SelectionChanged;
+            PreviewKeyDown += FsListView_PreviewKeyDown;
         }
 
-        private void FsListBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void FsListView_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
                 GoBack();
@@ -154,7 +155,7 @@ namespace Otzarnik.FsViewer
                 Reset();
         }
 
-        private void FsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void FsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (SelectedIndex < 0)
             {
@@ -165,18 +166,20 @@ namespace Otzarnik.FsViewer
             var item = SelectedItem;
             if (item != null)
             {
-                var listBoxItem = ItemContainerGenerator.ContainerFromItem(item) as ListBoxItem;
-                if (listBoxItem != null &&
-                    DependencyHelper.FindChild<Button>(listBoxItem) is Button button)
+                var ListViewItem = ItemContainerGenerator.ContainerFromItem(item) as ListViewItem;
+                if (ListViewItem != null)
                 {
-                    listBoxItem.Dispatcher.BeginInvoke(new Action(() =>
+                    if (DependencyHelper.FindChild<Button>(ListViewItem) is Button button)
                     {
-                        button.Focus();
-                        Keyboard.Focus(button);
-                    }), DispatcherPriority.Input);
+                        ListViewItem.Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            button.Focus();
+                            Keyboard.Focus(button);
+                        }), DispatcherPriority.Input);
+                    }
+                    ListViewItem.BringIntoView();
                 }
             }
-
         }
 
         public void GoBack() => CurrentItem = CurrentItem?.Parent ?? _previousItem ?? _root;
@@ -188,7 +191,7 @@ namespace Otzarnik.FsViewer
                 return;
 
             if (item.IsFile)
-                OnNavigationRaised(item);         
+                OnNavigationRequested(item);         
             else
                 CurrentItem = item;
         }
