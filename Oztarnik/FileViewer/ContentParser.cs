@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -84,11 +85,11 @@ namespace Otzarnik.FsViewer
 
         static int GetHeaderLevel(string tag)
         {
-            if (tag == "ot") return 10;
+            if (tag == "ot") return 6;
             if (tag.Length == 2 && tag[0] == 'h' && char.IsDigit(tag[1]))
             {
                 int level = tag[1] - '0';
-                if (level >= 1 && level <= 9) return level;
+                if (level >= 1 && level <= 6) return level;
             }
             return -1; // Not a header
         }

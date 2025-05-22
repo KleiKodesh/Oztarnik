@@ -14,8 +14,15 @@ namespace Otzarnik.FsViewer
 {
     public class FsListView : ListView
     {
-        protected TreeItem _root;
         private TreeItem _previousItem;
+
+        public static readonly DependencyProperty RootProperty =
+            DependencyProperty.Register(
+                nameof(Root),
+                typeof(TreeItem),
+                typeof(FsListView),
+                new PropertyMetadata(null));
+
 
         public static readonly DependencyProperty SourceProperty =
             DependencyProperty.Register(
@@ -66,16 +73,10 @@ namespace Otzarnik.FsViewer
 
         public TreeItem Root
         {
-            get => _root;
-            set 
-            {
-                if (_root != value)
-                {
-                    _root = value;
-                    CurrentItem = _root;
-                }
-            }
+            get => (TreeItem)GetValue(RootProperty);
+            set { SetValue(RootProperty, value); CurrentItem = value; }
         }
+
 
         public TreeItem CurrentItem
         {
@@ -182,8 +183,8 @@ namespace Otzarnik.FsViewer
             }
         }
 
-        public void GoBack() => CurrentItem = CurrentItem?.Parent ?? _previousItem ?? _root;
-        public void Reset() => CurrentItem = _root;
+        public void GoBack() => CurrentItem = CurrentItem?.Parent ?? _previousItem ?? Root;
+        public void Reset() => CurrentItem = Root;
 
         public virtual void Goto(TreeItem item)
         {
@@ -210,13 +211,13 @@ namespace Otzarnik.FsViewer
 
             if (searchTerms.Length == 1 && searchTerms[0].Length < 5)
             {
-                results = _root.EnumerateItems().Where(c =>
+                results = Root.EnumerateItems().Where(c =>
                     c.Name.StartsWith(searchTerms[0]) ||
                     (c.Tags != null && c.Tags.Any(t => t.StartsWith(searchTerms[0]))));
             }
             else
             {
-                results = _root.EnumerateItems().Where(entry => searchTerms.All(
+                results = Root.EnumerateItems().Where(entry => searchTerms.All(
                     term => entry.Name.Contains(term) ||
                     (entry.Tags != null && entry.Tags.Any(t => t.Contains(term)))));
             }

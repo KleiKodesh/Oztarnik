@@ -42,7 +42,7 @@ namespace Otzarnik.FsViewer
                         .Where(s => !string.IsNullOrWhiteSpace(s))
                         .ToArray();
 
-                var items = _root.EnumerateItems().ToList();
+                var items = Root.EnumerateItems().ToList();
 
                  var results = items
                         .Where(item => searchTerms.All(term => item.Name.Split(' ').Contains(term)));

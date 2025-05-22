@@ -68,5 +68,24 @@ namespace Oztarnik.FileViewer
                     break;
             }
         }
+
+        //private bool _waitingForMouseRelease = false;
+
+        //private void Grid_MouseLeave(object sender, MouseEventArgs e)
+        //{
+        //    if (Mouse.LeftButton == MouseButtonState.Pressed)
+        //    {
+        //        Mouse.AddPreviewMouseUpHandler(Application.Current.MainWindow, GlobalMouseUpHandler);
+        //    }
+        //}
+
+        //private void GlobalMouseUpHandler(object sender, MouseButtonEventArgs e)
+        //{
+        //        Mouse.RemovePreviewMouseUpHandler(Application.Current.MainWindow, GlobalMouseUpHandler);
+
+        //        // Mouse was released after leaving the Grid
+        //        Console.WriteLine("Mouse released after leaving the Grid.");
+        //}
+
     }
 }

@@ -18,6 +18,16 @@ namespace Oztarnik.Main
             fsViewer.SourceCollection = LoadPaths();
         }
 
+        private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.O)
+            {
+                MainTabControl.SelectedIndex = 0;
+                e.Handled = true;
+            }
+                
+        }
+
         private void FsTab_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             switch (e.Key)

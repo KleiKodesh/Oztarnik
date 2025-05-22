@@ -20,6 +20,7 @@ namespace Oztarnik.FileViewer
                         </style>
                     </head>            
                       <body dir=""auto"">
+                        <div id=""title-bar""></div>
                         {content}
                         {Js()}
                   </body>
@@ -32,10 +33,19 @@ namespace Oztarnik.FileViewer
                 body {line-height: 120%; text-align: justify;}
                 line { display: block; }
                 header { margin-top: 10px; margin-bottom: 10px;  color:#000066;}
-                h1,h2,h3,h4,h5,h6,h7,h8,h9 {  color:#000066;}
+                h1,h2,h3,h4,h5,h6 {  color:#000066;}
                 ot { color:#000066; }
+                h1 { font-size: 200%; /* 32px */ }  
+                h2 { font-size: 175%; /* 28px */ }
+                h3 { font-size: 150%; /* 24px */ }
+                h4 { font-size: 125%; /* 20px */ }
+                h5 { font-size: 112.5%; /* 18px */ }
+                h6 {font-size: 100%; /* 16px */  }
+                #title-bar { position: fixed; left: 0; top: 0; font-size:70%; opacity:0.8; background: #333; color: white; writing-mode: vertical-rl; text-orientation: mixed; padding: 3px 0; text-align: center; transform: rotate(180deg); }
             ";
         }
+
+       
         public static string Js()
         {
             return $@"<script>
@@ -45,34 +55,11 @@ namespace Oztarnik.FileViewer
             let isCantillationReversed = false;
             let isInline = false;
         
-            function navigateToLine(lineNumberString) {{
-                const lineNumber = parseInt(lineNumberString);
-                const lines = document.querySelectorAll('line');
+            window.addEventListener('mousedown', function(event) {{
+                console.log('Mouse down on window', event);
+            }});
 
-                if (isNaN(lineNumber) || lineNumber < 1 || lineNumber > lines.length) {{
-                    console.log('Invalid line number');
-                    return;
-                }}
-
-                const targetLine = lines[lineNumber];
-                targetLine.scrollIntoView({{ block: 'center'}});
-                
-                const originalBackgroundColor = targetLine.style.backgroundColor;
-                targetLine.style.backgroundColor = 'rgb(243, 240, 235)'; // Set highlight color
-
-                setTimeout(() => {{
-                    targetLine.style.backgroundColor = originalBackgroundColor || ''; // Restore original color
-                }}, 2000); // Highlight duration: 2000ms (2 seconds)
-            }};
-
-            function toggleInline()
-            {{
-                const lines = document.querySelectorAll('line');
-                isInline = !isInline;
-                lines.forEach(line => {{
-                    line.style.display = isInline ? 'inline' : 'block';
-                }});
-            }};
+            {LinesJs()}
             {TitleBarJs()}
 
  function zoomIn() {{
@@ -87,10 +74,44 @@ namespace Oztarnik.FileViewer
             </script>";
         }
 
+        static string LinesJs()
+        {
+            return @"
+                function toggleInline()
+                {
+                    const lines = document.querySelectorAll('line');
+                    isInline = !isInline;
+                    lines.forEach(line => {
+                        line.style.display = isInline ? 'inline' : 'block';
+                    });
+                };
+
+                function navigateToLine(lineNumberString) {
+                const lineNumber = parseInt(lineNumberString);
+                const lines = document.querySelectorAll('line');
+
+                if (isNaN(lineNumber) || lineNumber < 1 || lineNumber > lines.length) {
+                    console.log('Invalid line number');
+                    return;
+                }
+
+                const targetLine = lines[lineNumber];
+                targetLine.scrollIntoView({ block: 'center'});
+                
+                const originalBackgroundColor = targetLine.style.backgroundColor;
+                targetLine.style.backgroundColor = 'rgb(243, 240, 235)'; // Set highlight color
+
+                setTimeout(() => {
+                    targetLine.style.backgroundColor = originalBackgroundColor || ''; // Restore original color
+                }, 2000); // Highlight duration: 2000ms (2 seconds)
+            };
+";
+        }
+
         static string TitleBarJs()
         {
             return @"
-
+const titleBar = document.getElementById('title-bar');
 const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'));
 let lastScrollTop = window.scrollY;
 let currentHeaderIndex = -1;
@@ -99,18 +120,21 @@ function scrollToHeader(index) {
   if (index >= 0 && index < headings.length) {
     headings[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
     currentHeaderIndex = index;
-}
+    setTitle();
+  }
 }
 
 function scrollToNextHeader() {
   if (currentHeaderIndex < headings.length - 1) {
-    scrollToHeader(currentHeaderIndex + 1);
+    currentHeaderIndex += 1;
+    scrollToHeader(currentHeaderIndex);
   }
 }
 
 function scrollToPreviousHeader() {
   if (currentHeaderIndex > 0) {
-    scrollToHeader(currentHeaderIndex - 1);
+    currentHeaderIndex -= 1;
+    scrollToHeader(currentHeaderIndex);
   }
 }
 
@@ -150,16 +174,27 @@ function updateTitle() {
 
   if (newIndex !== currentHeaderIndex && headings[newIndex]) {
     currentHeaderIndex = newIndex;
+    setTitle();
+  }
+}
+
+function setTitle() {
+  if (currentHeaderIndex >= 0 && headings[currentHeaderIndex]) {
+    const title = headings[currentHeaderIndex].textContent;
+    titleBar.textContent = title;
+
+    // תקשורת עם WebView
     window.chrome.webview.postMessage({
       action: ""set"",
       target: ""CurrentTitle"",
-      value: headings[newIndex].textContent
+      value: title
     });
   }
 }
 
 window.addEventListener('scroll', updateTitle);
 window.addEventListener('load', updateTitle);
+
 
                 ";
         }
