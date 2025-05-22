@@ -10,6 +10,7 @@
              FlowDirection="RightToLeft"
              d:DesignHeight="450" d:DesignWidth="350"
              FontSize="13"
+             FontFamily="Tahoma"
              PreviewKeyDown="UserControl_PreviewKeyDown">
 
     <UserControl.Resources>
@@ -23,7 +24,9 @@
 
     <Grid ap:GridSetup.Rows="* auto">
         <TabControl x:Name="MainTabControl"
-        Padding="0" Margin="0" BorderThickness="0">
+                    Padding="0" Margin="0" 
+                    BorderThickness="0"
+                    SelectionChanged="MainTabControl_SelectionChanged">
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -58,7 +61,8 @@
                     </Grid>
 
                     <fs:FsListView x:Name="fsViewer" Grid.Row="1" Grid.ColumnSpan="2" FocusVisualStyle="{x:Null}"
-                              NavigationRequested="fsViewer_NavigationRequested"/>
+                              NavigationRequested="fsViewer_NavigationRequested"
+                                   SourceCollection="{Binding DataContext.SourceFolders, ElementName=SettingsTab}"/>
                 </Grid>
             </TabItem>
 
@@ -79,8 +83,111 @@
             </TabItem>
 
             <TabItem Name="SettingsTab">
-                <Button x:Name="FolderPickerButton"
-                        Click="FolderPickerButton_Click"/>
+                <TabItem.Resources>
+                    <Style TargetType="Separator">
+                        <Setter Property="Margin" Value="5"/>
+                        <Setter Property="Height" Value="0.5"/>
+                    </Style>
+                </TabItem.Resources>
+                <TabItem.DataContext>
+                    <local:SettingsViewModel/>
+                </TabItem.DataContext>
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto"
+                              Background="Transparent">
+                    <StackPanel Background="Transparent">
+                        
+                        <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
+                            <Path Data="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
+                            <TextBlock Text="הגדרות" FontSize="23"/>
+                        </StackPanel>
+                        
+                        <Separator Margin="0,5,0,10"/>
+                        
+                        <Button x:Name="OtzarnikFolder"
+                                Style="{StaticResource FlatButton}"
+                                HorizontalContentAlignment="Left"
+                                Command="{Binding SetFolderCommand}"
+                                CommandParameter="OtzarnikFolder">
+                            <Grid ap:GridSetup.Columns="auto 3 *">
+                                <Path Stretch="Uniform" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z"/>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="מיקום ספריית אוצרניק"/>
+                                    <TextBlock Text="{Binding OtzarnikFolder}" 
+                                               FlowDirection="LeftToRight"
+                                               Opacity="0.5"/>
+                                </StackPanel>
+                            </Grid>
+                        </Button>
+                        
+                        <Separator/>
+                        
+                        <Button x:Name="OtzariaFolder"
+                                Style="{StaticResource FlatButton}"
+                                HorizontalContentAlignment="Left"
+                                Command="{Binding SetFolderCommand}"
+                                CommandParameter="OtzariaFolder">
+                            <Grid ap:GridSetup.Columns="auto 3 *">
+                                <Path Stretch="Uniform" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z"/>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="מיקום ספריית אוצריא"/>
+                                    <TextBlock Text="{Binding OtzariaFolder}" 
+                                       FlowDirection="LeftToRight"
+                                       Opacity="0.5"/>
+                                </StackPanel>
+                            </Grid>
+                        </Button>
+
+                        <Separator/>
+
+                        <Grid Grid.Column="2"
+                              ap:GridSetup.Columns="auto 5 auto * auto">
+                            
+                            <Path Stretch="Uniform" Data="M17,8H20V20H21V21H17V20H18V17H14L12.5,20H14V21H10V20H11L17,8M18,9L14.5,16H18V9M5,3H10C11.11,3 12,3.89 12,5V16H9V11H6V16H3V5C3,3.89 3.89,3 5,3M6,5V9H9V5H6Z"/>
+                            <TextBlock Text="גופן ברירת מחדל בספרים"
+                                       Grid.Column="2"
+                                           FontFamily="{Binding DefaultFont}"
+                                           VerticalAlignment="Center"/>
+
+                            <ComboBox Grid.Column="4"
+                                      Margin="5"
+                                      Text="{Binding DefaultFont, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                                      ItemsSource="{Binding Fonts}"
+                                      IsEditable="True"
+                                      FontFamily="{Binding DefaultFont}"
+                                      BorderThickness="0.5"
+                                      VerticalAlignment="Center">
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel/>
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding StringFormat={}{0}    אבג דהוז}"
+                                                 FontFamily="{Binding}"
+                                                 FontSize="14"
+                                                 ToolTip="{Binding Source}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
+
+                        <Separator/>
+
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <TextBlock Text="גודל גופן התחלתי בספרים:  "/>
+                            <TextBlock Text="{Binding Value, ElementName=FontSlider}"/>
+                        </StackPanel>
+                        <Slider x:Name="FontSlider" 
+                                Minimum="12" Maximum="36" 
+                                Margin="5"
+                                Value="{Binding DefaultFontSize}" SmallChange="1" AutomationProperties.ItemType="int"/>
+
+                        <Separator/>
+                    </StackPanel>
+                </ScrollViewer>
+                
             </TabItem>
 
         </TabControl>

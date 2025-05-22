@@ -129,6 +129,7 @@
     <Compile Include="Main\OtzarnikView.xaml.cs">
       <DependentUpon>OtzarnikView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Main\SettingsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

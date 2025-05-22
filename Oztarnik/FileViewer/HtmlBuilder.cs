@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
+﻿using Microsoft.VisualBasic;
+using System;
 
 namespace Oztarnik.FileViewer
 {
@@ -29,19 +25,21 @@ namespace Oztarnik.FileViewer
 
         public static string css()
         {
-            return @"
-                body {line-height: 120%; text-align: justify;}
-                line { display: block; }
-                header { margin-top: 10px; margin-bottom: 10px;  color:#000066;}
-                h1,h2,h3,h4,h5,h6 {  color:#000066;}
-                ot { color:#000066; }
-                h1 { font-size: 200%; /* 32px */ }  
-                h2 { font-size: 175%; /* 28px */ }
-                h3 { font-size: 150%; /* 24px */ }
-                h4 { font-size: 125%; /* 20px */ }
-                h5 { font-size: 112.5%; /* 18px */ }
-                h6 {font-size: 100%; /* 16px */  }
-                #title-bar { position: fixed; left: 0; top: 0; font-size:70%; opacity:0.8; background: #333; color: white; writing-mode: vertical-rl; text-orientation: mixed; padding: 3px 0; text-align: center; transform: rotate(180deg); }
+            string fontFamily = Interaction.GetSetting(AppDomain.CurrentDomain.BaseDirectory, "Settings", "DeafultFont", "Times New Roman");
+            string fontSize = Interaction.GetSetting(AppDomain.CurrentDomain.BaseDirectory, "Settings", "DefaultFontSize", "16");
+            return $@"
+                body {{line-height: 1.3; text-align: justify; font-family: '{fontFamily}'; font-size: {fontSize}px;}}
+                line {{ display: block; }}
+                header {{ margin-top: 10px; margin-bottom: 10px;  color:#000066;}}
+                h1,h2,h3,h4,h5,h6 {{  color:#000066;}}
+                ot {{ color:#000066; }}
+                h1 {{ font-size: 200%; /* 32px */ }}  
+                h2 {{ font-size: 175%; /* 28px */ }}
+                h3 {{ font-size: 150%; /* 24px */ }}
+                h4 {{ font-size: 125%; /* 20px */ }}
+                h5 {{ font-size: 112.5%; /* 18px */ }}
+                h6 {{font-size: 100%; /* 16px */  }}
+                #title-bar {{ position: fixed; left: 0; top: 0; font-size:70%; opacity:0.8; background: #333; color: white; writing-mode: vertical-rl; text-orientation: mixed; padding: 3px 0; text-align: center; transform: rotate(180deg); }}
             ";
         }
 

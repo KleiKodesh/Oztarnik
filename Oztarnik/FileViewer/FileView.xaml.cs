@@ -1,20 +1,18 @@
 ﻿using System.Windows.Controls;
-using System.IO;
 using System;
 using Otzarnik.FsViewer;
 using System.Windows.Input;
 using System.Windows.Threading;
-using System.Windows;
 
 namespace Oztarnik.FileViewer
 {
-    /// <summary>
-    /// Interaction logic for FileView.xaml
-    /// </summary>
     public partial class FileView : UserControl
     {
+        public TreeItem TreeItem {get; set;}
+
         public FileView(TreeItem treeItem)
         {
+            this.TreeItem = treeItem;
             InitializeComponent();
             LoadFile(treeItem);
         }
