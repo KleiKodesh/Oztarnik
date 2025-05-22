@@ -4,6 +4,7 @@ using System;
 using Otzarnik.FsViewer;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Windows;
 
 namespace Oztarnik.FileViewer
 {
@@ -18,18 +19,18 @@ namespace Oztarnik.FileViewer
             LoadFile(treeItem);
         }
 
-        void LoadFile(TreeItem treeItem)
+        async void LoadFile(TreeItem treeItem)
         {
-            var contentModel = ContentParser.Parse(treeItem, true);
-            headersListBox.Root = contentModel.RootHeader;
-            string loaderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "LoaderAnimation.html");
-            WebViewHost.Source = loaderPath;
+            var contentModel = await ContentParser.Parse(treeItem, true);
+            headersListBox.Root = contentModel.RootHeader;           
+            viewer.LoadDocument(contentModel.Content);
             NavigationTextBox.Focus();    
         }
 
         private void headersListBox_NavigationRequested(object sender, System.Windows.RoutedEventArgs e)
         {
-            return;
+            if (e.OriginalSource is TreeItem item)
+                viewer.NavigateToLine(item.LineIndex);
         }
 
         private void HeadersToggleButton_Checked(object sender, System.Windows.RoutedEventArgs e)

@@ -44,6 +44,7 @@
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.9.0.5\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.Web.WebView2.Core, Version=1.0.3240.44, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.WebView2.1.0.3240.44\lib\net462\Microsoft.Web.WebView2.Core.dll</HintPath>
     </Reference>
@@ -119,8 +120,9 @@
     <Compile Include="FileViewer\FileView.xaml.cs">
       <DependentUpon>FileView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FileViewer\HtmlBuilder.cs" />
     <Compile Include="FsViewer\HeadersListBox.cs" />
-    <Compile Include="FileViewer\WebView.cs" />
+    <Compile Include="FileViewer\OtzarnikWebView.cs" />
     <Compile Include="FsViewer\FsListBox.cs" />
     <Compile Include="FsViewer\TreeHelper.cs" />
     <Compile Include="FsViewer\TreeItem.cs" />

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Otzarnik.FsViewer
 {
@@ -14,16 +15,16 @@ namespace Otzarnik.FsViewer
     
     public static class ContentParser
     {
-        public static FileContentModel Parse (TreeItem treeItem, bool getContent)
+        public static Task <FileContentModel> Parse (TreeItem treeItem, bool getContent)
         {
-            FileContentModel root = new FileContentModel { TreeItem = treeItem };
+            FileContentModel result = new FileContentModel { TreeItem = treeItem };
 
             var stb = new StringBuilder();
             Stack<TreeItem> headerStack = new Stack<TreeItem>();            
-            int lineIndex = 0;
+            int lineIndex = -1;
 
             if (!File.Exists(treeItem.Path))
-                return root;
+                return Task.FromResult(result);
 
             foreach (var line in File.ReadLines(treeItem.Path))
             {
@@ -46,7 +47,7 @@ namespace Otzarnik.FsViewer
                             Level = 0,
                         };
 
-                        root.RootHeader.AddChild(node);
+                        result.RootHeader.AddChild(node);
                         continue;
                     }
 
@@ -67,18 +68,18 @@ namespace Otzarnik.FsViewer
                     while (headerStack.Count > 0 && headerStack.Peek().Level >= current.Level)
                         headerStack.Pop();
 
-                    var parent = headerStack.Count > 0 ? headerStack.Peek() : root.RootHeader;
+                    var parent = headerStack.Count > 0 ? headerStack.Peek() : result.RootHeader;
                     parent.AddChild(current);
                     
-                    if (parent != root.RootHeader && parent.Level > 1)
+                    if (parent != result.RootHeader && parent.Level > 1)
                         current.Tags.Add(parent.Name);
 
                     headerStack.Push(current);
                 }
             }
 
-            root.Content = stb.ToString();
-            return root;
+            result.Content = stb.ToString();
+            return Task.FromResult(result);
         }
 
         static int GetHeaderLevel(string tag)

@@ -1,26 +1,21 @@
-﻿using Otzarnik.FsViewer;
+﻿using Microsoft.VisualBasic;
+using Ookii.Dialogs.WinForms;
+using Otzarnik.FsViewer;
+using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Oztarnik.Main
 {
-    /// <summary>
-    /// Interaction logic for OtzarnikView.xaml
-    /// </summary>
     public partial class OtzarnikView : UserControl
     {
         public OtzarnikView()
         {
             InitializeComponent();
-            var list = new List<string>
-            {
-                "C:\\Users\\Admin\\Desktop\\תורת אמת",
-                "C:\\אוצריא\\אוצריא"
-            };
-
-            fsViewer.SourceCollection = list;
+            fsViewer.SourceCollection = LoadPaths();
         }
 
         private void FsTab_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -57,7 +52,8 @@ namespace Oztarnik.Main
                 FileViewerTabControl.Items.Add(new TabItem 
                 {
                     Header =  treeItem.Name,
-                    Content = new FileViewer.FileView(treeItem)
+                    Content = new FileViewer.FileView(treeItem),
+                    IsSelected = true
                 });
                 MainTabControl.SelectedIndex = 1;
             }
@@ -67,6 +63,37 @@ namespace Oztarnik.Main
         {
             if (sender is TabControl tabControl && tabControl.Items.Count == 0)
                 MainTabControl.SelectedIndex = 0;
+        }
+
+        private void FolderPickerButton_Click(object sender, RoutedEventArgs e)
+        {
+            //var dialog = new VistaFolderBrowserDialog();
+            //dialog.Description = "בחר תיקייה";
+            //dialog.UseDescriptionForTitle = true; // Shows the description as the window title
+            //var result = dialog.ShowDialog();
+
+            //if (result == System.Windows.Forms.DialogResult.OK)
+            //{
+            //    var savedPaths = LoadPaths();
+            //    savedPaths.Add(dialog.SelectedPath);
+            //    string json = JsonSerializer.Serialize(savedPaths);
+            //    Interaction.SaveSetting(AppDomain.CurrentDomain.BaseDirectory, "Tree", "SourceCollection", json);
+            //}
+        }
+
+        private List<string> LoadPaths()
+        {
+            string json = Interaction.GetSetting(AppDomain.CurrentDomain.BaseDirectory, "Tree", "SourceCollection");
+
+            if (!string.IsNullOrWhiteSpace(json))
+            {
+                var paths = JsonSerializer.Deserialize<List<string>>(json);
+                if (paths != null)
+                    return paths;
+            }
+
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            return new List<string> { System.IO.Path.Combine(documentsPath, "אוצרניק"), @"C:\אוצריא\אוצריא" };
         }
     }
 }
