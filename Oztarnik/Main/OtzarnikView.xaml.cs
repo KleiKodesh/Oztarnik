@@ -29,6 +29,45 @@ namespace Oztarnik.Main
                 }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);           
         }
 
+        private void FileViewerTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (MainTabControl.SelectedIndex == 1 && FileViewerTabControl.Items.Count == 0)
+                MainTabControl.SelectedIndex = 0;
+        }
+
+        private void FileViewerTabControl_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+                switch (e.Key)
+                {
+                    case Key.O:
+                        OpenFile();
+                        e.Handled = true;
+                        break;
+                    case Key.W:
+                        CloseCurrentTab();
+                        e.Handled = true;
+                        break;
+                    case Key.X:
+                        CloseAllTabs();
+                        e.Handled = true;
+                        break;
+                }
+        }
+
+        public void OpenFile() =>
+            MainTabControl.SelectedIndex = 0;
+
+        public void CloseCurrentTab() =>
+           FileViewerTabControl.Items.RemoveAt(FileViewerTabControl.SelectedIndex);
+
+        public void CloseAllTabs()
+        {
+            var items = FileViewerTabControl.Items;
+            foreach (TabItem tab in items)
+                FileViewerTabControl.Items.Remove(tab);
+        }       
+
         private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.O)
@@ -69,10 +108,10 @@ namespace Oztarnik.Main
         private void fsViewer_NavigationRequested(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource is TreeItem treeItem)
-                OpenFile(treeItem, "");
+                LoadFile(treeItem, "");
         }
 
-        void OpenFile(TreeItem treeItem, string scrollIndex)
+        void LoadFile(TreeItem treeItem, string scrollIndex)
         {
             if (treeItem.Extension.ToLower().Contains("pdf"))
             {
@@ -101,7 +140,7 @@ namespace Oztarnik.Main
             {
                 var treeItem = fsViewer.Root.EnumerateItems().FirstOrDefault(item => item.Path == bookMark.Path);
                 if (treeItem != null)
-                    OpenFile(treeItem, "");
+                    LoadFile(treeItem, "");
             }
         }
 
@@ -111,7 +150,7 @@ namespace Oztarnik.Main
             {
                 var treeItem = fsViewer.Root.EnumerateItems().FirstOrDefault(item => item.Path == bookMark.Path);
                 if (treeItem != null)
-                    OpenFile(treeItem, bookMark.ScrollIndex);
+                    LoadFile(treeItem, bookMark.ScrollIndex);
             }
         }
 
@@ -137,7 +176,7 @@ namespace Oztarnik.Main
                 {
                     TreeItem treeItem = fsViewer.Root.EnumerateItems().FirstOrDefault(item => item.Path == bookMark.Path);
                     if (treeItem != null)
-                        OpenFile(treeItem, bookMark.ScrollIndex);
+                        LoadFile(treeItem, bookMark.ScrollIndex);
                 }
         }
     }

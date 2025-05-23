@@ -1,4 +1,5 @@
 ﻿using Microsoft.Web.WebView2.Core;
+using Oztarnik.Main;
 using System;
 using System.ComponentModel;
 using System.Reflection;
@@ -78,6 +79,15 @@ namespace Oztarnik.FileViewer
             var htmlDoc = HtmlBuilder.HtmlDoc(content, scrollIndex);
             DocumentWrite(htmlDoc);
         }
+
+        public void OpenFile() =>
+            WpfLib.Helpers.DependencyHelper.FindParent<OtzarnikView>(this)?.OpenFile();
+
+        public void CloseCurrentTab() =>
+             WpfLib.Helpers.DependencyHelper.FindParent<OtzarnikView>(this)?.CloseCurrentTab();
+
+        public void CloseAllTabs() =>
+            WpfLib.Helpers.DependencyHelper.FindParent<OtzarnikView>(this)?.CloseAllTabs();
 
         public async Task<string> GetScrollIndex() => 
             await ExecuteScriptAsync("window.scrollY");

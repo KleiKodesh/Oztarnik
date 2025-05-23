@@ -50,9 +50,9 @@ namespace Oztarnik.FileViewer
         public static string Js(string scrollIndex = "0")
         {
             return $@"<script>
-           window.addEventListener('DOMContentLoaded', () => {{
-         window.scrollTo(0, parseFloat({scrollIndex}));
-      }});
+               window.addEventListener('DOMContentLoaded', () => {{
+             window.scrollTo(0, parseFloat({scrollIndex}));
+            }});
 
             let zoomLevel = 1;
             let isInline = false;
@@ -61,6 +61,7 @@ namespace Oztarnik.FileViewer
                 console.log('Mouse down on window', event);
             }});
 
+            {KeyDownJs()}
             {LinesJs()}
             {TitleBarJs()}
             {DiactrictsJs()}
@@ -265,6 +266,47 @@ window.addEventListener('load', updateTitle);
         // Initialize original texts on load
         initializeOriginalTexts();
     ";
+        }
+
+        static string KeyDownJs()
+        {
+            return $@"
+            window.addEventListener('keydown', (event) => {{
+      // Check if the Control key is pressed along with another key
+      if (event.ctrlKey) {{
+        let message = null;
+
+        switch (event.key.toLowerCase()) {{
+          case 'o': // Ctrl + O
+            message = {{
+              action: ""call"",
+              target: ""OpenFile""
+            }};
+            break;
+
+          case 'w': // Ctrl + W
+            message = {{
+              action: ""call"",
+              target: ""CloseCurrentTab""
+            }};
+            break;
+
+          case 'x': // Ctrl + X
+            message = {{
+              action: ""call"",
+              target: ""CloseAllTabs""
+            }};
+            break;
+        }}
+
+        if (message) {{
+          // Send the message to WebView
+          window.chrome.webview.postMessage(message);
+          event.preventDefault(); // Prevent default behavior (e.g., browser shortcuts)
+        }}
+      }}
+    }});
+";
         }
 
     }
