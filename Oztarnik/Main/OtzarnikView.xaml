@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Oztarnik.Main"
              xmlns:ap="clr-namespace:WpfLib.AttachedProperties;assembly=WpfLib"
              xmlns:fs="clr-namespace:Otzarnik.FsViewer"
+             xmlns:fav="clr-namespace:Oztarnik.Favorites"
              mc:Ignorable="d" 
              FlowDirection="RightToLeft"
              d:DesignHeight="450" d:DesignWidth="350"
@@ -14,18 +15,20 @@
              PreviewKeyDown="UserControl_PreviewKeyDown">
 
     <UserControl.Resources>
-    <ResourceDictionary>
-        <ResourceDictionary.MergedDictionaries>
-            <ResourceDictionary Source="/Oztarnik;component/FsViewer/FsDictionary.xaml"/>
-            <ResourceDictionary Source="/WpfLib;component/Dictionaries/BaseDictionary.xaml"/>
-        </ResourceDictionary.MergedDictionaries>
-    </ResourceDictionary>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Oztarnik;component/FsViewer/FsDictionary.xaml"/>
+                <ResourceDictionary Source="/WpfLib;component/Dictionaries/BaseDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="Button" BasedOn="{StaticResource FlatButton}"/>
+            <Style TargetType="ToggleButton" BasedOn="{StaticResource FlatToggleButton}"/>
+        </ResourceDictionary>
 </UserControl.Resources>
 
     <Grid ap:GridSetup.Rows="* auto">
         <TabControl x:Name="MainTabControl"
                     Padding="0" Margin="0" 
-                    BorderThickness="0"
+                    BorderThickness="0,0,0,1"
                     SelectionChanged="MainTabControl_SelectionChanged">
             <TabControl.Resources>
                 <Style TargetType="TabItem">
@@ -40,11 +43,11 @@
                     <Grid ap:GridSetup.Columns="* auto"
                         Margin="3">
                         <UniformGrid Grid.Column="1" Rows="1">
-                            <Button Style="{StaticResource FlatButton}"
+                            <Button 
                                  Command="{Binding GoBackCommand, ElementName=fsViewer}">
                                 <Path Data="M15,20H9V12H4.16L12,4.16L19.84,12H15V20Z"/>
                             </Button>
-                            <Button Style="{StaticResource FlatButton}"
+                            <Button 
                                 Command="{Binding ResetCommand, ElementName=fsViewer}">
                                 <Path Data="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"/>
                             </Button>
@@ -60,15 +63,17 @@
                         </TextBox>
                     </Grid>
 
-                    <fs:FsListView x:Name="fsViewer" Grid.Row="1" Grid.ColumnSpan="2" FocusVisualStyle="{x:Null}"
-                              NavigationRequested="fsViewer_NavigationRequested"
+                    <fs:FsListView x:Name="fsViewer" 
+                                   Grid.Row="1" Grid.ColumnSpan="2" 
+                                   BorderThickness="0,1,0,0"
+                                   FocusVisualStyle="{x:Null}"
+                                   NavigationRequested="fsViewer_NavigationRequested"
                                    SourceCollection="{Binding DataContext.SourceFolders, ElementName=SettingsTab}"/>
                 </Grid>
             </TabItem>
 
             <TabItem x:Name="FileViewerTab">
                 <TabControl x:Name="FileViewerTabControl"
-                            SelectionChanged="FileViewerTabControl_SelectionChanged"
                             Margin="0"
                             BorderThickness="0"
                             Padding="0">
@@ -105,7 +110,7 @@
                         <Separator Margin="0,5,0,10"/>
                         
                         <Button x:Name="OtzarnikFolder"
-                                Style="{StaticResource FlatButton}"
+                                
                                 HorizontalContentAlignment="Left"
                                 Command="{Binding SetFolderCommand}"
                                 CommandParameter="OtzarnikFolder">
@@ -123,7 +128,7 @@
                         <Separator/>
                         
                         <Button x:Name="OtzariaFolder"
-                                Style="{StaticResource FlatButton}"
+                                
                                 HorizontalContentAlignment="Left"
                                 Command="{Binding SetFolderCommand}"
                                 CommandParameter="OtzariaFolder">
@@ -179,8 +184,9 @@
                             <TextBlock Text="גודל גופן התחלתי בספרים:  "/>
                             <TextBlock Text="{Binding Value, ElementName=FontSlider}"/>
                         </StackPanel>
+                        
                         <Slider x:Name="FontSlider" 
-                                Minimum="12" Maximum="36" 
+                                Minimum="12" Maximum="72" 
                                 Margin="5"
                                 Value="{Binding DefaultFontSize}" SmallChange="1" AutomationProperties.ItemType="int"/>
 
@@ -190,26 +196,155 @@
                 
             </TabItem>
 
+            <TabItem Name="FavoritesTabItem">
+                <Grid ap:GridSetup.Rows="auto *"
+                      ap:GridSetup.Columns="auto * auto * auto">
+                    <Grid.Resources>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource FlatToggleButton}">
+                            <Setter Property="Padding" Value="5,3,7,2"/>
+                            <Setter Property="Margin" Value="5,0"/>
+                        </Style>
+                        <Style TargetType="Path" BasedOn="{StaticResource {x:Type Path}}">
+                            <Setter Property="Width" Value="10"/>
+                            <Setter Property="Height" Value="10"/>
+                        </Style>
+                    </Grid.Resources>
+
+                    <ToggleButton x:Name="BookMarksToggle"
+                                  Style="{StaticResource FlatTabStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="M9,1H19A2,2 0 0,1 21,3V19L19,18.13V3H7A2,2 0 0,1 9,1M15,20V7H5V20L10,17.82L15,20M15,5C16.11,5 17,5.9 17,7V23L10,20L3,23V7A2,2 0 0,1 5,5H15Z"/>
+                            <TextBlock Text="סימניות"/>
+                        </StackPanel>
+                    </ToggleButton>
+
+                    <ToggleButton x:Name="EnviromentsToggle" Grid.Column="2"
+                                  Style="{StaticResource FlatTabStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <Path  Data="M1 7H3V21H17V23H3C1.9 23 1 22.11 1 21V7M19 1H7C5.89 1 5 1.9 5 3V17C5 18.1 5.89 19 7 19H21C22.1 19 23 18.1 23 17V5L19 1M21 17H7V3H18.17L21 5.83V17M14 10C12.34 10 11 11.34 11 13S12.34 16 14 16 17 14.66 17 13 15.66 10 14 10M8 4H17V8H8V4Z"/>
+                            <TextBlock Text="סביבות עבודה"/>
+                        </StackPanel>
+                    </ToggleButton>
+
+                    <ToggleButton x:Name="HistoryToggle" Grid.Column="4"
+                                  Style="{StaticResource FlatTabStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Width="12" Data="M13.5,8H12V13L16.28,15.54L17,14.33L13.5,12.25V8M13,3A9,9 0 0,0 4,12H1L4.96,16.03L9,12H6A7,7 0 0,1 13,5A7,7 0 0,1 20,12A7,7 0 0,1 13,19C11.07,19 9.32,18.21 8.06,16.94L6.64,18.36C8.27,20 10.5,21 13,21A9,9 0 0,0 22,12A9,9 0 0,0 13,3"/>
+                            <TextBlock Text="היסטוריה"/>
+                        </StackPanel>
+                    </ToggleButton>
+
+                    <TabControl x:Name="FavoritesTabcontrol" 
+                                BorderThickness="0,1,0,0"
+                                Grid.Row="1" Grid.ColumnSpan="6">
+
+                        <TabItem x:Name="BookMarksTab"
+                                 IsSelected="{Binding IsChecked, ElementName=BookMarksToggle}"
+                                 Padding="0">
+                            <ItemsControl x:Name="BookmarksListBox" 
+                                 ItemsSource="{Binding Path=(fav:FavoritesViewModel.Bookmarks)}"
+                                          Padding="0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid ap:GridSetup.Columns="* auto">
+                                            <Button x:Name="BookMarkButton"
+                                                    Content="{Binding Title}"
+                                                    HorizontalContentAlignment="Left"
+                                                    Click="BookMarkButton_Click"
+                                                    Padding="5"/>
+                                            <Button Grid.Column="1"
+                                                        Command="{Binding Path=(fav:FavoritesViewModel.RemoveBookMark)}"
+                                                        CommandParameter="{Binding}">
+                                                <Path  Fill="Black" Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
+                                            </Button>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </TabItem>
+
+                        <TabItem Name="EnviromentsTab"
+                                 IsSelected="{Binding IsChecked, ElementName=EnviromentsToggle}">
+                            <ItemsControl x:Name="EnviromentsListBox"
+                                    ItemsSource="{Binding Path=(fav:EnviromentsViewModel.Enviroments)}"
+                                    Padding="0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid ap:GridSetup.Columns="* auto">
+                                            <Button x:Name="EnviromentButton"
+                                                 Content="{Binding Title}"
+                                                 HorizontalContentAlignment="Left"
+                                                 Padding="5"   
+                                                 Click="EnviromentButton_Click"/>
+                                            <Button  Grid.Column="1"
+                                                 Command="{Binding Path=(fav:EnviromentsViewModel.RemoveEnviromentCommand)}"
+                                                 CommandParameter="{Binding}">
+                                                <Path  Fill="Black" Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
+                                            </Button>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </TabItem>
+                        <TabItem x:Name="HistoryTab"
+                                 IsSelected="{Binding IsChecked, ElementName=HistoryToggle}">
+                            <ItemsControl x:Name="HistoryListBox"
+                                    ItemsSource="{Binding Path=(fav:HistoryViewModel.HistoryItems)}"
+                                    Padding="0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid ap:GridSetup.Columns="* auto">
+                                            <Button x:Name="HistoryButton"
+                                             HorizontalContentAlignment="Left"
+                                             Padding="5"   
+                                             Click="HistoryButton_Click">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding}" Margin="0,0,5,0"/>
+                                                    <TextBlock Text="{Binding HebrewDateTime}" Opacity="0.5"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button  Grid.Column="1"
+                                                 Command="{Binding Path=(fav:HistoryViewModel.RemoveHistoryItemCommand)}"
+                                                 CommandParameter="{Binding}">
+                                                <Path  Fill="Black" Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
+                                            </Button>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </TabItem>
         </TabControl>
 
         <StackPanel  Grid.Row="1"
                      Orientation="Horizontal"
                      HorizontalAlignment="Center">
             <ToggleButton x:Name="FsToggleButton"
-                          Style="{StaticResource FlatToggleButton}"
                           IsChecked="{Binding IsSelected, ElementName=FsTab}">
                 <Path Data="M9 3V18H12V3H9M12 5L16 18L19 17L15 4L12 5M5 5V18H8V5H5M3 19V21H21V19H3Z"/>
             </ToggleButton>
             <ToggleButton x:Name="FileViewToggleButton"
-                          Style="{StaticResource FlatToggleButton}"
                           IsChecked="{Binding IsSelected, ElementName=FileViewerTab}">
                 <Path Data="M17.5 14.33C18.29 14.33 19.13 14.41 20 14.57V16.07C19.38 15.91 18.54 15.83 17.5 15.83C15.6 15.83 14.11 16.16 13 16.82V15.13C14.17 14.6 15.67 14.33 17.5 14.33M13 12.46C14.29 11.93 15.79 11.67 17.5 11.67C18.29 11.67 19.13 11.74 20 11.9V13.4C19.38 13.24 18.54 13.16 17.5 13.16C15.6 13.16 14.11 13.5 13 14.15M17.5 10.5C15.6 10.5 14.11 10.82 13 11.5V9.84C14.23 9.28 15.73 9 17.5 9C18.29 9 19.13 9.08 20 9.23V10.78C19.26 10.59 18.41 10.5 17.5 10.5M21 18.5V7C19.96 6.67 18.79 6.5 17.5 6.5C15.45 6.5 13.62 7 12 8V19.5C13.62 18.5 15.45 18 17.5 18C18.69 18 19.86 18.16 21 18.5M17.5 4.5C19.85 4.5 21.69 5 23 6V20.56C23 20.68 22.95 20.8 22.84 20.91C22.73 21 22.61 21.08 22.5 21.08C22.39 21.08 22.31 21.06 22.25 21.03C20.97 20.34 19.38 20 17.5 20C15.45 20 13.62 20.5 12 21.5C10.66 20.5 8.83 20 6.5 20C4.84 20 3.25 20.36 1.75 21.07C1.72 21.08 1.68 21.08 1.63 21.1C1.59 21.11 1.55 21.12 1.5 21.12C1.39 21.12 1.27 21.08 1.16 21C1.05 20.89 1 20.78 1 20.65V6C2.34 5 4.18 4.5 6.5 4.5C8.83 4.5 10.66 5 12 6C13.34 5 15.17 4.5 17.5 4.5Z"/>
             </ToggleButton>
+            
             <ToggleButton x:Name="SettingsToggleButton"
-              Style="{StaticResource FlatToggleButton}"
-              IsChecked="{Binding IsSelected, ElementName=SettingsTab}">
+                          IsChecked="{Binding IsSelected, ElementName=SettingsTab}">
                 <Path Data="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
             </ToggleButton>
+
+            <ToggleButton x:Name="FavoritesToggleButton"
+                          IsChecked="{Binding IsSelected, ElementName=FavoritesTabItem}">
+                <Path Data="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/>
+            </ToggleButton>
         </StackPanel>
+
+        <Button x:Name="SaveEnviromentButton" 
+                VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="1"
+                Click="SaveEnviromentButton_Click">
+            <Path Height="16" FlowDirection="RightToLeft" Data="M1 7H3V21H17V23H3C1.9 23 1 22.11 1 21V7M19 1H7C5.89 1 5 1.9 5 3V17C5 18.1 5.89 19 7 19H21C22.1 19 23 18.1 23 17V5L19 1M21 17H7V3H18.17L21 5.83V17M14 10C12.34 10 11 11.34 11 13S12.34 16 14 16 17 14.66 17 13 15.66 10 14 10M8 4H17V8H8V4Z"/>
+        </Button>
     </Grid>
 </UserControl>

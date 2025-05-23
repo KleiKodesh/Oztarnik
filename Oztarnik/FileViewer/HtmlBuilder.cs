@@ -5,7 +5,7 @@ namespace Oztarnik.FileViewer
 {
     public static class HtmlBuilder
     {
-        public static string HtmlDoc(string content)
+        public static string HtmlDoc(string content, string scrollIndex)
         {
             return $@"<!DOCTYPE html>
                 <html lang=""he"" dir=""auto"">
@@ -18,7 +18,7 @@ namespace Oztarnik.FileViewer
                       <body dir=""auto"">
                         <div id=""title-bar""></div>
                         {content}
-                        {Js()}
+                        {Js(scrollIndex)}
                   </body>
                 </html>";
         }
@@ -44,9 +44,13 @@ namespace Oztarnik.FileViewer
         }
 
        
-        public static string Js()
+        public static string Js(string scrollIndex)
         {
             return $@"<script>
+             window.addEventListener('DOMContentLoaded', () => {{
+                    window.scrollTo(0, parseInt({scrollIndex}, 10));
+                }});
+
             let zoomLevel = 1;
             let originalText = document.body.innerHTML;
             let isVowelsReversed = false;
@@ -60,15 +64,15 @@ namespace Oztarnik.FileViewer
             {LinesJs()}
             {TitleBarJs()}
 
- function zoomIn() {{
-    zoomLevel += 0.1;
-    document.body.style.zoom = zoomLevel;
-  }}
+             function zoomIn() {{
+                zoomLevel += 0.1;
+                document.body.style.zoom = zoomLevel;
+              }}
 
-  function zoomOut() {{
-    zoomLevel -= 0.1;
-    document.body.style.zoom = zoomLevel;
-  }}
+              function zoomOut() {{
+                zoomLevel -= 0.1;
+                document.body.style.zoom = zoomLevel;
+              }}
             </script>";
         }
 

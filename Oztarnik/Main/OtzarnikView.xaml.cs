@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualBasic;
-using Ookii.Dialogs.WinForms;
 using Otzarnik.FsViewer;
+using Oztarnik.Favorites;
 using Oztarnik.FileViewer;
 using System;
 using System.Collections.Generic;
@@ -8,9 +8,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Xml.Serialization;
 
 namespace Oztarnik.Main
 {
@@ -19,7 +17,6 @@ namespace Oztarnik.Main
         public OtzarnikView()
         {
             InitializeComponent();
-            this.Loaded += (s,_) => OpenRecentFiles();
         }
 
         private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -72,10 +69,10 @@ namespace Oztarnik.Main
         private void fsViewer_NavigationRequested(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource is TreeItem treeItem)
-                OpenFile(treeItem);
+                OpenFile(treeItem, "");
         }
 
-        void OpenFile(TreeItem treeItem)
+        void OpenFile(TreeItem treeItem, string scrollIndex)
         {
             if (treeItem.Extension.ToLower().Contains("pdf"))
             {
@@ -92,41 +89,56 @@ namespace Oztarnik.Main
                 FileViewerTabControl.Items.Add(new TabItem
                 {
                     Header = treeItem.Name,
-                    Content = new FileViewer.FileView(treeItem),
+                    Content = new FileView(treeItem, scrollIndex),
                     IsSelected = true
                 });
             MainTabControl.SelectedIndex = 1;
         }
 
-        private void FileViewerTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void HistoryButton_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is TabControl tabControl)
+            if (sender is Button button && button.DataContext is HistoryItem bookMark)
             {
-                if (tabControl.Items.Count == 0)
-                {
-                    MainTabControl.SelectedIndex = 0;
-                }
-                else
-                {
-                    List<string> openFiles = new List<string>();
-                    foreach (TabItem item in tabControl.Items)
-                        if (item.Content is FileView fileView)
-                            openFiles.Add(fileView.TreeItem.Path);
-                    Interaction.SaveSetting(AppDomain.CurrentDomain.BaseDirectory, "FileViewerTabs", "OpenFiles", JsonSerializer.Serialize(openFiles));
-                }
+                var treeItem = fsViewer.Root.EnumerateItems().FirstOrDefault(item => item.Path == bookMark.Path);
+                if (treeItem != null)
+                    OpenFile(treeItem, "");
             }
         }
 
-        void OpenRecentFiles()
+        private void BookMarkButton_Click(object sender, RoutedEventArgs e)
         {
-            string json = Interaction.GetSetting(AppDomain.CurrentDomain.BaseDirectory, "FileViewerTabs", "OpenFiles");
-            if (!string.IsNullOrEmpty(json))
+            if (sender is Button button && button.DataContext is BookMarkModel bookMark)
             {
-                var list = JsonSerializer.Deserialize<List<string>>(json);
-                var items = fsViewer.Root.EnumerateItems().Where(item => list.Contains(item.Path));
-                foreach (var item in items)
-                    OpenFile(item);
+                var treeItem = fsViewer.Root.EnumerateItems().FirstOrDefault(item => item.Path == bookMark.Path);
+                if (treeItem != null)
+                    OpenFile(treeItem, bookMark.ScrollIndex);
             }
+        }
+
+        private async void SaveEnviromentButton_Click(object sender, RoutedEventArgs e)
+        {
+            List<BookMarkModel> bookMarks = new List<BookMarkModel>();
+            foreach (TabItem item in FileViewerTabControl.Items)
+                if (item.Content is FileView fileView)
+                {
+                    var bookMark = await fileView.CreateBookMark();
+                    bookMarks.Add(bookMark);
+                }
+
+            if (bookMarks.Count > 0)
+                EnviromentsViewModel.AddEnviroment(bookMarks);
+        }
+
+
+        private void EnviromentButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is EnviromentModel enviroment)
+                foreach (var bookMark in enviroment.Bookmarks)
+                {
+                    TreeItem treeItem = fsViewer.Root.EnumerateItems().FirstOrDefault(item => item.Path == bookMark.Path);
+                    if (treeItem != null)
+                        OpenFile(treeItem, bookMark.ScrollIndex);
+                }
         }
     }
 }

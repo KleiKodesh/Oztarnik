@@ -15,7 +15,6 @@ namespace Oztarnik.FileViewer
     {
         private string _currentTitle;
         public string CurrentTitle { get => _currentTitle;  set {   if (_currentTitle != value) { _currentTitle = value; OnPropertyChanged(nameof(CurrentTitle)); } } }
-       
         public RelayCommand ToggleInlineCommand => new RelayCommand(ToggleInline);
         public RelayCommand ToggleCantillationsCommand => new RelayCommand(ToggleCantillations);
         public RelayCommand ToggleNikudCommand => new RelayCommand(ToggleNikud);
@@ -46,9 +45,10 @@ namespace Oztarnik.FileViewer
                 var property = targetObject.GetType().GetProperty(target, BindingFlags.Public | BindingFlags.Instance);
                 if (property != null && property.CanWrite)
                 {
-                    JsonElement valueElement = json.GetProperty("value");
-                    object value = JsonSerializer.Deserialize(valueElement.GetRawText(), property.PropertyType);
-                    property.SetValue(targetObject, value);
+                    var valueText = json.GetProperty("value").GetRawText();
+                    //object value = JsonSerializer.Deserialize(valueText, property.PropertyType);
+                    property.SetValue(targetObject, valueText);
+                    return;
                 }
                 else
                 {
@@ -73,22 +73,22 @@ namespace Oztarnik.FileViewer
             }
         }
 
-
-
-
-        public void LoadDocument(string content)
+        public void LoadDocument(string content, string scrollIndex)
         {
-            var htmlDoc = HtmlBuilder.HtmlDoc(content);
+            var htmlDoc = HtmlBuilder.HtmlDoc(content, scrollIndex);
             DocumentWrite(htmlDoc);
         }
 
+        public async Task<string> GetScrollIndex() => 
+            await ExecuteScriptAsync("window.scrollY;");
+
         async void ToggleInline()
         {
-            await ExcuteScriptAsync($"toggleInline();");
+            await ExecuteScriptAsync($"toggleInline();");
         }
         async void ToggleNikud()
         {
-            await ExcuteScriptAsync($@"
+            await ExecuteScriptAsync($@"
                 var newText = originalText;
                 if (!isVowelsReversed)
                 {{
@@ -105,7 +105,7 @@ namespace Oztarnik.FileViewer
 
         async void ToggleCantillations()
         {
-            await ExcuteScriptAsync($@"
+            await ExecuteScriptAsync($@"
                 var newText = originalText;
                 if (!isCantillationReversed)
                 {{
@@ -120,19 +120,19 @@ namespace Oztarnik.FileViewer
         }
 
         public async void NavigateToLine(int lineNumber) =>
-            await ExcuteScriptAsync($"navigateToLine('{lineNumber.ToString()}')");
+            await ExecuteScriptAsync($"navigateToLine('{lineNumber.ToString()}')");
 
         async void ScrollToNextHeader() =>
-            await ExcuteScriptAsync($"scrollToNextHeader()");
+            await ExecuteScriptAsync($"scrollToNextHeader()");
 
         async void ScrollToPreviousHeader() =>
-            await ExcuteScriptAsync($"scrollToPreviousHeader()");
+            await ExecuteScriptAsync($"scrollToPreviousHeader()");
 
         async void ZoomIn() =>
-          await ExcuteScriptAsync($"zoomIn()");
+          await ExecuteScriptAsync($"zoomIn()");
 
         async void ZoomOut() =>
-            await ExcuteScriptAsync($"zoomOut()");
+            await ExecuteScriptAsync($"zoomOut()");
     }
 }
 

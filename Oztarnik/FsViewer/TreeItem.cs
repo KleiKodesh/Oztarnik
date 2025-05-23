@@ -3,7 +3,6 @@ using WpfLib.ViewModels;
 
 namespace Otzarnik.FsViewer
 {
-
     public class TreeItem : CheckedTreeItemBase<TreeItem>
     {
         public string Path { get; set; }

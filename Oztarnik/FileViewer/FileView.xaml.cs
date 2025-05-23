@@ -3,6 +3,9 @@ using System;
 using Otzarnik.FsViewer;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Oztarnik.Main;
+using Oztarnik.Favorites;
+using System.Threading.Tasks;
 
 namespace Oztarnik.FileViewer
 {
@@ -10,19 +13,20 @@ namespace Oztarnik.FileViewer
     {
         public TreeItem TreeItem {get; set;}
 
-        public FileView(TreeItem treeItem)
+        public FileView(TreeItem treeItem, string scrollIndex)
         {
             this.TreeItem = treeItem;
             InitializeComponent();
-            LoadFile(treeItem);
+            LoadFile(treeItem, scrollIndex);
         }
 
-        async void LoadFile(TreeItem treeItem)
+        async void LoadFile(TreeItem treeItem, string scrollIndex)
         {
             var contentModel = await ContentParser.Parse(treeItem, true);
             headersListBox.Root = contentModel.RootHeader;           
-            viewer.LoadDocument(contentModel.Content);
-            NavigationTextBox.Focus();    
+            viewer.LoadDocument(contentModel.Content, scrollIndex);
+            HistoryViewModel.AddHistoryItem(treeItem.Path);
+            NavigationTextBox.Focus();  
         }
 
         private void headersListBox_NavigationRequested(object sender, System.Windows.RoutedEventArgs e)
@@ -66,6 +70,24 @@ namespace Oztarnik.FileViewer
                     break;
             }
         }
+
+        private async void BookmarkButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            string scrollIndex = await viewer.GetScrollIndex();
+            FavoritesViewModel.AddBookmark(TreeItem.Path, scrollIndex);
+        }
+
+        public async Task<BookMarkModel> CreateBookMark()
+        {
+            return new BookMarkModel
+            {
+                Path = TreeItem.Path,
+                ScrollIndex = await viewer.GetScrollIndex(),
+            };
+        }
+
+
+
 
         //private bool _waitingForMouseRelease = false;
 

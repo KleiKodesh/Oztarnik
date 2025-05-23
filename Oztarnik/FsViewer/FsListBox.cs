@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -107,8 +108,9 @@ namespace Otzarnik.FsViewer
 
         private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is FsListView viewer && e.NewValue is string newValue)
-                viewer.Root = TreeHelper.BuildTree(null, newValue, newValue);
+            if (d is FsListView viewer && e.NewValue is string newValue &&
+                Directory.Exists(newValue))
+                    viewer.Root = TreeHelper.BuildTree(null, newValue, newValue);
         }
 
         private static void OnSourceCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -119,9 +121,12 @@ namespace Otzarnik.FsViewer
 
                 foreach (var source in sources)
                 {
-                    var tree = TreeHelper.BuildTree(null, source, source);
-                    if (tree != null)
-                        root.AddChild(tree);
+                    if (Directory.Exists(source))
+                    {
+                        var tree = TreeHelper.BuildTree(null, source, source);
+                        if (tree != null)
+                            root.AddChild(tree);
+                    }
                 }
 
                 viewer.Root = root;

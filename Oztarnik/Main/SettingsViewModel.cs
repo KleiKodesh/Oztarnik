@@ -13,7 +13,7 @@ namespace Oztarnik.Main
 {
     public class SettingsViewModel : ViewModelBase
     {
-        public string OtzarnikFolder => Interaction.GetSetting(AppDomain.CurrentDomain.BaseDirectory, "Settings", "OtzarnikFolder", System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "אוצרניק"));
+        public string OtzarnikFolder => Interaction.GetSetting(AppDomain.CurrentDomain.BaseDirectory, "Settings", "OtzarnikFolder", System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Otzarnik"));
         public string OtzariaFolder => Interaction.GetSetting(AppDomain.CurrentDomain.BaseDirectory, "Settings", "OtzariaFolder", "C:\\אוצריא\\אוצריא");
         public List<FontFamily> Fonts => FontsHelper.FontsCollection;
         
