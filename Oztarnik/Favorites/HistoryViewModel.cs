@@ -44,6 +44,8 @@ namespace Oztarnik.Favorites
             }
         }
 
+        public static RelayCommand DeleteAllCommand =>
+            new RelayCommand(DeleteAllHistoryItems);
         public static RelayCommand<HistoryItem> RemoveHistoryItemCommand =>
             new RelayCommand<HistoryItem>(value => RemoveHistoryItem(value.Path));
 
@@ -72,6 +74,11 @@ namespace Oztarnik.Favorites
             var twoWeeksAgo = DateTime.Now.AddDays(-14);
             if (current.RemoveAll(b => b.Path == path || b.Date < twoWeeksAgo) > 0)
                 SaveHistoryItems(current);
+        }
+
+        private static void DeleteAllHistoryItems()
+        {
+            SaveHistoryItems(new List<HistoryItem>());
         }
 
         private static void SaveHistoryItems(List<HistoryItem> HistoryItems)

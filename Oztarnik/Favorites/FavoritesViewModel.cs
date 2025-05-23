@@ -44,7 +44,6 @@ namespace Oztarnik.Favorites
         public static void AddBookmark(string path, string scrollIndex)
         {
             var inputBox = InputDialog(System.IO.Path.GetFileNameWithoutExtension(path));
-            inputBox.ShowDialog();
             if (inputBox.DialogResult == true)
             {
                 var current = Bookmarks;

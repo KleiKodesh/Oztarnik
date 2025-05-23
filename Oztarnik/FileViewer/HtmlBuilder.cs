@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic;
 using System;
+using System.Windows.Input;
 
 namespace Oztarnik.FileViewer
 {
@@ -17,7 +18,9 @@ namespace Oztarnik.FileViewer
                     </head>            
                       <body dir=""auto"">
                         <div id=""title-bar""></div>
+                            <div id=""content"">
                         {content}
+                            </div>
                         {Js(scrollIndex)}
                   </body>
                 </html>";
@@ -30,7 +33,7 @@ namespace Oztarnik.FileViewer
             return $@"
                 body {{line-height: 1.3; text-align: justify; font-family: '{fontFamily}'; font-size: {fontSize}px;}}
                 line {{ display: block; }}
-                header {{ margin-top: 10px; margin-bottom: 10px;  color:#000066;}}
+                header {{ margin-top: 10px; margin-bottom: 10px;  color:#000066; }}
                 h1,h2,h3,h4,h5,h6 {{  color:#000066;}}
                 ot {{ color:#000066; }}
                 h1 {{ font-size: 200%; /* 32px */ }}  
@@ -44,17 +47,14 @@ namespace Oztarnik.FileViewer
         }
 
        
-        public static string Js(string scrollIndex)
+        public static string Js(string scrollIndex = "0")
         {
             return $@"<script>
-             window.addEventListener('DOMContentLoaded', () => {{
-                    window.scrollTo(0, parseInt({scrollIndex}, 10));
-                }});
+           window.addEventListener('DOMContentLoaded', () => {{
+         window.scrollTo(0, parseFloat({scrollIndex}));
+      }});
 
             let zoomLevel = 1;
-            let originalText = document.body.innerHTML;
-            let isVowelsReversed = false;
-            let isCantillationReversed = false;
             let isInline = false;
         
             window.addEventListener('mousedown', function(event) {{
@@ -63,6 +63,7 @@ namespace Oztarnik.FileViewer
 
             {LinesJs()}
             {TitleBarJs()}
+            {DiactrictsJs()}
 
              function zoomIn() {{
                 zoomLevel += 0.1;
@@ -89,24 +90,25 @@ namespace Oztarnik.FileViewer
                 };
 
                 function navigateToLine(lineNumberString) {
-                const lineNumber = parseInt(lineNumberString);
-                const lines = document.querySelectorAll('line');
+                    const lineNumber = parseInt(lineNumberString);
+                    const lines = document.querySelectorAll('line');
 
-                if (isNaN(lineNumber) || lineNumber < 1 || lineNumber > lines.length) {
-                    console.log('Invalid line number');
-                    return;
-                }
+                    if (isNaN(lineNumber) || lineNumber < 1 || lineNumber > lines.length) {
+                        console.log('Invalid line number');
+                        return;
+                    }
 
-                const targetLine = lines[lineNumber];
-                targetLine.scrollIntoView({ block: 'center'});
-                
-                const originalBackgroundColor = targetLine.style.backgroundColor;
-                targetLine.style.backgroundColor = 'rgb(243, 240, 235)'; // Set highlight color
+                    const targetLine = lines[lineNumber];
+                    targetLine.scrollIntoView({ block: 'center'});
+                     updateTitle();
+                    
+                    const originalBackgroundColor = targetLine.style.backgroundColor;
+                    targetLine.style.backgroundColor = 'rgb(243, 240, 235)'; // Set highlight color
 
-                setTimeout(() => {
-                    targetLine.style.backgroundColor = originalBackgroundColor || ''; // Restore original color
-                }, 2000); // Highlight duration: 2000ms (2 seconds)
-            };
+                    setTimeout(() => {
+                        targetLine.style.backgroundColor = originalBackgroundColor || ''; // Restore original color
+                    }, 2000); // Highlight duration: 2000ms (2 seconds)
+                };
 ";
         }
 
@@ -200,6 +202,71 @@ window.addEventListener('load', updateTitle);
 
                 ";
         }
+
+        static string DiactrictsJs()
+        {
+            return $@"
+        let isVowelsReversed = false;
+        let isCantillationReversed = false;
+        const contentElement = document.getElementById(""content"");
+
+        // Map to store original text content of each node
+        const originalTexts = new Map();
+
+        // Initialize map with original text content of text nodes
+        function initializeOriginalTexts() {{
+            const walker = document.createTreeWalker(
+                contentElement,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+
+            while (walker.nextNode()) {{
+                originalTexts.set(walker.currentNode, walker.currentNode.nodeValue);
+            }}
+        }}
+
+        // Function to toggle diacritics
+        function toggleDiactricts() {{
+            const walker = document.createTreeWalker(
+                contentElement,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+
+            while (walker.nextNode()) {{
+                let node = walker.currentNode;
+                let text = originalTexts.get(node); // Get original text
+
+                if (isVowelsReversed) {{
+                    text = text.replace(/[\u05B0-\u05BD\u05C1\u05C2\u05C4\u05C5,;?!.:]/g, """");
+                }}
+
+                if (isCantillationReversed) {{
+                    text = text.replace(/[\u0591-\u05AF]/g, """");
+                }}
+
+                node.nodeValue = text;
+            }}
+        }}
+
+        function toggleNikud() {{
+            isVowelsReversed = !isVowelsReversed;
+            toggleDiactricts();
+        }}
+
+        function toggleCantillations() {{
+            isCantillationReversed = !isCantillationReversed;
+            toggleDiactricts();
+        }}
+
+        // Initialize original texts on load
+        initializeOriginalTexts();
+    ";
+        }
+
     }
 }
 
@@ -213,3 +280,13 @@ window.addEventListener('load', updateTitle);
 //    });
 //}
 //  }
+
+
+//document.addEventListener('keydown', function(event) {
+//    if (event.ctrlKey && event.key.toLowerCase() === 'o') {
+//        event.preventDefault();  // Stop the browser's open file dialog
+//        alert('Ctrl + O detected!');
+//    }
+//});
+
+

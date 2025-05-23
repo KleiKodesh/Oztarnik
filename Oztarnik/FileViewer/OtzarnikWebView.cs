@@ -80,44 +80,16 @@ namespace Oztarnik.FileViewer
         }
 
         public async Task<string> GetScrollIndex() => 
-            await ExecuteScriptAsync("window.scrollY;");
+            await ExecuteScriptAsync("window.scrollY");
 
-        async void ToggleInline()
-        {
-            await ExecuteScriptAsync($"toggleInline();");
-        }
-        async void ToggleNikud()
-        {
-            await ExecuteScriptAsync($@"
-                var newText = originalText;
-                if (!isVowelsReversed)
-                {{
-                    newText = newText.replace(/[\u05B0-\u05BD\u05C1\u05C2\u05C4\u05C5,;?!.:]/g, """");
-                }}           
-                if (isCantillationReversed)
-                {{
-                    newText = newText.replace(/[\u0591-\u05AF]/g, """");
-                }}   
+        async void ToggleInline() =>
+            await ExecuteScriptAsync($"toggleInline()");
 
-                document.body.innerHTML = newText
-                isVowelsReversed = !isVowelsReversed;");
-        }
+        async void ToggleNikud() =>
+            await ExecuteScriptAsync("toggleNikud()");
 
-        async void ToggleCantillations()
-        {
-            await ExecuteScriptAsync($@"
-                var newText = originalText;
-                if (!isCantillationReversed)
-                {{
-                    newText = newText.replace(/[\u0591-\u05AF]/g, """");
-                }}
-                if (isVowelsReversed)
-                {{
-                    newText = newText.replace(/[\u05B0-\u05BD\u05C1\u05C2\u05C4\u05C5]/g, """");
-                }}          
-                document.body.innerHTML = newText
-                isCantillationReversed = !isCantillationReversed;");
-        }
+        async void ToggleCantillations() =>
+            await ExecuteScriptAsync("toggleCantillations()");
 
         public async void NavigateToLine(int lineNumber) =>
             await ExecuteScriptAsync($"navigateToLine('{lineNumber.ToString()}')");

@@ -209,8 +209,16 @@
                             <Setter Property="Height" Value="10"/>
                         </Style>
                     </Grid.Resources>
-
-                    <ToggleButton x:Name="BookMarksToggle"
+                    
+                    <ToggleButton x:Name="HistoryToggle" Grid.Column="0"
+                            Style="{StaticResource FlatTabStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Width="12" Data="M13.5,8H12V13L16.28,15.54L17,14.33L13.5,12.25V8M13,3A9,9 0 0,0 4,12H1L4.96,16.03L9,12H6A7,7 0 0,1 13,5A7,7 0 0,1 20,12A7,7 0 0,1 13,19C11.07,19 9.32,18.21 8.06,16.94L6.64,18.36C8.27,20 10.5,21 13,21A9,9 0 0,0 22,12A9,9 0 0,0 13,3"/>
+                            <TextBlock Text="היסטוריה"/>
+                        </StackPanel>
+                    </ToggleButton>
+                    
+                    <ToggleButton x:Name="BookMarksToggle" Grid.Column="2"
                                   Style="{StaticResource FlatTabStyle}">
                         <StackPanel Orientation="Horizontal">
                             <Path Data="M9,1H19A2,2 0 0,1 21,3V19L19,18.13V3H7A2,2 0 0,1 9,1M15,20V7H5V20L10,17.82L15,20M15,5C16.11,5 17,5.9 17,7V23L10,20L3,23V7A2,2 0 0,1 5,5H15Z"/>
@@ -218,7 +226,7 @@
                         </StackPanel>
                     </ToggleButton>
 
-                    <ToggleButton x:Name="EnviromentsToggle" Grid.Column="2"
+                    <ToggleButton x:Name="EnviromentsToggle" Grid.Column="4"
                                   Style="{StaticResource FlatTabStyle}">
                         <StackPanel Orientation="Horizontal">
                             <Path  Data="M1 7H3V21H17V23H3C1.9 23 1 22.11 1 21V7M19 1H7C5.89 1 5 1.9 5 3V17C5 18.1 5.89 19 7 19H21C22.1 19 23 18.1 23 17V5L19 1M21 17H7V3H18.17L21 5.83V17M14 10C12.34 10 11 11.34 11 13S12.34 16 14 16 17 14.66 17 13 15.66 10 14 10M8 4H17V8H8V4Z"/>
@@ -226,18 +234,45 @@
                         </StackPanel>
                     </ToggleButton>
 
-                    <ToggleButton x:Name="HistoryToggle" Grid.Column="4"
-                                  Style="{StaticResource FlatTabStyle}">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Width="12" Data="M13.5,8H12V13L16.28,15.54L17,14.33L13.5,12.25V8M13,3A9,9 0 0,0 4,12H1L4.96,16.03L9,12H6A7,7 0 0,1 13,5A7,7 0 0,1 20,12A7,7 0 0,1 13,19C11.07,19 9.32,18.21 8.06,16.94L6.64,18.36C8.27,20 10.5,21 13,21A9,9 0 0,0 22,12A9,9 0 0,0 13,3"/>
-                            <TextBlock Text="היסטוריה"/>
-                        </StackPanel>
-                    </ToggleButton>
-
                     <TabControl x:Name="FavoritesTabcontrol" 
                                 BorderThickness="0,1,0,0"
                                 Grid.Row="1" Grid.ColumnSpan="6">
 
+                        <TabItem x:Name="HistoryTab"
+                                 IsSelected="{Binding IsChecked, ElementName=HistoryToggle}">
+                            <Grid>
+                                <ItemsControl x:Name="HistoryListBox"
+                                        ItemsSource="{Binding Path=(fav:HistoryViewModel.HistoryItems)}"
+                                        Padding="0,0,0,25">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid ap:GridSetup.Columns="* auto">
+                                                <Button x:Name="HistoryButton"
+                                                 HorizontalContentAlignment="Left"
+                                                 Padding="5"   
+                                                 Click="HistoryButton_Click">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding}" Margin="0,0,5,0"/>
+                                                        <TextBlock Text="{Binding HebrewDateTime}" Opacity="0.5"/>
+                                                    </StackPanel>
+                                                </Button>
+                                                <Button  Grid.Column="1"
+                                                     Command="{Binding Path=(fav:HistoryViewModel.RemoveHistoryItemCommand)}"
+                                                     CommandParameter="{Binding}">
+                                                    <Path  Fill="Black" Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
+                                                </Button>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <Button Content="מחק הכל"
+                                        VerticalAlignment="Bottom"
+                                        HorizontalAlignment="Center"
+                                        Padding="7,3,7,3"
+                                        Command="{Binding Path=(fav:HistoryViewModel.DeleteAllCommand)}"/>
+                            </Grid>
+                        </TabItem>
+                        
                         <TabItem x:Name="BookMarksTab"
                                  IsSelected="{Binding IsChecked, ElementName=BookMarksToggle}"
                                  Padding="0">
@@ -286,33 +321,7 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </TabItem>
-                        <TabItem x:Name="HistoryTab"
-                                 IsSelected="{Binding IsChecked, ElementName=HistoryToggle}">
-                            <ItemsControl x:Name="HistoryListBox"
-                                    ItemsSource="{Binding Path=(fav:HistoryViewModel.HistoryItems)}"
-                                    Padding="0">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid ap:GridSetup.Columns="* auto">
-                                            <Button x:Name="HistoryButton"
-                                             HorizontalContentAlignment="Left"
-                                             Padding="5"   
-                                             Click="HistoryButton_Click">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding}" Margin="0,0,5,0"/>
-                                                    <TextBlock Text="{Binding HebrewDateTime}" Opacity="0.5"/>
-                                                </StackPanel>
-                                            </Button>
-                                            <Button  Grid.Column="1"
-                                                 Command="{Binding Path=(fav:HistoryViewModel.RemoveHistoryItemCommand)}"
-                                                 CommandParameter="{Binding}">
-                                                <Path  Fill="Black" Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
-                                            </Button>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </TabItem>
+                        
                     </TabControl>
                 </Grid>
             </TabItem>
