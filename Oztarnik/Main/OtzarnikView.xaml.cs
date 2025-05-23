@@ -21,12 +21,14 @@ namespace Oztarnik.Main
 
         private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (MainTabControl.SelectedIndex == 0)
+            if (e.OriginalSource == MainTabControl && MainTabControl.SelectedIndex == 0)
+            {
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     FsSearchBox.Focus();
                     Keyboard.Focus(FsSearchBox);
-                }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);           
+                }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+            }
         }
 
         private void FileViewerTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -34,6 +36,7 @@ namespace Oztarnik.Main
             if (MainTabControl.SelectedIndex == 1 && FileViewerTabControl.Items.Count == 0)
                 MainTabControl.SelectedIndex = 0;
         }
+
 
         private void FileViewerTabControl_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -74,8 +77,7 @@ namespace Oztarnik.Main
             {
                 MainTabControl.SelectedIndex = 0;
                 e.Handled = true;
-            }
-                
+            }               
         }
 
         private void FsTab_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -116,12 +118,13 @@ namespace Oztarnik.Main
             if (treeItem.Extension.ToLower().Contains("pdf"))
             {
                 var webview = new WebViewLib.WebViewHost();
-                FileViewerTabControl.Items.Add(new TabItem
+                var tab = new TabItem
                 {
                     Header = treeItem.Name,
                     Content = webview,
                     IsSelected = true
-                });
+                };
+                FileViewerTabControl.Items.Add(tab);
                 webview.Navigate(treeItem.Path);
             }
             else
@@ -132,6 +135,11 @@ namespace Oztarnik.Main
                     IsSelected = true
                 });
             MainTabControl.SelectedIndex = 1;
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                FileViewerTabControl.Focus();
+                Keyboard.Focus(FileViewerTabControl);
+            }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         }
 
         private void HistoryButton_Click(object sender, RoutedEventArgs e)

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using WebViewLib;
 using WpfLib;
 using WpfLib.ViewModels;
