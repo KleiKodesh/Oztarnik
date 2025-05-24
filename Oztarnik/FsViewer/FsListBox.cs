@@ -210,7 +210,7 @@ namespace Otzarnik.FsViewer
                 return;
             }
 
-            searchTerm = searchTerm.Replace("\"", "").Replace("\'", "").Replace("שולחן", "שלחן");
+            searchTerm = searchTerm.Replace("\"", "").Replace("\'", "").Replace("שולחן", "שלחן").TrimEnd('+');
             var searchTerms = searchTerm.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             IEnumerable<TreeItem> results;
 

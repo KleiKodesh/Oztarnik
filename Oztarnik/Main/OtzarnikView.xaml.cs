@@ -145,27 +145,42 @@ namespace Oztarnik.Main
                     Content = webview,
                     IsSelected = true
                 };
+
                 FileViewerTabControl.Items.Add(tab);
                 webview.Navigate(treeItem.Path);
+
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    FileViewerTabControl.Focus();
+                    Keyboard.Focus(FileViewerTabControl);
+                }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
             }
             else
             {
+                var fileView = new FileView(treeItem, scrollIndex);
                 FileViewerTabControl.Items.Add(new TabItem
                 {
                     Header = treeItem.Name ?? Path.GetFileNameWithoutExtension(treeItem.Path),
-                    Content = new FileView(treeItem, scrollIndex),
+                    Content = fileView,
                     IsSelected = true
                 });
+
+                if (FsSearchBox.Text.EndsWith("+"))
+                {
+                    fileView.HeadersPopup.IsOpen = true;
+                    fileView.FocusHeadersTextBox();
+                }
+                else
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        FileViewerTabControl.Focus();
+                        Keyboard.Focus(FileViewerTabControl);
+                    }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
             }
 
             HistoryViewModel.AddHistoryItem(treeItem.Path);
 
             MainTabControl.SelectedIndex = 1;
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                FileViewerTabControl.Focus();
-                Keyboard.Focus(FileViewerTabControl);
-            }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);           
         }
 
         private void HistoryButton_Click(object sender, RoutedEventArgs e)

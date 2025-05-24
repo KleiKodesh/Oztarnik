@@ -26,8 +26,9 @@
         <Grid x:Name="Titlebar" ap:GridSetup.Columns="* auto">
             <StackPanel Orientation="Horizontal">
                 <UniformGrid Rows="1" Margin="3">
+                    
                     <ToggleButton x:Name="HeadersToggleButton"
-                              Checked="HeadersToggleButton_Checked">
+                                  x:FieldModifier="public">
                         <Path Data="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"/>
                         <ToggleButton.Style>
                             <Style TargetType="ToggleButton" BasedOn="{StaticResource FlatToggleButton}">
@@ -137,45 +138,50 @@
         </Border>
 
         <Grid ap:GridSetup.Columns="auto *" Grid.Row="2">
-            <Popup x:Name="HeadersPopup" 
-                   Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                   PlacementTarget="{Binding ElementName=Titlebar}"
-                   StaysOpen="False"
-                   IsOpen="{Binding IsChecked, ElementName=HeadersToggleButton}"
-                   AllowsTransparency="True">
-                <Border BorderThickness="1" BorderBrush="LightGray" Background="White">
-                    <Grid x:Name="NavigationPanel"
-             ap:GridSetup.Rows="auto *"
-             MinWidth="162"
-             Visibility="{Binding IsChecked, ElementName=HeadersToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}"
-              PreviewKeyDown="NavigationPanel_PreviewKeyDown">
-
-                        <Grid ap:GridSetup.Columns="* auto">
-                            <Button x:Name="GoBackButton" Grid.Column="1"
-                        Margin="0,3,3,3"
-                        Style="{StaticResource FlatButton}"
-                    Command="{Binding GoBackCommand, ElementName=headersListBox}">
-                                <Path Data="M13,20H11V8L5.5,13.5L4.08,12.08L12,4.16L19.92,12.08L18.5,13.5L13,8V20Z"/>
-                            </Button>
-
-                            <TextBox x:Name="NavigationTextBox" 
-                     Style="{StaticResource WaterMarkTextBox}"
-                     ToolTip="חיפוש..."
-                     Margin="3"
-                     BorderThickness="0.5"
-                     Text="{Binding SearchString, ElementName=headersListBox, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-                        </Grid>
-
-                        <fs:HeadersListView x:Name="headersListBox" Background="Transparent"
-                    BorderThickness="0,0.5,0,0"
-                    Grid.Row="1"
-                 NavigationRequested="headersListBox_NavigationRequested"/>
-                    </Grid>
-                </Border>
-            </Popup>
-
             <local:OtzarnikWebView x:Name="viewer" Grid.Column="1" Margin="0" BorderThickness="0" Padding="0"/>
         </Grid>
+
+
+        <Popup x:Name="HeadersPopup" 
+         Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
+         PlacementTarget="{Binding ElementName=Titlebar}"
+         StaysOpen="False"
+         IsOpen="{Binding IsChecked, ElementName=HeadersToggleButton}"
+         AllowsTransparency="True"
+         Opened="HeadersPopup_Opened"
+         PreviewKeyDown="HeadersPopup_PreviewKeyDown"
+         FocusManager.FocusedElement="{Binding ElementName=NavigationTextBox}"
+         x:FieldModifier="public">
+            <Border BorderThickness="1" BorderBrush="LightGray" Background="White">
+                <Grid x:Name="NavigationPanel"
+                       ap:GridSetup.Rows="auto *"
+                       MinWidth="162"
+                       Visibility="{Binding IsChecked, ElementName=HeadersToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        PreviewKeyDown="NavigationPanel_PreviewKeyDown">
+
+                    <Grid ap:GridSetup.Columns="* auto">
+                        <Button x:Name="GoBackButton" Grid.Column="1"
+              Margin="0,3,3,3"
+              Style="{StaticResource FlatButton}"
+          Command="{Binding GoBackCommand, ElementName=headersListBox}">
+                            <Path Data="M13,20H11V8L5.5,13.5L4.08,12.08L12,4.16L19.92,12.08L18.5,13.5L13,8V20Z"/>
+                        </Button>
+
+                        <TextBox x:Name="NavigationTextBox" 
+           Style="{StaticResource WaterMarkTextBox}"
+           ToolTip="חיפוש..."
+           Margin="3"
+           BorderThickness="0.5"
+           Text="{Binding SearchString, ElementName=headersListBox, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                    </Grid>
+
+                    <fs:HeadersListView x:Name="headersListBox" Background="Transparent"
+          BorderThickness="0,0.5,0,0"
+          Grid.Row="1"
+       NavigationRequested="headersListBox_NavigationRequested"/>
+                </Grid>
+            </Border>
+        </Popup>
 
     </Grid>
 </UserControl>

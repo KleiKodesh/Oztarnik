@@ -53,10 +53,10 @@
                             </Button>
                         </UniformGrid>
                         <TextBox x:Name="FsSearchBox"
-                        Style="{StaticResource WaterMarkTextBox}"
-                        ToolTip="חיפוש..."
-                        Text="{Binding SearchString, ElementName=fsViewer, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                        AcceptsReturn="False">
+                                Style="{StaticResource WaterMarkTextBox}"
+                                ToolTip="חיפוש..."
+                                Text="{Binding SearchString, ElementName=fsViewer, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                AcceptsReturn="False">
                             <TextBox.InputBindings>
                                 <KeyBinding Key="Return" Command="{Binding SearchCommand, ElementName=fsViewer}"/>
                             </TextBox.InputBindings>

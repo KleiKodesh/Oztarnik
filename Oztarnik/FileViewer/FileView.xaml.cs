@@ -20,6 +20,21 @@ namespace Oztarnik.FileViewer
             LoadFile(treeItem, scrollIndex);
         }
 
+        public void FocusHeadersTextBox()
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                HeadersPopup.Focus();
+                Keyboard.Focus(HeadersPopup);
+            }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                NavigationTextBox.Focus();
+                Keyboard.Focus(NavigationTextBox);
+            }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+        }
+
+
         async void LoadFile(TreeItem treeItem, string scrollIndex)
         {
             var contentModel = await ContentParser.Parse(treeItem, true);
@@ -32,15 +47,6 @@ namespace Oztarnik.FileViewer
         {
             if (e.OriginalSource is TreeItem item)
                 viewer.NavigateToLine(item.LineIndex);
-        }
-
-        private void HeadersToggleButton_Checked(object sender, System.Windows.RoutedEventArgs e)
-        {
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                NavigationTextBox.Focus();
-                Keyboard.Focus(NavigationTextBox);
-            }), DispatcherPriority.Input);
         }
 
         private void NavigationPanel_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -83,6 +89,21 @@ namespace Oztarnik.FileViewer
                 Path = TreeItem.Path,
                 ScrollIndex = await viewer.GetScrollIndex(),
             };
+        }
+
+        private void HeadersPopup_Opened(object sender, EventArgs e)
+        {
+            //Dispatcher.BeginInvoke(new Action(() =>
+            //{
+            //    HeadersPopup.Focus();
+            //    Keyboard.Focus(HeadersPopup);
+            //}), DispatcherPriority.ApplicationIdle);         
+        }
+
+        private void HeadersPopup_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+                HeadersPopup.IsOpen = false;
         }
 
 
