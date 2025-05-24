@@ -29,18 +29,30 @@ namespace Oztarnik.Favorites
         private const string Section = "Favorites";
         private const string Key = "History";
 
+        static List<HistoryItem> _historyItems;
+
         public static List<HistoryItem> HistoryItems
         {
             get
             {
-                string json = Interaction.GetSetting(AppName, Section, Key);
-                if (!string.IsNullOrEmpty(json))
+                if (_historyItems == null)
                 {
-                    var history = JsonSerializer.Deserialize<List<HistoryItem>>(json);
-                    return history.OrderByDescending(h => h.Date).ToList();
+                    string json = Interaction.GetSetting(AppName, Section, Key);
+                    if (!string.IsNullOrEmpty(json))
+                        _historyItems = JsonSerializer.Deserialize<List<HistoryItem>>(json);
+                    else
+                        _historyItems = new List<HistoryItem>();
                 }
-                   
-                return new List<HistoryItem>();
+
+                return _historyItems;
+            }
+            set
+            {
+                if(value != _historyItems)
+                {
+                    _historyItems = value.OrderByDescending(h => h.Date).ToList();
+                    SaveHistoryItems();
+                }
             }
         }
 
@@ -52,36 +64,27 @@ namespace Oztarnik.Favorites
         public static void AddHistoryItem(string path)
         {           
             var twoWeeksAgo = DateTime.Now.AddDays(-14);
-            var current = HistoryItems;
-            current.RemoveAll(b => b.Path == path || b.Date < twoWeeksAgo);
+            HistoryItems.RemoveAll(b => b.Path == path || b.Date < twoWeeksAgo);
 
-            current.Add(new HistoryItem
+            HistoryItems.Add(new HistoryItem
             {
                 Path = path,
                 Title = System.IO.Path.GetFileName(path),
                 HebrewDateTime = HebrewDateHelper.GetHebrewDateTime(DateTime.Now),
                 Date = DateTime.Now
-                
             });
-
-            SaveHistoryItems(current);
         }
-
 
         public static void RemoveHistoryItem(string path)
         {
-            var current = HistoryItems;
             var twoWeeksAgo = DateTime.Now.AddDays(-14);
-            if (current.RemoveAll(b => b.Path == path || b.Date < twoWeeksAgo) > 0)
-                SaveHistoryItems(current);
+            HistoryItems.RemoveAll(b => b.Path == path || b.Date < twoWeeksAgo);
         }
 
-        private static void DeleteAllHistoryItems()
-        {
-            SaveHistoryItems(new List<HistoryItem>());
-        }
+        private static void DeleteAllHistoryItems() =>
+            HistoryItems = new List<HistoryItem>();
 
-        private static void SaveHistoryItems(List<HistoryItem> HistoryItems)
+        private static void SaveHistoryItems()
         {
             string json = JsonSerializer.Serialize(HistoryItems);
             Interaction.SaveSetting(AppName, Section, Key, json);

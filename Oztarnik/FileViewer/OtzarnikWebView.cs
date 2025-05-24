@@ -81,6 +81,9 @@ namespace Oztarnik.FileViewer
             DocumentWrite(htmlDoc);
         }
 
+        public void ShowFavorites() =>
+          WpfLib.Helpers.DependencyHelper.FindParent<OtzarnikView>(this)?.ShowFavorites();
+
         public void OpenFile() =>
             WpfLib.Helpers.DependencyHelper.FindParent<OtzarnikView>(this)?.OpenFile();
 

@@ -27,14 +27,30 @@ namespace Oztarnik.Favorites
         private const string Section = "Favorites";
         private const string Key = "BookMarks";
 
+        static List<BookMarkModel> _bookmarks;
+        
         public static List<BookMarkModel> Bookmarks
         {
             get
             {
-                string json = Interaction.GetSetting(AppName, Section, Key);
-                if (!string.IsNullOrEmpty(json))
-                    return JsonSerializer.Deserialize<List<BookMarkModel>>(json);
-                return new List<BookMarkModel>();
+                if (_bookmarks == null)
+                {
+                    string json = Interaction.GetSetting(AppName, Section, Key);
+                    if (!string.IsNullOrEmpty(json))
+                        _bookmarks = JsonSerializer.Deserialize<List<BookMarkModel>>(json);
+                    else
+                        _bookmarks = new List<BookMarkModel>();
+                }
+
+                return _bookmarks;
+            }
+            set
+            {
+                if (value != _bookmarks)
+                {
+                    _bookmarks = value;
+                    SaveBookmarks();
+                }
             }
         }
 
@@ -46,28 +62,21 @@ namespace Oztarnik.Favorites
             var inputBox = InputDialog(System.IO.Path.GetFileNameWithoutExtension(path));
             if (inputBox.DialogResult == true)
             {
-                var current = Bookmarks;
+                Bookmarks.RemoveAll(b => b.Path == path);
 
-                // Remove existing if the path already exists
-                current.RemoveAll(b => b.Path == path);
-
-                current.Add(new BookMarkModel
+                Bookmarks.Add(new BookMarkModel
                 {
                     Path = path,
                     ScrollIndex = scrollIndex,
                     Title = inputBox.Answer
                 });
-
-                SaveBookmarks(current);
             } 
         }
 
         public static void AddBookmark(BookMarkModel bookmark)
         {
-            var current = Bookmarks;
-            current.RemoveAll(b => b.Path == bookmark.Path);
-            current.Add(bookmark);
-            SaveBookmarks(current);
+            Bookmarks.RemoveAll(b => b.Path == bookmark.Path);
+            Bookmarks.Add(bookmark);
         }
 
         public static WpfLib.Controls.HebrewInputBox InputDialog(string defaultValue)
@@ -79,14 +88,12 @@ namespace Oztarnik.Favorites
 
         public static void RemoveBookmark(string path)
         {
-            var current = Bookmarks;
-            if (current.RemoveAll(b => b.Path == path) > 0)
-                SaveBookmarks(current);
+            Bookmarks.RemoveAll(b => b.Path == path);
         }
 
-        private static void SaveBookmarks(List<BookMarkModel> bookmarks)
+        private static void SaveBookmarks()
         {
-            string json = JsonSerializer.Serialize(bookmarks);
+            string json = JsonSerializer.Serialize(Bookmarks);
             Interaction.SaveSetting(AppName, Section, Key, json);
             OnStaticPropertyChanged(nameof(Bookmarks));
         }

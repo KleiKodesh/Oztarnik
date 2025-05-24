@@ -297,6 +297,13 @@ window.addEventListener('load', updateTitle);
               target: ""CloseAllTabs""
             }};
             break;
+
+          case 'h': // Ctrl + H
+            message = {{
+              action: ""call"",
+              target: ""ShowFavorites""
+            }};
+            break;
         }}
 
         if (message) {{

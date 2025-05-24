@@ -64,8 +64,15 @@ namespace Oztarnik.Main
                         CloseAllTabs();
                         e.Handled = true;
                         break;
+                    case Key.H:
+                        ShowFavorites();
+                        e.Handled = true;
+                        break;
                 }
         }
+
+        public void ShowFavorites() =>
+            MainTabControl.SelectedIndex = 3;
 
         public void OpenFile() =>
             MainTabControl.SelectedIndex = 0;

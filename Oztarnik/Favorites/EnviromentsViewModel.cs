@@ -24,15 +24,30 @@ namespace Oztarnik.Favorites
         private static string AppName => AppDomain.CurrentDomain.BaseDirectory;
         private const string Section = "Favorites";
         private const string Key = "Enviroments";
-
+        static List<EnviromentModel> _enviroments;
+       
         public static List<EnviromentModel> Enviroments
         {
             get
             {
-                string json = Interaction.GetSetting(AppName, Section, Key);
-                if (!string.IsNullOrEmpty(json))
-                    return JsonSerializer.Deserialize<List<EnviromentModel>>(json);
-                return new List<EnviromentModel>();
+                if (_enviroments == null)
+                {
+                    string json = Interaction.GetSetting(AppName, Section, Key);
+                    if (!string.IsNullOrEmpty(json))
+                        _enviroments = JsonSerializer.Deserialize<List<EnviromentModel>>(json);
+                    else
+                        _enviroments = new List<EnviromentModel>();
+                }
+
+                return _enviroments;
+            }
+            set
+            {
+                if(value != _enviroments)
+                {
+                    _enviroments = value;
+                    SaveEnviroments();
+                }
             }
         }
 
@@ -43,11 +58,7 @@ namespace Oztarnik.Favorites
         {
             var inputBox = InputDialog(HebrewDateHelper.GetHebrewDateTime(DateTime.Now));
             if (inputBox.DialogResult == true)
-            {
-                var current = Enviroments;
-                current.Add(new EnviromentModel { Title = inputBox.Answer, Bookmarks = bookMarks});
-                SaveEnviroments(current);
-            }
+                Enviroments.Add(new EnviromentModel { Title = inputBox.Answer, Bookmarks = bookMarks});
         }
 
         public static WpfLib.Controls.HebrewInputBox InputDialog(string defaultValue)
@@ -59,14 +70,12 @@ namespace Oztarnik.Favorites
 
         public static void RemoveEnviroment(EnviromentModel enviroment)
         {
-            var current = Enviroments;
-            if (current.RemoveAll(e => e.Title == enviroment.Title) > 0)
-                SaveEnviroments(current);
+            Enviroments.RemoveAll(e => e.Title == enviroment.Title);              
         }
 
-        private static void SaveEnviroments(List<EnviromentModel> enviroments)
+        private static void SaveEnviroments()
         {
-            string json = JsonSerializer.Serialize(enviroments);
+            string json = JsonSerializer.Serialize(Enviroments);
             Interaction.SaveSetting(AppName, Section, Key, json);
             OnStaticPropertyChanged(nameof(Enviroments));
         }
