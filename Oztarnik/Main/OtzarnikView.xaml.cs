@@ -41,7 +41,7 @@ namespace Oztarnik.Main
             }
         }
 
-        private async void FileViewerTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void FileViewerTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (MainTabControl.SelectedIndex == 1 && FileViewerTabControl.Items.Count == 0)
                 MainTabControl.SelectedIndex = 0;
@@ -132,11 +132,10 @@ namespace Oztarnik.Main
 
         void LoadFile(TreeItem treeItem, string scrollIndex)
         {
-            string extension = Path.GetExtension(treeItem.Path).ToLower();
-            if (!Regex.IsMatch(extension, @"^\.(pdf|txt|html)$"))
+            if (!Regex.IsMatch(treeItem.Extension, @"^\.(pdf|txt|html)$"))
                 return;
 
-            if (extension.Contains("pdf"))
+            if (treeItem.Extension.Contains("pdf"))
             {
                 var webview = new WebViewLib.WebViewHost();
                 var tab = new TabItem

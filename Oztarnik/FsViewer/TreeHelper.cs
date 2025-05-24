@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Oztarnik.FsViewer;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -22,10 +24,24 @@ namespace Otzarnik.FsViewer
                 Tags = GetTags(strippedPath, rootPath),
             };
 
-            foreach (var dir in Directory.GetDirectories(path))
+            var directories = Directory.GetDirectories(path)
+                .OrderBy(dir =>
+                {
+                    var index = Array.IndexOf(FsSort.DirectoryOrder, Path.GetFileName(dir));
+                    return index == -1 ? int.MaxValue : index; // Unmatched items go to the end
+                });
+
+            foreach (var dir in directories)
                 item.AddChild(BuildTree(item, dir, rootPath));
 
-            foreach (var file in Directory.GetFiles(path))
+            var files = Directory.GetFiles(path)
+                .OrderBy(dir =>
+                {
+                    var index = Array.IndexOf(FsSort.FileOrder, Path.GetFileNameWithoutExtension(dir));
+                    return index == -1 ? int.MaxValue : index; // Unmatched items go to the end
+                });
+
+            foreach (var file in files)
             {
                 string strippedFilePath = Regex.Replace(file, @"\d+_", "");
                 string extension = Path.GetExtension(file).ToLower();
@@ -37,6 +53,7 @@ namespace Otzarnik.FsViewer
                     Parent = item,
                     Path = file,
                     IsFile = true,
+                    Extension = extension,
                     Name = Path.GetFileNameWithoutExtension(strippedFilePath),
                     Tags = GetTags(Path.GetDirectoryName(strippedFilePath), rootPath),
                 });

@@ -70,7 +70,7 @@ namespace Otzarnik.FsViewer
                     {
                         await Task.Delay(1, token);
                         token.ThrowIfCancellationRequested();
-                        await Application.Current.Dispatcher.InvokeAsync(() =>
+                        await Dispatcher.InvokeAsync(() =>
                             CurrentItem.AddChild(item));
                     }
                 }

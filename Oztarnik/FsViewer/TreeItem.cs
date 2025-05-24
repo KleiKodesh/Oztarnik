@@ -5,8 +5,10 @@ namespace Otzarnik.FsViewer
 {
     public class TreeItem : CheckedTreeItemBase<TreeItem>
     {
+        string _extension;
         public string Path { get; set; }
         public bool IsFile { get; set; }
+        public string Extension { get => _extension ?? System.IO.Path.GetExtension(Path).ToLower(); set => _extension = value.ToLower(); }
         public int LineIndex { get; set; }
         public int Level { get; set; }
         public List<string> Tags { get; set; } = new List<string>();

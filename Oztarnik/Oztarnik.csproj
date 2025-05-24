@@ -123,6 +123,7 @@
       <DependentUpon>FileView.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileViewer\HtmlBuilder.cs" />
+    <Compile Include="FsViewer\FsSort.cs" />
     <Compile Include="FsViewer\HeadersListBox.cs" />
     <Compile Include="FileViewer\OtzarnikWebView.cs" />
     <Compile Include="FsViewer\FsListBox.cs" />
