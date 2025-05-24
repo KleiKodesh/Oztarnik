@@ -25,7 +25,6 @@ namespace Oztarnik.FileViewer
             var contentModel = await ContentParser.Parse(treeItem, true);
             headersListBox.Root = contentModel.RootHeader;           
             viewer.LoadDocument(contentModel.Content, scrollIndex);
-            HistoryViewModel.AddHistoryItem(treeItem.Path);
             NavigationTextBox.Focus();  
         }
 
@@ -74,7 +73,7 @@ namespace Oztarnik.FileViewer
         private async void BookmarkButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             string scrollIndex = await viewer.GetScrollIndex();
-            FavoritesViewModel.AddBookmark(TreeItem.Path, scrollIndex);
+            BookmarksViewModel.AddBookmark(TreeItem.Path, scrollIndex);
         }
 
         public async Task<BookMarkModel> CreateBookMark()

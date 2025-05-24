@@ -1,10 +1,13 @@
 ﻿using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using WpfLib;
+using WpfLib.Helpers;
 using WpfLib.ViewModels;
 
 namespace Oztarnik.Favorites
@@ -17,7 +20,7 @@ namespace Oztarnik.Favorites
 
         public override string ToString() => Title;
     }
-    public static class FavoritesViewModel
+    public static class BookmarksViewModel
     {
         public static event EventHandler<PropertyChangedEventArgs> StaticPropertyChanged;
         private static void OnStaticPropertyChanged(string propertyName) =>
@@ -27,9 +30,9 @@ namespace Oztarnik.Favorites
         private const string Section = "Favorites";
         private const string Key = "BookMarks";
 
-        static List<BookMarkModel> _bookmarks;
+        static ObservableCollection<BookMarkModel> _bookmarks;
         
-        public static List<BookMarkModel> Bookmarks
+        public static ObservableCollection<BookMarkModel> Bookmarks
         {
             get
             {
@@ -37,9 +40,9 @@ namespace Oztarnik.Favorites
                 {
                     string json = Interaction.GetSetting(AppName, Section, Key);
                     if (!string.IsNullOrEmpty(json))
-                        _bookmarks = JsonSerializer.Deserialize<List<BookMarkModel>>(json);
+                        _bookmarks = JsonSerializer.Deserialize<ObservableCollection<BookMarkModel>>(json);
                     else
-                        _bookmarks = new List<BookMarkModel>();
+                        _bookmarks = new ObservableCollection<BookMarkModel>();
                 }
 
                 return _bookmarks;
@@ -49,17 +52,21 @@ namespace Oztarnik.Favorites
                 if (value != _bookmarks)
                 {
                     _bookmarks = value;
-                    SaveBookmarks();
+                    OnStaticPropertyChanged(nameof(Bookmarks));
                 }
             }
         }
 
+        public static RelayCommand DeleteAllCommand =>
+          new RelayCommand(DeleteAll);
         public static RelayCommand<BookMarkModel> RemoveBookMark =>
             new RelayCommand<BookMarkModel>(value => RemoveBookmark(value.Path));
 
         public static void AddBookmark(string path, string scrollIndex)
         {
-            var inputBox = InputDialog(System.IO.Path.GetFileNameWithoutExtension(path));
+            string cleanedName = Regex.Replace(System.IO.Path.GetFileName(path), @"^_\d+", "");
+
+            var inputBox = InputDialog(cleanedName);
             if (inputBox.DialogResult == true)
             {
                 Bookmarks.RemoveAll(b => b.Path == path);
@@ -70,13 +77,16 @@ namespace Oztarnik.Favorites
                     ScrollIndex = scrollIndex,
                     Title = inputBox.Answer
                 });
-            } 
+            }
+
+            SaveBookmarks();
         }
 
         public static void AddBookmark(BookMarkModel bookmark)
         {
             Bookmarks.RemoveAll(b => b.Path == bookmark.Path);
             Bookmarks.Add(bookmark);
+            SaveBookmarks();
         }
 
         public static WpfLib.Controls.HebrewInputBox InputDialog(string defaultValue)
@@ -89,6 +99,13 @@ namespace Oztarnik.Favorites
         public static void RemoveBookmark(string path)
         {
             Bookmarks.RemoveAll(b => b.Path == path);
+            SaveBookmarks();
+        }
+
+        private static void DeleteAll()
+        {
+            Bookmarks = new ObservableCollection<BookMarkModel>();
+            SaveBookmarks();
         }
 
         private static void SaveBookmarks()

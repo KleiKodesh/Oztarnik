@@ -1,9 +1,11 @@
 ﻿using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using WpfLib.Helpers;
 using WpfLib.ViewModels;
 
@@ -29,9 +31,9 @@ namespace Oztarnik.Favorites
         private const string Section = "Favorites";
         private const string Key = "History";
 
-        static List<HistoryItem> _historyItems;
+        static ObservableCollection<HistoryItem> _historyItems;
 
-        public static List<HistoryItem> HistoryItems
+        public static ObservableCollection<HistoryItem> HistoryItems
         {
             get
             {
@@ -39,25 +41,25 @@ namespace Oztarnik.Favorites
                 {
                     string json = Interaction.GetSetting(AppName, Section, Key);
                     if (!string.IsNullOrEmpty(json))
-                        _historyItems = JsonSerializer.Deserialize<List<HistoryItem>>(json);
+                        _historyItems = JsonSerializer.Deserialize<ObservableCollection<HistoryItem>>(json);
                     else
-                        _historyItems = new List<HistoryItem>();
+                        _historyItems = new ObservableCollection<HistoryItem>();
                 }
 
                 return _historyItems;
             }
             set
             {
-                if(value != _historyItems)
+                if (value != _historyItems)
                 {
-                    _historyItems = value.OrderByDescending(h => h.Date).ToList();
-                    SaveHistoryItems();
+                    _historyItems = value;
+                    OnStaticPropertyChanged(nameof(HistoryItems));
                 }
             }
         }
 
         public static RelayCommand DeleteAllCommand =>
-            new RelayCommand(DeleteAllHistoryItems);
+            new RelayCommand(DeleteAll);
         public static RelayCommand<HistoryItem> RemoveHistoryItemCommand =>
             new RelayCommand<HistoryItem>(value => RemoveHistoryItem(value.Path));
 
@@ -66,29 +68,39 @@ namespace Oztarnik.Favorites
             var twoWeeksAgo = DateTime.Now.AddDays(-14);
             HistoryItems.RemoveAll(b => b.Path == path || b.Date < twoWeeksAgo);
 
-            HistoryItems.Add(new HistoryItem
+            string cleanedName = Regex.Replace(System.IO.Path.GetFileName(path), @"^\d+_", "");
+
+            var newItem = new HistoryItem
             {
                 Path = path,
-                Title = System.IO.Path.GetFileName(path),
+                Title = cleanedName,
                 HebrewDateTime = HebrewDateHelper.GetHebrewDateTime(DateTime.Now),
                 Date = DateTime.Now
-            });
+            };
+
+            HistoryItems.Add(newItem);
+
+            SaveHistoryItems();
         }
 
         public static void RemoveHistoryItem(string path)
         {
             var twoWeeksAgo = DateTime.Now.AddDays(-14);
             HistoryItems.RemoveAll(b => b.Path == path || b.Date < twoWeeksAgo);
+            SaveHistoryItems();
         }
 
-        private static void DeleteAllHistoryItems() =>
-            HistoryItems = new List<HistoryItem>();
+        private static void DeleteAll()
+        {
+            HistoryItems = new ObservableCollection<HistoryItem>();
+            SaveHistoryItems();
+        }
 
         private static void SaveHistoryItems()
         {
+            HistoryItems = new ObservableCollection<HistoryItem>(HistoryItems.OrderByDescending(item => item.Date));
             string json = JsonSerializer.Serialize(HistoryItems);
             Interaction.SaveSetting(AppName, Section, Key, json);
-            OnStaticPropertyChanged(nameof(HistoryItems));
         }
     }
 }

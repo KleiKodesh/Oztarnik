@@ -116,7 +116,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Favorites\EnviromentsViewModel.cs" />
+    <Compile Include="Favorites\EnvironmentsViewModel.cs" />
     <Compile Include="Favorites\HistoryViewModel.cs" />
     <Compile Include="FileViewer\ContentParser.cs" />
     <Compile Include="FileViewer\FileView.xaml.cs">
@@ -128,7 +128,7 @@
     <Compile Include="FsViewer\FsListBox.cs" />
     <Compile Include="FsViewer\TreeHelper.cs" />
     <Compile Include="FsViewer\TreeItem.cs" />
-    <Compile Include="Favorites\FavoritesViewModel.cs" />
+    <Compile Include="Favorites\BookmarksViewModel.cs" />
     <Compile Include="Main\OtzarnikView.xaml.cs">
       <DependentUpon>OtzarnikView.xaml</DependentUpon>
     </Compile>

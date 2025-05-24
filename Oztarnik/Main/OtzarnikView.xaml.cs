@@ -82,7 +82,7 @@ namespace Oztarnik.Main
 
         public void CloseAllTabs()
         {
-            var items = FileViewerTabControl.Items;
+            var items = FileViewerTabControl.Items.Cast<TabItem>().ToList();
             foreach (TabItem tab in items)
                 FileViewerTabControl.Items.Remove(tab);
         }       
@@ -157,12 +157,14 @@ namespace Oztarnik.Main
                 });
             }
 
+            HistoryViewModel.AddHistoryItem(treeItem.Path);
+
             MainTabControl.SelectedIndex = 1;
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 FileViewerTabControl.Focus();
                 Keyboard.Focus(FileViewerTabControl);
-            }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+            }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);           
         }
 
         private void HistoryButton_Click(object sender, RoutedEventArgs e)
@@ -185,7 +187,7 @@ namespace Oztarnik.Main
             }
         }
 
-        private async void SaveEnviromentButton_Click(object sender, RoutedEventArgs e)
+        private async void SaveEnvironmentButton_Click(object sender, RoutedEventArgs e)
         {
             List<BookMarkModel> bookMarks = new List<BookMarkModel>();
             foreach (TabItem item in FileViewerTabControl.Items)
@@ -196,14 +198,14 @@ namespace Oztarnik.Main
                 }
 
             if (bookMarks.Count > 0)
-                EnviromentsViewModel.AddEnviroment(bookMarks);
+                EnvironmentsViewModel.AddEnvironment(bookMarks);
         }
 
 
-        private void EnviromentButton_Click(object sender, RoutedEventArgs e)
+        private void EnvironmentButton_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button && button.DataContext is EnviromentModel enviroment)
-                foreach (var bookMark in enviroment.Bookmarks)
+            if (sender is Button button && button.DataContext is EnvironmentModel Environment)
+                foreach (var bookMark in Environment.Bookmarks)
                 {
                     TreeItem treeItem = fsViewer.Root.EnumerateItems().FirstOrDefault(item => item.Path == bookMark.Path);
                     if (treeItem != null)
