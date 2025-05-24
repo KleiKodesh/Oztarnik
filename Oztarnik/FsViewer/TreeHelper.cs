@@ -36,7 +36,6 @@ namespace Otzarnik.FsViewer
                 {
                     Parent = item,
                     Path = file,
-                    Extension = extension,
                     IsFile = true,
                     Name = Path.GetFileNameWithoutExtension(strippedFilePath),
                     Tags = GetTags(Path.GetDirectoryName(strippedFilePath), rootPath),

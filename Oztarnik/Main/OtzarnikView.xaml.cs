@@ -1,11 +1,14 @@
 ﻿using Microsoft.VisualBasic;
+using Microsoft.Win32;
 using Otzarnik.FsViewer;
 using Oztarnik.Favorites;
 using Oztarnik.FileViewer;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -21,6 +24,12 @@ namespace Oztarnik.Main
 
         private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (MainTabControl.SelectedIndex == -1)
+            {
+                MainTabControl.SelectedIndex = 0;
+                return;
+            }
+                
             if (e.OriginalSource == MainTabControl && MainTabControl.SelectedIndex == 0)
             {
                 Dispatcher.BeginInvoke(new Action(() =>
@@ -115,12 +124,16 @@ namespace Oztarnik.Main
 
         void LoadFile(TreeItem treeItem, string scrollIndex)
         {
-            if (treeItem.Extension.ToLower().Contains("pdf"))
+            string extension = Path.GetExtension(treeItem.Path).ToLower();
+            if (!Regex.IsMatch(extension, @"^\.(pdf|txt|html)$"))
+                return;
+
+            if (extension.Contains("pdf"))
             {
                 var webview = new WebViewLib.WebViewHost();
                 var tab = new TabItem
                 {
-                    Header = treeItem.Name,
+                    Header = treeItem.Name?? Path.GetFileNameWithoutExtension(treeItem.Path),
                     Content = webview,
                     IsSelected = true
                 };
@@ -128,12 +141,15 @@ namespace Oztarnik.Main
                 webview.Navigate(treeItem.Path);
             }
             else
+            {
                 FileViewerTabControl.Items.Add(new TabItem
                 {
-                    Header = treeItem.Name,
+                    Header = treeItem.Name ?? Path.GetFileNameWithoutExtension(treeItem.Path),
                     Content = new FileView(treeItem, scrollIndex),
                     IsSelected = true
                 });
+            }
+
             MainTabControl.SelectedIndex = 1;
             Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -186,6 +202,14 @@ namespace Oztarnik.Main
                     if (treeItem != null)
                         LoadFile(treeItem, bookMark.ScrollIndex);
                 }
+        }
+
+        private void ExternalFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog { Title = "בחר קובץ",  Filter = "*.html;*.txt;*.pdf|*.html;*.txt;*.pdf" };
+
+            if (openFileDialog.ShowDialog() == true)
+                LoadFile(new TreeItem { Path = openFileDialog.FileName }, "");
         }
     }
 }

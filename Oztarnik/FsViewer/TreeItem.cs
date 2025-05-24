@@ -6,7 +6,6 @@ namespace Otzarnik.FsViewer
     public class TreeItem : CheckedTreeItemBase<TreeItem>
     {
         public string Path { get; set; }
-        public string Extension { get; set; }
         public bool IsFile { get; set; }
         public int LineIndex { get; set; }
         public int Level { get; set; }

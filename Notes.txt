@@ -1,3 +1,8 @@
 make sure snippets genrator is not ropening the file for each snippet
 maybe load the text file itself and wrap it in the html
 check if scroll to header beraks title bar
+
+
+create relative books groups
+fix trat emet double headers in files
+change favortes to maintain in memory and only write to disk
