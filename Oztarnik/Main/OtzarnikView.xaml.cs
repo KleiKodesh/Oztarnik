@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using WebViewLib;
 
 namespace Oztarnik.Main
 {
@@ -40,7 +41,7 @@ namespace Oztarnik.Main
             }
         }
 
-        private void FileViewerTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void FileViewerTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (MainTabControl.SelectedIndex == 1 && FileViewerTabControl.Items.Count == 0)
                 MainTabControl.SelectedIndex = 0;
