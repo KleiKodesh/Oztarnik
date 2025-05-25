@@ -20,7 +20,7 @@ namespace Otzarnik.FsViewer
             {
                 Parent = parent,
                 Path = path,
-                Name = Path.GetFileNameWithoutExtension(strippedPath),
+                Name = Path.GetFileNameWithoutExtension(strippedPath).Trim(),
                 Tags = GetTags(strippedPath, rootPath),
             };
 
@@ -54,7 +54,7 @@ namespace Otzarnik.FsViewer
                     Path = file,
                     IsFile = true,
                     Extension = extension,
-                    Name = Path.GetFileNameWithoutExtension(strippedFilePath),
+                    Name = Path.GetFileNameWithoutExtension(strippedFilePath).Trim(),
                     Tags = GetTags(Path.GetDirectoryName(strippedFilePath), rootPath),
                 });
             }

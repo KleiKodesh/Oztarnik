@@ -28,8 +28,9 @@
                 <UniformGrid Rows="1" Margin="3">
                     
                     <ToggleButton x:Name="HeadersToggleButton"
-                                  x:FieldModifier="public">
-                        <Path Data="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"/>
+                                  x:FieldModifier="public"
+                                  ToolTip="ניווט (כותרות)">
+                        <Path Height="10" Data="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"/>
                         <ToggleButton.Style>
                             <Style TargetType="ToggleButton" BasedOn="{StaticResource FlatToggleButton}">
                                 <Style.Triggers>
@@ -41,11 +42,25 @@
                         </ToggleButton.Style>
                     </ToggleButton>
 
+                    <ToggleButton x:Name="RelativeBoooksToggleButton"
+                                  ToolTip="ספרים קרובים">
+                        <Path Height="13" Data="M9 3V18H12V3H9M12 5L16 18L19 17L15 4L12 5M5 5V18H8V5H5M3 19V21H21V19H3Z"/>
+                        <ToggleButton.Style>
+                            <Style TargetType="ToggleButton" BasedOn="{StaticResource FlatToggleButton}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsOpen, ElementName=RelativeBooksPopup}" Value="true">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                    
                     <Button x:Name="BookmarkButton" ToolTip="צור סימניה"
                             Style="{StaticResource FlatButton}"
                             Click="BookmarkButton_Click">
-                        <Path  Data="M17,18V5H7V18L12,15.82L17,18M17,3A2,2 0 0,1 19,5V21L12,18L5,21V5C5,3.89 5.9,3 7,3H17M11,7H13V9H15V11H13V13H11V11H9V9H11V7Z" 
-                               Height="15" Stretch="Uniform"/>
+                        <Path   Data="M17,18V5H7V18L12,15.82L17,18M17,3A2,2 0 0,1 19,5V21L12,18L5,21V5C5,3.89 5.9,3 7,3H17M11,7H13V9H15V11H13V13H11V11H9V9H11V7Z" 
+                               Height="13"/>
                     </Button>
                     
                     <ToggleButton x:Name="CantillationsToggeleButton" Template="{StaticResource ToggleNikkud}"
@@ -165,27 +180,38 @@
 
                     <Grid ap:GridSetup.Columns="* auto">
                         <Button x:Name="GoBackButton" Grid.Column="1"
-              Margin="0,3,3,3"
-              Style="{StaticResource FlatButton}"
-          Command="{Binding GoBackCommand, ElementName=headersListBox}">
+                              Margin="0,3,3,3"
+                              Style="{StaticResource FlatButton}"
+                              Command="{Binding GoBackCommand, ElementName=headersListBox}">
                             <Path Data="M13,20H11V8L5.5,13.5L4.08,12.08L12,4.16L19.92,12.08L18.5,13.5L13,8V20Z"/>
                         </Button>
 
                         <TextBox x:Name="NavigationTextBox" 
-           Style="{StaticResource WaterMarkTextBox}"
-           ToolTip="חיפוש..."
-           Margin="3"
-           BorderThickness="0.5"
-           Text="{Binding SearchString, ElementName=headersListBox, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                               Style="{StaticResource WaterMarkTextBox}"
+                               ToolTip="חיפוש..."
+                               Margin="3"
+                               BorderThickness="0.5"
+                               Text="{Binding SearchString, ElementName=headersListBox, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                     </Grid>
 
                     <fs:HeadersListView x:Name="headersListBox" Background="Transparent"
-          BorderThickness="0,0.5,0,0"
-          Grid.Row="1"
-       NavigationRequested="headersListBox_NavigationRequested"/>
+                          BorderThickness="0,0.5,0,0"
+                          Grid.Row="1"
+                          NavigationRequested="headersListBox_NavigationRequested"/>
                 </Grid>
             </Border>
         </Popup>
 
+        <Popup x:Name="RelativeBooksPopup" 
+               Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
+               PlacementTarget="{Binding ElementName=Titlebar}"
+               StaysOpen="False"
+               IsOpen="{Binding IsChecked, ElementName=RelativeBoooksToggleButton}"
+               AllowsTransparency="True"
+               MaxHeight="250">
+            <ListBox x:Name="RelativeBooksList"
+                     SelectionChanged="RelativeBooksList_SelectionChanged"
+                     x:FieldModifier="public"/>
+        </Popup>
     </Grid>
 </UserControl>

@@ -1,18 +1,16 @@
-﻿using Microsoft.VisualBasic;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using Otzarnik.FsViewer;
 using Oztarnik.Favorites;
 using Oztarnik.FileViewer;
+using Oztarnik.FsViewer;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WebViewLib;
 
 namespace Oztarnik.Main
 {
@@ -130,7 +128,7 @@ namespace Oztarnik.Main
                 LoadFile(treeItem, "");
         }
 
-        void LoadFile(TreeItem treeItem, string scrollIndex)
+        public void LoadFile(TreeItem treeItem, string scrollIndex)
         {
             if (!Regex.IsMatch(treeItem.Extension, @"^\.(pdf|txt|html)$"))
                 return;
@@ -163,13 +161,13 @@ namespace Oztarnik.Main
                     Content = fileView,
                     IsSelected = true
                 });
+                
+                string groupId = FsSort.FileOrder.FirstOrDefault(id => treeItem.Name.Contains(id)) ?? string.Empty;
+                fileView.RelativeBooksList.ItemsSource = fsViewer.Root.EnumerateItems()
+                    .Where(item => item.Path != treeItem.Path &&  item.Name.Contains(groupId))
+                    .OrderBy(t => t.Name);
 
-                if (FsSearchBox.Text.EndsWith("+"))
-                {
-                    fileView.HeadersPopup.IsOpen = true;
-                    fileView.FocusHeadersTextBox();
-                }
-                else
+                if (!Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
                         FileViewerTabControl.Focus();
@@ -233,7 +231,11 @@ namespace Oztarnik.Main
             OpenFileDialog openFileDialog = new OpenFileDialog { Title = "בחר קובץ",  Filter = "*.html;*.txt;*.pdf|*.html;*.txt;*.pdf" };
 
             if (openFileDialog.ShowDialog() == true)
-                LoadFile(new TreeItem { Path = openFileDialog.FileName }, "");
+                LoadFile(new TreeItem 
+                {
+                    Path = openFileDialog.FileName, 
+                    Name = Path.GetFileNameWithoutExtension(openFileDialog.FileName) 
+                }, "");
         }
     }
 }

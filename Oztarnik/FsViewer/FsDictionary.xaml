@@ -87,8 +87,8 @@
                                              Command="{Binding NavigateCommand, RelativeSource={RelativeSource AncestorType=fs:HeadersListView}}"
                                              CommandParameter="{Binding}">
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Tags, Converter={StaticResource ListToStringConverter}}"
-                                                       Opacity="0.5"/>
+                                            <TextBlock x:Name="tagsBlock" Text="{Binding Tags, Converter={StaticResource ListToStringConverter}}"
+                                                       Opacity="0.5" Visibility="Collapsed"/>
                                             <TextBlock Text="{Binding Name}"/>
                                         </StackPanel>
                                     </Button>
@@ -100,6 +100,7 @@
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding Items}" Value="{x:Null}">
                                         <Setter TargetName="GoforwardButton" Property="Visibility" Value="Collapsed"/>
+                                        <Setter TargetName="tagsBlock" Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>

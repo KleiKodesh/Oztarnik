@@ -96,6 +96,12 @@ namespace Oztarnik.FileViewer
         public async Task<string> GetScrollIndex() => 
             await ExecuteScriptAsync("window.scrollY");
 
+        public async Task<string> GetCurrentHeaderIndex() =>
+           await ExecuteScriptAsync("currentHeaderIndex");
+
+        public async Task<string> GetCurrentHeaderValue() =>
+          await ExecuteScriptAsync("currentHeaderIndex");
+
         async void ToggleInline() =>
             await ExecuteScriptAsync($"toggleInline()");
 

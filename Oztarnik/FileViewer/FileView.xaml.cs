@@ -6,38 +6,53 @@ using System.Windows.Threading;
 using Oztarnik.Main;
 using Oztarnik.Favorites;
 using System.Threading.Tasks;
+using WpfLib.Helpers;
+using Oztarnik.FsViewer;
+using System.Linq;
 
 namespace Oztarnik.FileViewer
 {
     public partial class FileView : UserControl
     {
+        HeaderTreeItem _root;
         public TreeItem TreeItem {get; set;}
 
         public FileView(TreeItem treeItem, string scrollIndex)
         {
+            this.Loaded += FileView_Loaded;
             this.TreeItem = treeItem;
             InitializeComponent();
             LoadFile(treeItem, scrollIndex);
         }
 
+        private void FileView_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
+                FocusHeadersTextBox();
+        }
+
         public void FocusHeadersTextBox()
         {
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                HeadersPopup.Focus();
-                Keyboard.Focus(HeadersPopup);
-            }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+            HeadersPopup.IsOpen = true;
+
+            //Dispatcher.BeginInvoke(new Action(() =>
+            //{
+            //    HeadersPopup.Focus();
+            //    Keyboard.Focus(HeadersPopup);
+            //}), DispatcherPriority.ApplicationIdle);
+
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 NavigationTextBox.Focus();
                 Keyboard.Focus(NavigationTextBox);
-            }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+            }), DispatcherPriority.ApplicationIdle);
         }
 
 
         async void LoadFile(TreeItem treeItem, string scrollIndex)
         {
             var contentModel = await ContentParser.Parse(treeItem, true);
+            _root = contentModel.RootHeader;
             headersListBox.Root = contentModel.RootHeader;           
             viewer.LoadDocument(contentModel.Content, scrollIndex);
             NavigationTextBox.Focus();  
@@ -45,7 +60,7 @@ namespace Oztarnik.FileViewer
 
         private void headersListBox_NavigationRequested(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (e.OriginalSource is TreeItem item)
+            if (e.OriginalSource is HeaderTreeItem item)
                 viewer.NavigateToLine(item.LineIndex);
         }
 
@@ -93,11 +108,11 @@ namespace Oztarnik.FileViewer
 
         private void HeadersPopup_Opened(object sender, EventArgs e)
         {
-            //Dispatcher.BeginInvoke(new Action(() =>
-            //{
-            //    HeadersPopup.Focus();
-            //    Keyboard.Focus(HeadersPopup);
-            //}), DispatcherPriority.ApplicationIdle);         
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                NavigationTextBox.Focus();
+                Keyboard.Focus(NavigationTextBox);
+            }), DispatcherPriority.ApplicationIdle);
         }
 
         private void HeadersPopup_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -106,8 +121,15 @@ namespace Oztarnik.FileViewer
                 HeadersPopup.IsOpen = false;
         }
 
-
-
+        private void RelativeBooksList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (RelativeBooksList.SelectedItem is TreeItem treeItem)
+            {                
+                DependencyHelper.FindParent<OtzarnikView>(this).LoadFile(treeItem, "");
+                RelativeBooksPopup.IsOpen = false;
+                RelativeBooksList.SelectedIndex = -1;
+            }
+        }
 
         //private bool _waitingForMouseRelease = false;
 

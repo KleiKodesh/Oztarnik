@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -11,7 +10,7 @@ namespace Otzarnik.FsViewer
     {
         public TreeItem TreeItem { get; set; }
         public string Content { get; set; }
-        public TreeItem RootHeader {get; set;} = new TreeItem();
+        public HeaderTreeItem RootHeader {get; set;} = new HeaderTreeItem();
     }
     
     public static class ContentParser
@@ -21,8 +20,9 @@ namespace Otzarnik.FsViewer
             FileContentModel result = new FileContentModel { TreeItem = treeItem };
 
             var stb = new StringBuilder();
-            Stack<TreeItem> headerStack = new Stack<TreeItem>();            
+            Stack<HeaderTreeItem> headerStack = new Stack<HeaderTreeItem>();            
             int lineIndex = -1;
+            int headerIndex = 0;
 
             if (!File.Exists(treeItem.Path))
                 return Task.FromResult(result);
@@ -31,8 +31,20 @@ namespace Otzarnik.FsViewer
             {
                 lineIndex++;
 
-                if (getContent && !string.IsNullOrWhiteSpace(line.Trim())) 
-                    stb.AppendLine($"<line>{line}</line>");
+                if (getContent && !string.IsNullOrWhiteSpace(line.Trim()))
+                {
+                    if (Regex.IsMatch(line, $@"<h\d>(שורה|{Regex.Escape(treeItem.Name)})</h\d>"))
+                    {
+                        string updatedLine = Regex.Replace(line, @"<h\d>(.*?)</h\d>", "<span>$1</span>");
+                        stb.AppendLine($"<line style=\"display: none;\">{updatedLine}</line>");
+                        continue;
+                    }
+
+                    else
+                        stb.AppendLine($"<line>{line}</line>");
+                    
+                }
+                    
 
                 Match match = Regex.Match(line.TrimStart(), @"^<(h\d+|ot|header).*?>([^\n\r<]+?)</", RegexOptions.IgnoreCase);
                 if (match.Success)
@@ -41,11 +53,12 @@ namespace Otzarnik.FsViewer
 
                     if (header == "header")
                     {
-                        TreeItem node = new TreeItem
+                        HeaderTreeItem node = new HeaderTreeItem
                         {
                             Name = match.Groups[2].Value.Replace("{", "").Replace("}", ""),
                             LineIndex = lineIndex,
                             Level = 0,
+                            HeaderIndex = headerIndex++,
                         };
 
                         result.RootHeader.AddChild(node);
@@ -56,14 +69,15 @@ namespace Otzarnik.FsViewer
                     if (level < 0) 
                         continue;
 
-                    if (Regex.IsMatch(header, @"(?:הקדמה)|(?:פתיחה)"))
-                        level--;
+                    if (Regex.IsMatch(line, @"(?:הקדמה)|(?:פתיחה)"))
+                        level = 6;
 
-                    TreeItem current = new TreeItem
+                    HeaderTreeItem current = new HeaderTreeItem
                     {
                         Name = match.Groups[2].Value.Replace("{", "").Replace("}", ""),
                         Level = level,  
                         LineIndex = lineIndex,
+                        HeaderIndex = headerIndex++,
                     };
 
                     while (headerStack.Count > 0 && headerStack.Peek().Level >= current.Level)
@@ -72,8 +86,10 @@ namespace Otzarnik.FsViewer
                     var parent = headerStack.Count > 0 ? headerStack.Peek() : result.RootHeader;
                     parent.AddChild(current);
                     
-                    if (parent != result.RootHeader && parent.Level > 1)
-                        current.Tags.Add(parent.Name);
+                    //if (parent != result.RootHeader && 
+                    //    parent is HeaderTreeItem headerItem && 
+                    //    headerItem.Level > 1)
+                            current.Tags.Add(parent.Name);
 
                     headerStack.Push(current);
                 }

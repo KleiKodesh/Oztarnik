@@ -47,19 +47,24 @@ namespace Oztarnik.FileViewer
         }
 
        
-        public static string Js(string scrollIndex = "0")
+        public static string Js(string scrollIndex, string targetHeaderIndex = "")
         {
             return $@"<script>
-               window.addEventListener('DOMContentLoaded', () => {{
-             window.scrollTo(0, parseFloat({scrollIndex}));
+            window.addEventListener('DOMContentLoaded', () => {{
+                const scrollindex = parseFloat('{scrollIndex}');
+                if (!isNaN(scrollindex) && scrollindex >= 0) {{
+                    window.scrollTo(0, scrollindex);
+                }}
+
+                const headerindex = parseInt('{targetHeaderIndex}');
+                if (!isNaN(headerindex) && headerindex >= 0) {{
+                    scrollToHeader(headerindex);
+                }}
             }});
+
 
             let zoomLevel = 1;
             let isInline = false;
-        
-            window.addEventListener('mousedown', function(event) {{
-                console.log('Mouse down on window', event);
-            }});
 
             {KeyDownJs()}
             {LinesJs()}
