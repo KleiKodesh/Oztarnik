@@ -33,25 +33,25 @@ namespace Oztarnik.FsViewer
 
                 //if (!results.Any())
                 //{
-                //    results = items
-                //         .Where(item => searchTerms.All(term =>
-                //             item.Name.Split(' ')
-                //                 .Concat((item.Tags ?? new List<string>())
-                //                     .Where(tag => tag != null) // <-- filter out null tags
-                //                     .SelectMany(tag => tag.Split(' ')))
-                //                 .Contains(term, StringComparer.OrdinalIgnoreCase)))
-                //         .OrderByDescending(x => GetScore(x, searchTerms));
-                //}
+                IEnumerable<TreeItem> results = items
+                         .Where(item => searchTerms.All(term =>
+                             item.Name.Split(' ')
+                                 .Concat((item.Tags ?? new List<string>())
+                                     .Where(tag => tag != null) // <-- filter out null tags
+                                     .SelectMany(tag => tag.Split(' ')))
+                                 .Contains(term, StringComparer.OrdinalIgnoreCase)))
+                         .OrderByDescending(x => GetScore(x, searchTerms));
 
 
-                //if (!results.Any())
-                var results = items
-                        .Select(item => new { Item = item, Score = GetScore(item, searchTerms) })
-                        .Where(x => x.Score > 0)
-                        .OrderByDescending(x => x.Score)
-                        .Select(x => x.Item)
-                        .Take(100)
-                        .ToList();
+
+                if (!results.Any())
+                    results = items
+                    .Select(item => new { Item = item, Score = GetScore(item, searchTerms) })
+                    .Where(x => x.Score > 0)
+                    .OrderByDescending(x => x.Score)
+                    .Select(x => x.Item)
+                    .Take(100)
+                    .ToList();
 
                 return results;
             }
@@ -64,17 +64,16 @@ namespace Oztarnik.FsViewer
 
         private static int GetScore(TreeItem item, string[] terms)
         {
-            //int nameScore = terms.Sum(term =>
-            //{
-            //    if (item.Name == term) 
-            //        return 10;
-            //    if (item.Name.StartsWith(term)) return 6;
-            //    if (item.Name.Contains(term)) return 1;
-            //    return 0;
-            //});
+            int nameScore = terms.Sum(term =>
+            {
+                if (item.Name == term) return 1000;
+                if (item.Name.StartsWith(term)) return 600;
+                if (item.Name.Contains(term)) return 100;
+                return 0;
+            });
 
             string fullName = string.Join("", item.Tags ?? Enumerable.Empty<string>()) + " " + item.Name;
-            return /*nameScore + */GetOrderedMatchScore(fullName, terms);
+            return nameScore + GetOrderedMatchScore(fullName, terms);
         }
 
         private static int GetOrderedMatchScore(string text, string[] terms)
