@@ -24,16 +24,12 @@
                                     FocusVisualStyle="{x:Null}">
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal">
-                                            <!--<TextBlock x:Name="iconTextBlock"
-                                               Text="📁" 
-                                               Margin="0,0,5,0"/>-->
                                             <Path x:Name="icon"
-                                                  Data="M4 9V6.5c0-.3.1-.6.2-.9L5 4h5l1 2H21c.6 0 1 .4 1 1V9v9c0 1.1-.9 2-2 2H18M17.2 9H2.3c-.7 0-1.1.6-1 1.3l2.3 8.2c.2.9 1 1.5 1.9 1.5H19.7c.7 0 1.1-.6 1-1.3l-2.5-9c-.1-.4-.5-.7-1-.7Z"
+                                                  Data="M6.1,10L4,18V8H21A2,2 0 0,0 19,6H12L10,4H4A2,2 0 0,0 2,6V18A2,2 0 0,0 4,20H19C19.9,20 20.7,19.4 20.9,18.5L23.2,10H6.1M19,18H6L7.6,12H20.6L19,18Z"
                                                   Margin="5,0"
-                                                  Stretch="Uniform"
                                                   Height="10"
-                                                  Stroke="Black" StrokeThickness="1"
-                                                  VerticalAlignment="Center"/>
+                                                  Stretch="Uniform"
+                                                  Fill="#FF1F1F1F"/>
                                             <TextBlock Text="{Binding Name}"/>
                                             <TextBlock Text="{Binding Extension}" Opacity="0.5"/>
                                         </StackPanel>
@@ -44,8 +40,6 @@
                                 <ControlTemplate.Triggers>
                                     <DataTrigger Binding="{Binding IsFile}" Value="true">
                                         <Setter TargetName="icon" Property="Data" Value="M6,2A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6M6,4H13V9H18V20H6V4M8,12V14H16V12H8M8,16V18H13V16H8Z"/>
-                                        <Setter TargetName="icon" Property="Fill" Value="#FF1F1F1F"/>
-                                        <Setter TargetName="icon" Property="StrokeThickness" Value="0"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsKeyboardFocused, ElementName=fsButton}" Value="true">
                                         <Setter TargetName="fsButton" Property="Background" Value="{x:Static SystemColors.ControlLightBrush}"/>
