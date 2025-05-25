@@ -25,11 +25,11 @@
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal">
                                             <Path x:Name="icon"
-                                                  Data="M6.1,10L4,18V8H21A2,2 0 0,0 19,6H12L10,4H4A2,2 0 0,0 2,6V18A2,2 0 0,0 4,20H19C19.9,20 20.7,19.4 20.9,18.5L23.2,10H6.1M19,18H6L7.6,12H20.6L19,18Z"
+                                                  Data="M878.08 448H241.92l-96 384h636.16l96-384zM832 384v-64H485.76L357.504 192H128v448l57.92-231.744A32 32 0 0 1 216.96 384H832zm-24.96 512H96a32 32 0 0 1-32-32V160a32 32 0 0 1 32-32h287.872l128.384 128H864a32 32 0 0 1 32 32v96h23.04a32 32 0 0 1 31.04 39.744l-112 448A32 32 0 0 1 807.04 896z"
                                                   Margin="5,0"
                                                   Height="10"
-                                                  Stretch="Uniform"
-                                                  Fill="#FF1F1F1F"/>
+                                                  Fill="#FF1F1F1F"
+                                                  Stretch="Uniform"/>
                                             <TextBlock Text="{Binding Name}"/>
                                             <TextBlock Text="{Binding Extension}" Opacity="0.5"/>
                                         </StackPanel>
@@ -40,6 +40,8 @@
                                 <ControlTemplate.Triggers>
                                     <DataTrigger Binding="{Binding IsFile}" Value="true">
                                         <Setter TargetName="icon" Property="Data" Value="M6,2A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6M6,4H13V9H18V20H6V4M8,12V14H16V12H8M8,16V18H13V16H8Z"/>
+                                        <!--<Setter TargetName="icon" Property="Fill" Value="#FF1F1F1F"/>
+                                        <Setter TargetName="icon" Property="StrokeThickness" Value="0"/>-->
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsKeyboardFocused, ElementName=fsButton}" Value="true">
                                         <Setter TargetName="fsButton" Property="Background" Value="{x:Static SystemColors.ControlLightBrush}"/>
