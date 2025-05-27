@@ -172,12 +172,13 @@
              PreviewKeyDown="HeadersPopup_PreviewKeyDown"
              FocusManager.FocusedElement="{Binding ElementName=NavigationTextBox}"
              x:FieldModifier="public">
-            <Border BorderThickness="1" BorderBrush="LightGray" Background="{Binding Path=(helpers:ThemeHelper.BackGround)}">
+            <Border BorderThickness="1" BorderBrush="LightGray" 
+                    Background="{Binding Path=(helpers:ThemeHelper.BackGround)}">
                 <Grid x:Name="NavigationPanel"
                        ap:GridSetup.Rows="auto *"
                        MinWidth="162"
                        Visibility="{Binding IsChecked, ElementName=HeadersToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        PreviewKeyDown="NavigationPanel_PreviewKeyDown">
+                       PreviewKeyDown="NavigationPanel_PreviewKeyDown">
 
                     <Grid ap:GridSetup.Columns="* auto">
                         <Button x:Name="GoBackButton" Grid.Column="1"
@@ -210,9 +211,13 @@
                IsOpen="{Binding IsChecked, ElementName=RelativeBoooksToggleButton}"
                AllowsTransparency="True"
                MaxHeight="250">
-            <ListBox x:Name="RelativeBooksList"
+            <Border BorderThickness="1" BorderBrush="LightGray" 
+                    Background="{Binding Path=(helpers:ThemeHelper.BackGround)}">
+                <ListBox x:Name="RelativeBooksList"
+                         Background="Transparent"
                      SelectionChanged="RelativeBooksList_SelectionChanged"
                      x:FieldModifier="public"/>
+            </Border>
         </Popup>
     </Grid>
 </UserControl>
