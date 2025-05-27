@@ -7,7 +7,7 @@ using System.Text.Json;
 using WpfLib.Helpers;
 using WpfLib.ViewModels;
 
-namespace Oztarnik.Favorites
+namespace Oztarnik.FavoritesAndSettings
 {
     public class EnvironmentModel
     {

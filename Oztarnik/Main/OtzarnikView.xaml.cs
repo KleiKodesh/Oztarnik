@@ -1,6 +1,6 @@
 ﻿using Microsoft.Win32;
 using Otzarnik.FsViewer;
-using Oztarnik.Favorites;
+using Oztarnik.FavoritesAndSettings;
 using Oztarnik.FileViewer;
 using Oztarnik.FsViewer;
 using System;

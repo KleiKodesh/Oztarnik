@@ -4,11 +4,12 @@ using Otzarnik.FsViewer;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Oztarnik.Main;
-using Oztarnik.Favorites;
+using Oztarnik.FavoritesAndSettings;
 using System.Threading.Tasks;
 using WpfLib.Helpers;
 using Oztarnik.FsViewer;
 using System.Linq;
+using System.IO;
 
 namespace Oztarnik.FileViewer
 {

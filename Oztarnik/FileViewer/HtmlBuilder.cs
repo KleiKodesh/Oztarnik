@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic;
+using Oztarnik.FavoritesAndSettings;
 using Oztarnik.Main;
 using System;
 using System.Windows.Input;

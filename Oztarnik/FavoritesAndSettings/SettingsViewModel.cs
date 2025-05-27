@@ -11,7 +11,7 @@ using WpfLib;
 using WpfLib.Helpers;
 using WpfLib.ViewModels;
 
-namespace Oztarnik.Main
+namespace Oztarnik.FavoritesAndSettings
 {
     public static class Settings
     {

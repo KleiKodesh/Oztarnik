@@ -1,14 +1,12 @@
 ﻿using Microsoft.Web.WebView2.Core;
+using Oztarnik.FavoritesAndSettings;
 using Oztarnik.Main;
 using System;
 using System.ComponentModel;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
 using WebViewLib;
-using WpfLib;
 using WpfLib.Helpers;
 using WpfLib.ViewModels;
 

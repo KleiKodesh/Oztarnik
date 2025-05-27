@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualBasic;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -9,7 +8,7 @@ using System.Text.RegularExpressions;
 using WpfLib.Helpers;
 using WpfLib.ViewModels;
 
-namespace Oztarnik.Favorites
+namespace Oztarnik.FavoritesAndSettings
 {
     public class HistoryItem 
     {

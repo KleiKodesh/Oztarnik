@@ -117,8 +117,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Favorites\EnvironmentsViewModel.cs" />
-    <Compile Include="Favorites\HistoryViewModel.cs" />
+    <Compile Include="FavoritesAndSettings\EnvironmentsViewModel.cs" />
+    <Compile Include="FavoritesAndSettings\HistoryViewModel.cs" />
+    <Compile Include="FavoritesAndSettings\ShemHashemSetting.cs" />
     <Compile Include="FileViewer\ContentParser.cs" />
     <Compile Include="FileViewer\FileView.xaml.cs">
       <DependentUpon>FileView.xaml</DependentUpon>
@@ -131,16 +132,15 @@
     <Compile Include="FsViewer\FsListBox.cs" />
     <Compile Include="FsViewer\TreeHelper.cs" />
     <Compile Include="FsViewer\TreeItem.cs" />
-    <Compile Include="Favorites\BookmarksViewModel.cs" />
+    <Compile Include="FavoritesAndSettings\BookmarksViewModel.cs" />
     <Compile Include="Main\OtzarnikView.xaml.cs">
       <DependentUpon>OtzarnikView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Main\SettingsViewModel.cs" />
+    <Compile Include="FavoritesAndSettings\SettingsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Locale\heOz.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Oztarnik.Main"
              xmlns:ap="clr-namespace:WpfLib.AttachedProperties;assembly=WpfLib"
              xmlns:fs="clr-namespace:Otzarnik.FsViewer"
-             xmlns:fav="clr-namespace:Oztarnik.Favorites"
+             xmlns:fav="clr-namespace:Oztarnik.FavoritesAndSettings"
              xmlns:helpers="clr-namespace:WpfLib.Helpers;assembly=WpfLib"
              xmlns:controls="clr-namespace:WpfLib.Controls;assembly=WpfLib"
              mc:Ignorable="d" 
@@ -107,7 +107,7 @@
                     </Style>
                 </TabItem.Resources>
                 <TabItem.DataContext>
-                    <local:SettingsViewModel/>
+                    <fav:SettingsViewModel/>
                 </TabItem.DataContext>
 
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled"
@@ -213,8 +213,18 @@
 
                         <StackPanel Orientation="Horizontal" Margin="5">
                             <CheckBox Style="{StaticResource ToggleButtonCheckBox}" 
-                                     IsChecked="{Binding Path=(local:Settings.DoNotChangeDocumentColors)}"/>
+                                     IsChecked="{Binding Path=(fav:Settings.DoNotChangeDocumentColors)}"
+                                      Margin="5"/>
                             <TextBlock Text="לעולם אל תשנה את צבע המסמכים"/>
+                        </StackPanel>
+
+                        <Separator/>
+
+                        <StackPanel Orientation="Horizontal" Margin="5,0">
+                            <TextBlock Text="החלף ה' ב-ק' בתצוגת שם השם:"/>
+                            <CheckBox Style="{StaticResource ToggleButtonCheckBox}" 
+                                     IsChecked="{Binding Path=(fav:ShemHashemSetting.ReplaceShemHashemMode)}"
+                                      Margin="5"/>
                         </StackPanel>
 
                         <Separator/>

@@ -1,16 +1,13 @@
 ﻿using Microsoft.VisualBasic;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using WpfLib;
 using WpfLib.Helpers;
 using WpfLib.ViewModels;
 
-namespace Oztarnik.Favorites
+namespace Oztarnik.FavoritesAndSettings
 {
     public class BookMarkModel
     {

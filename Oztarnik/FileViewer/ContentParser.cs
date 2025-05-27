@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Oztarnik.FavoritesAndSettings;
+using Oztarnik.FileViewer;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -95,7 +97,10 @@ namespace Otzarnik.FsViewer
                 }
             }
 
-            result.Content = stb.ToString();
+            result.Content = stb.ToString()
+                .ReplaceShemHashem()
+                .ReplaceShemElokim();
+
             return Task.FromResult(result);
         }
 
