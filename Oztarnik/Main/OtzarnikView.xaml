@@ -79,20 +79,24 @@
             </TabItem>
 
             <TabItem x:Name="FileViewerTab">
-                <TabControl x:Name="FileViewerTabControl"
+                <Grid ap:GridSetup.Rows="auto *">
+                    <TabControl x:Name="FileViewerTabControl" Grid.Row="1"
                             Margin="0"
                             BorderThickness="0"
                             Padding="0"
                             SelectionChanged="FileViewerTabControl_SelectionChanged"
-                            PreviewKeyDown="FileViewerTabControl_PreviewKeyDown">
-                    <TabControl.Resources>
-                        <Style TargetType="TabItem" BasedOn="{StaticResource X_ButtonTabStyle}">
-                            <Setter Property="Padding" Value="0"/>
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="Margin" Value="0"/>
-                        </Style>
-                    </TabControl.Resources>
-                </TabControl>
+                            PreviewKeyDown="FileViewerTabControl_PreviewKeyDown"
+                            Style="{StaticResource ListStripTabControl}"
+                            Background="Transparent">
+                        <TabControl.Resources>
+                            <Style TargetType="TabItem" BasedOn="{StaticResource X_ButtonTabStyle}">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Margin" Value="0"/>
+                            </Style>
+                        </TabControl.Resources>
+                    </TabControl>
+                </Grid>
             </TabItem>
 
             <TabItem Name="SettingsTab">

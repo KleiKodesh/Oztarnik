@@ -37,8 +37,16 @@ namespace Oztarnik.FileViewer
         {
             if (e.PropertyName == nameof(Settings.DoNotChangeDocumentColors))
             {
-                await ExecuteScriptAsync($@"document.body.style.color = ""{ThemeHelper.ForeGround.ToRgbString()}"";");
-                await ExecuteScriptAsync($@" document.body.style.backgroundColor = ""{ThemeHelper.BackGround.ToRgbString()}"";");
+                if (Settings.DoNotChangeDocumentColors)
+                {
+                    await ExecuteScriptAsync($@"document.body.style.color = ""black"";");
+                    await ExecuteScriptAsync($@" document.body.style.backgroundColor = ""white"";");
+                }
+                else
+                {
+                    await ExecuteScriptAsync($@"document.body.style.color = ""{ThemeHelper.ForeGround.ToRgbString()}"";");
+                    await ExecuteScriptAsync($@" document.body.style.backgroundColor = ""{ThemeHelper.BackGround.ToRgbString()}"";");
+                }
             }
         }
 
