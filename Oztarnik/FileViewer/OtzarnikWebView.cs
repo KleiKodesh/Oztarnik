@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Input;
 using WebViewLib;
 using WpfLib;
+using WpfLib.Helpers;
 using WpfLib.ViewModels;
 
 namespace Oztarnik.FileViewer
@@ -28,7 +29,31 @@ namespace Oztarnik.FileViewer
         public OtzarnikWebView()
         {
             WebView.WebMessageReceived += WebView_WebMessageReceived;
+            ThemeHelper.StaticPropertyChanged += ThemeHelper_StaticPropertyChanged;
+            Settings.StaticPropertyChanged += Settings_StaticPropertyChanged;
         }
+
+        private async void Settings_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Settings.DoNotChangeDocumentColors))
+            {
+                await ExecuteScriptAsync($@"document.body.style.color = ""{ThemeHelper.ForeGround.ToRgbString()}"";");
+                await ExecuteScriptAsync($@" document.body.style.backgroundColor = ""{ThemeHelper.BackGround.ToRgbString()}"";");
+            }
+        }
+
+        private async void ThemeHelper_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (Settings.DoNotChangeDocumentColors)
+                return;
+
+            if (e.PropertyName == nameof(ThemeHelper.ForeGround))
+                await ExecuteScriptAsync($@" document.body.style.color = ""{ThemeHelper.ForeGround.ToRgbString()}"";");
+            else if (e.PropertyName == nameof(ThemeHelper.BackGround))
+                await ExecuteScriptAsync($@"document.body.style.backgroundColor = ""{ThemeHelper.BackGround.ToRgbString()}"";");
+        }
+
+
 
 
         //{ "action": "set", "target": "SomeProperty", "value": "SomeValue"}

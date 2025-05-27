@@ -6,10 +6,12 @@
              xmlns:local="clr-namespace:Oztarnik.FileViewer"
              xmlns:ap="clr-namespace:WpfLib.AttachedProperties;assembly=WpfLib"
              xmlns:conv="clr-namespace:WpfLib.Converters;assembly=WpfLib"
+             xmlns:helpers="clr-namespace:WpfLib.Helpers;assembly=WpfLib"
              mc:Ignorable="d" 
              xmlns:fs="clr-namespace:Otzarnik.FsViewer"
              FlowDirection="RightToLeft"
-             d:DesignHeight="450" d:DesignWidth="350">
+             d:DesignHeight="450" d:DesignWidth="350"
+             Background="Transparent">
     
     <UserControl.Resources>
         <ResourceDictionary>
@@ -63,7 +65,7 @@
                                Height="13"/>
                     </Button>
                     
-                    <ToggleButton x:Name="CantillationsToggeleButton" Template="{StaticResource ToggleNikkud}"
+                    <ToggleButton x:Name="CantillationsToggeleButton"
                     ToolTip="הצג / הסתר טעמים"
                     Style="{StaticResource FlatToggleButton}"
                     Command="{Binding ToggleCantillationsCommand, ElementName=viewer}">
@@ -71,7 +73,7 @@
                           Data="M17 .8a15 10.9 0 016-.1V-14.8H17V.8M0 21H6a10 10 90 0129 0h6A20 20 90 000 21"/>
                     </ToggleButton>
 
-                    <ToggleButton x:Name="NikudToggleButton" Template="{StaticResource ToggleNikkud}"
+                    <ToggleButton x:Name="NikudToggleButton"
                             ToolTip="הצג / הסתר ניקוד ופיסוק"
                             Style="{StaticResource FlatToggleButton}"
                             Command="{Binding ToggleNikudCommand, ElementName=viewer}">
@@ -98,15 +100,14 @@
                                 <ControlTemplate.Triggers>
                                     <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="True">
                                         <Setter TargetName="ToggleLinesButtonIcon" Property="Data" 
-                             Value="M3,3H21V5H3V3M3,7H21V9H3V7M3,11H21V13H3V11M3,15H21V17H3V15M3,19H21V21H3V19Z"/>
+                                                Value="M3,3H21V5H3V3M3,7H21V9H3V7M3,11H21V13H3V11M3,15H21V17H3V15M3,19H21V21H3V19Z"/>
                                     </DataTrigger>
                                     <Trigger Property="IsMouseOver" Value="true">
-                                        <Setter Property="Background" TargetName="border" Value="#FFC4E5F6"/>
-                                        <Setter Property="BorderBrush" TargetName="border" Value="#FF2C628B"/>
+                                        <Setter Property="Opacity" Value="0.6"/>
+                                        <Setter Property="Background" Value="{StaticResource Generic.MouseOver}"/>
                                     </Trigger>
                                     <Trigger Property="IsPressed" Value="true">
-                                        <Setter Property="Background" TargetName="border" Value="#FFC4E5F6"/>
-                                        <Setter Property="BorderBrush" TargetName="border" Value="#FF2C628B"/>
+                                        <Setter Property="Background" Value="{StaticResource Generic.Clicked}"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -162,16 +163,16 @@
 
 
         <Popup x:Name="HeadersPopup" 
-         Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
-         PlacementTarget="{Binding ElementName=Titlebar}"
-         StaysOpen="False"
-         IsOpen="{Binding IsChecked, ElementName=HeadersToggleButton}"
-         AllowsTransparency="True"
-         Opened="HeadersPopup_Opened"
-         PreviewKeyDown="HeadersPopup_PreviewKeyDown"
-         FocusManager.FocusedElement="{Binding ElementName=NavigationTextBox}"
-         x:FieldModifier="public">
-            <Border BorderThickness="1" BorderBrush="LightGray" Background="White">
+             Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
+             PlacementTarget="{Binding ElementName=Titlebar}"
+             StaysOpen="False"
+             IsOpen="{Binding IsChecked, ElementName=HeadersToggleButton}"
+             AllowsTransparency="True"
+             Opened="HeadersPopup_Opened"
+             PreviewKeyDown="HeadersPopup_PreviewKeyDown"
+             FocusManager.FocusedElement="{Binding ElementName=NavigationTextBox}"
+             x:FieldModifier="public">
+            <Border BorderThickness="1" BorderBrush="LightGray" Background="{Binding Path=(helpers:ThemeHelper.BackGround)}">
                 <Grid x:Name="NavigationPanel"
                        ap:GridSetup.Rows="auto *"
                        MinWidth="162"

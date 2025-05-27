@@ -2,13 +2,16 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:conv="clr-namespace:WpfLib.Converters;assembly=WpfLib"
                     xmlns:fs="clr-namespace:Otzarnik.FsViewer"
-                    xmlns:ap="clr-namespace:WpfLib.AttachedProperties;assembly=WpfLib">
+                    xmlns:ap="clr-namespace:WpfLib.AttachedProperties;assembly=WpfLib"
+                    xmlns:helpers="clr-namespace:WpfLib.Helpers;assembly=WpfLib">
 
     <conv:ListToStringConverter x:Key="ListToStringConverter"/>
 
     <Style TargetType="fs:FsListView">
+        <Setter Property="Background" Value="Transparent"/>
         <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True"/>
         <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling"/>
+        <Setter Property="Padding" Value="0,5"/>
         <Setter Property="ItemContainerStyle">
             <Setter.Value>
                 <Style TargetType="ListViewItem">
@@ -28,7 +31,7 @@
                                                   Data="M20,18H4V8H20M20,6H12L10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6Z"
                                                   Margin="5,0"
                                                   Height="12"
-                                                  Fill="#FF1F1F1F"
+                                                  Fill="{Binding Path=(helpers:ThemeHelper.ForeGround)}"
                                                   Stretch="Uniform"/>
                                             <TextBlock Text="{Binding Name}"/>
                                             <TextBlock Text="{Binding Extension}" Opacity="0.5"/>
@@ -60,8 +63,10 @@
     </Style>
 
     <Style TargetType="fs:HeadersListView">
+        <Setter Property="Background" Value="Transparent"/>
         <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True"/>
         <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling"/>
+        <Setter Property="Padding" Value="0,5"/>
         <Setter Property="ItemContainerStyle">
             <Setter.Value>
                 <Style TargetType="ListViewItem">
@@ -76,7 +81,7 @@
                                              CommandParameter="{Binding}"
                                              HorizontalContentAlignment="Center"
                                              VerticalContentAlignment="Center">
-                                        <Path Fill="Black" 
+                                        <Path Fill="{Binding Path=(helpers:ThemeHelper.ForeGround)}" 
                                               Stretch="Fill"
                                               Data="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/>
                                     </Button>

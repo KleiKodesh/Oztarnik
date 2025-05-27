@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualBasic;
+using Oztarnik.Main;
 using System;
 using System.Windows.Input;
+using WpfLib.Helpers;
 
 namespace Oztarnik.FileViewer
 {
@@ -28,13 +30,18 @@ namespace Oztarnik.FileViewer
 
         public static string css()
         {
+            string color = Settings.DoNotChangeDocumentColors ? "" : ThemeHelper.ForeGround.ToRgbString();
+            string backGround = Settings.DoNotChangeDocumentColors ? "" : ThemeHelper.BackGround.ToRgbString();
+
             string fontFamily = Interaction.GetSetting(AppDomain.CurrentDomain.BaseDirectory, "Settings", "DeafultFont", "Times New Roman");
             string fontSize = Interaction.GetSetting(AppDomain.CurrentDomain.BaseDirectory, "Settings", "DefaultFontSize", "16");
+
             return $@"
-                body {{line-height: 1.3; text-align: justify; font-family: '{fontFamily}'; font-size: {fontSize}px;}}
+                body {{line-height: 1.3; text-align: justify; font-family: '{fontFamily}'; font-size: {fontSize}px; 
+                       color:{color}; background-color:{backGround};}}
                 line {{ display: block; }}
                 header {{ margin-top: 10px; margin-bottom: 10px;  color:#000066; }}
-                h1,h2,h3,h4,h5,h6 {{  color:#000066;}}
+                h1,h2,h3,h4,h5,h6 {{ opacity: 0.75; }}
                 ot {{ color:#000066; }}
                 h1 {{ font-size: 200%; /* 32px */ }}  
                 h2 {{ font-size: 175%; /* 28px */ }}
