@@ -2,6 +2,7 @@
 using Oztarnik.FavoritesAndSettings;
 using Oztarnik.Main;
 using System;
+using System.Drawing.Printing;
 using System.Windows.Input;
 using WpfLib.Helpers;
 
@@ -50,7 +51,8 @@ namespace Oztarnik.FileViewer
                 h4 {{ font-size: 125%; /* 20px */ }}
                 h5 {{ font-size: 112.5%; /* 18px */ }}
                 h6 {{font-size: 100%; /* 16px */  }}
-                #title-bar {{ position: fixed; left: 0; top: 0; font-size:70%; opacity:0.8; background: #333; color: white; writing-mode: vertical-rl; text-orientation: mixed; padding: 3px 0; text-align: center; transform: rotate(180deg); }}
+                #title-bar {{position: fixed; left: 0; top: 0; width: 100%; opacity: 0.9; background: #333; color: white; font-size: 12px; text-align: center;}} 
+                #content {{padding-top: 10px;}}               
             ";
         }
 

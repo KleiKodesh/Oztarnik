@@ -11,7 +11,9 @@
              xmlns:fs="clr-namespace:Otzarnik.FsViewer"
              FlowDirection="RightToLeft"
              d:DesignHeight="450" d:DesignWidth="350"
-             Background="Transparent">
+             Background="Transparent"
+             Margin="0"
+             BorderThickness="0">
     
     <UserControl.Resources>
         <ResourceDictionary>
