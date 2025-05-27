@@ -28,11 +28,18 @@
         <Grid x:Name="Titlebar" ap:GridSetup.Columns="* auto">
             <StackPanel Orientation="Horizontal">
                 <UniformGrid Rows="1" Margin="3">
+                    <UniformGrid.Resources>
+                        <Style TargetType="Path" BasedOn="{StaticResource {x:Type Path}}">
+                            <d:Setter Property="Fill" Value="Black"/>
+                            <Setter Property="MaxHeight" Value="12"/>
+                            <Setter Property="MaxWidth" Value="12"/>
+                        </Style>
+                    </UniformGrid.Resources>
                     
                     <ToggleButton x:Name="HeadersToggleButton"
                                   x:FieldModifier="public"
-                                  ToolTip="ניווט (כותרות)">
-                        <Path Height="10" Data="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"/>
+                                  ToolTip="ניווט בכותרות המסמך">
+                        <Path Data="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"/>
                         <ToggleButton.Style>
                             <Style TargetType="ToggleButton" BasedOn="{StaticResource FlatToggleButton}">
                                 <Style.Triggers>
@@ -46,7 +53,7 @@
 
                     <ToggleButton x:Name="RelativeBoooksToggleButton"
                                   ToolTip="ספרים קרובים">
-                        <Path Height="13" Data="M9 3V18H12V3H9M12 5L16 18L19 17L15 4L12 5M5 5V18H8V5H5M3 19V21H21V19H3Z"/>
+                        <Path  Data="M9 3V18H12V3H9M12 5L16 18L19 17L15 4L12 5M5 5V18H8V5H5M3 19V21H21V19H3Z"/>
                         <ToggleButton.Style>
                             <Style TargetType="ToggleButton" BasedOn="{StaticResource FlatToggleButton}">
                                 <Style.Triggers>
@@ -61,25 +68,24 @@
                     <Button x:Name="BookmarkButton" ToolTip="צור סימניה"
                             Style="{StaticResource FlatButton}"
                             Click="BookmarkButton_Click">
-                        <Path   Data="M17,18V5H7V18L12,15.82L17,18M17,3A2,2 0 0,1 19,5V21L12,18L5,21V5C5,3.89 5.9,3 7,3H17M11,7H13V9H15V11H13V13H11V11H9V9H11V7Z" 
-                               Height="13"/>
+                        <Path  Data="M17,18V5H7V18L12,15.82L17,18M17,3A2,2 0 0,1 19,5V21L12,18L5,21V5C5,3.89 5.9,3 7,3H17M11,7H13V9H15V11H13V13H11V11H9V9H11V7Z" 
+                               />
                     </Button>
                     
                     <ToggleButton x:Name="CantillationsToggeleButton"
                     ToolTip="הצג / הסתר טעמים"
                     Style="{StaticResource FlatToggleButton}"
                     Command="{Binding ToggleCantillationsCommand, ElementName=viewer}">
-                        <Path Height="10" Width="10" 
-                          Data="M17 .8a15 10.9 0 016-.1V-14.8H17V.8M0 21H6a10 10 90 0129 0h6A20 20 90 000 21"/>
+                        <Path Data="M17 .8a15 10.9 0 016-.1V-14.8H17V.8M0 21H6a10 10 90 0129 0h6A20 20 90 000 21"/>
                     </ToggleButton>
 
                     <ToggleButton x:Name="NikudToggleButton"
                             ToolTip="הצג / הסתר ניקוד ופיסוק"
                             Style="{StaticResource FlatToggleButton}"
                             Command="{Binding ToggleNikudCommand, ElementName=viewer}">
-                        <Path Height="8" Width="15" FlowDirection="RightToLeft"
+                        <Path FlowDirection="RightToLeft"
                           Data="M1226 681C1261 704 1330 706 1370 685 1418 660 1440 619 1440 556 1440 504 1437 497 1400 460S1356 420 1304 420C1213 420 1160 473 1160 562 1160 611 1184 653 1226 681ZM270 1055V1140H590 910V1055 970H779 648L652 863C655 759 657 753 693 693 736 622 742 563 711 517 635 402 460 451 458 589 458 617 469 650 499 704 541 779 541 779 538 872L535 965 403 968 270 971V1055ZM1217 1139C1254 1166 1334 1167 1374 1141 1465 1081 1463 943 1370 895 1330 874 1261 876 1226 899 1141 955 1136 1078 1217 1139Z" 
-                              RenderTransformOrigin="0.5,0.5" Stretch="Fill">
+                              RenderTransformOrigin="0.5,0.5">
                             <Path.RenderTransform>
                                 <RotateTransform Angle="180.327" />
                             </Path.RenderTransform>
@@ -88,13 +94,12 @@
 
                     <ToggleButton x:Name="BlockInlineToggleButton" ToolTip="תצוגה ברצף / בשורות נפרדות"
                                 Background="Transparent"
-                                BorderThickness="0"
                                 Command="{Binding ToggleInlineCommand, ElementName=viewer}">
                         <ToggleButton.Template>
                             <ControlTemplate TargetType="ToggleButton">
                                 <Border x:Name="border" Background="{TemplateBinding Background}">
                                     <Path x:Name="ToggleLinesButtonIcon" Style="{StaticResource {x:Type Path}}"
-                                          Height="10" Width="10"
+                                          Height="10"
                                           Data="M3,3H21V5H3V3M9,7H21V9H9V7M3,11H21V13H3V11M9,15H21V17H9V15M3,19H21V21H3V19Z"/>
                                 </Border>
                                 <ControlTemplate.Triggers>
@@ -104,10 +109,10 @@
                                     </DataTrigger>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter Property="Opacity" Value="0.6"/>
-                                        <Setter Property="Background" Value="{StaticResource Generic.MouseOver}"/>
+                                        <Setter TargetName="border" Property="Background" Value="{StaticResource Generic.MouseOver}"/>
                                     </Trigger>
                                     <Trigger Property="IsPressed" Value="true">
-                                        <Setter Property="Background" Value="{StaticResource Generic.Clicked}"/>
+                                        <Setter TargetName="border" Property="Background" Value="{StaticResource Generic.Clicked}"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -117,29 +122,31 @@
                     <RepeatButton Style="{StaticResource FlatRepeatButton}"
                             ToolTip="הגדל"
                             Command="{Binding ZoomInCommand, ElementName=viewer}">
-                        <Path Data="M15.5,14L20.5,19L19,20.5L14,15.5V14.71L13.73,14.43C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.43,13.73L14.71,14H15.5M9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14M12,10H10V12H9V10H7V9H9V7H10V9H12V10Z" 
-                              Height="14" Width="14"/>
+                        <Path Data="M15.5,14L20.5,19L19,20.5L14,15.5V14.71L13.73,14.43C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.43,13.73L14.71,14H15.5M9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14M12,10H10V12H9V10H7V9H9V7H10V9H12V10Z" />
                     </RepeatButton>
 
                     <RepeatButton Style="{StaticResource FlatRepeatButton}"
                             ToolTip="הקטן"
                             Command="{Binding ZoomOutCommand, ElementName=viewer}">
-                        <Path Data="M15.5,14H14.71L14.43,13.73C15.41,12.59 16,11.11 16,9.5A6.5,6.5 0 0,0 9.5,3A6.5,6.5 0 0,0 3,9.5A6.5,6.5 0 0,0 9.5,16C11.11,16 12.59,15.41 13.73,14.43L14,14.71V15.5L19,20.5L20.5,19L15.5,14M9.5,14C7,14 5,12 5,9.5C5,7 7,5 9.5,5C12,5 14,7 14,9.5C14,12 12,14 9.5,14M7,9H12V10H7V9Z"
-                              Height="14" Width="14"/>
+                        <Path Data="M15.5,14H14.71L14.43,13.73C15.41,12.59 16,11.11 16,9.5A6.5,6.5 0 0,0 9.5,3A6.5,6.5 0 0,0 3,9.5A6.5,6.5 0 0,0 9.5,16C11.11,16 12.59,15.41 13.73,14.43L14,14.71V15.5L19,20.5L20.5,19L15.5,14M9.5,14C7,14 5,12 5,9.5C5,7 7,5 9.5,5C12,5 14,7 14,9.5C14,12 12,14 9.5,14M7,9H12V10H7V9Z"/>
                     </RepeatButton>
 
                     <RepeatButton Style="{StaticResource FlatRepeatButton}"
                                   ToolTip="הקטע הקודם"
                             Command="{Binding ScrollToPreviousHeaderCommand, ElementName=viewer}">
                         <Path Data="M256 120.8 306.4 64 768 512 306.4 960 256 903.2 659.1 512Z"
-                              Height="10" Width="10"/>
+                              Height="10"
+                              Stroke="{Binding Path=(helpers:ThemeHelper.ForeGround)}"
+                              StrokeThickness="0.5"/>
                     </RepeatButton>
 
                     <RepeatButton Style="{StaticResource FlatRepeatButton}"
                                   ToolTip="הקטע הבא"
                             Command="{Binding ScrollToNextHeaderCommand, ElementName=viewer}">
                         <Path Data="M768 903.2 717.6 960 256 512 717.6 64 768 120.8 364.9 512Z"
-                              Height="10" Width="10"/>
+                              Height="10"
+                              Stroke="{Binding Path=(helpers:ThemeHelper.ForeGround)}"
+                              StrokeThickness="0.5"/>
                     </RepeatButton>
                 </UniformGrid>
 

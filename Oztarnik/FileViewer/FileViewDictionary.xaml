@@ -2,9 +2,9 @@
                     xmlns:local="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:converters="clr-namespace:WpfLib.Converters;assembly=WpfLib">
-
     <SolidColorBrush x:Key="Light.Red.Brush" Color="Red" Opacity="0.15"/>
     <SolidColorBrush x:Key="Light.Blue.Brush" Color="#FFC4E5F6"/>
+    
     <ControlTemplate TargetType="ToggleButton" x:Key="ToggleNikkud">
         <Border x:Name="border">
             <ContentPresenter  HorizontalAlignment="Center" VerticalAlignment="Center"/>
