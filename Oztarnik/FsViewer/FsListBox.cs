@@ -109,28 +109,33 @@ namespace Otzarnik.FsViewer
         protected void OnNavigationRequested(TreeItem selectedItem) =>
             RaiseEvent(new RoutedEventArgs(NavigationRequestedEvent, selectedItem));
 
-        private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private async static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is FsListView viewer && e.NewValue is string newValue &&
                 Directory.Exists(newValue))
-                    viewer.Root = TreeHelper.BuildTree(null, newValue, newValue);
+                    await viewer.Dispatcher.InvokeAsync(() =>
+                        viewer.Root = TreeHelper.BuildTree(null, newValue, newValue), 
+                            DispatcherPriority.ApplicationIdle);
         }
 
-        private  static void OnSourceCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private async static void OnSourceCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is FsListView viewer && e.NewValue is IEnumerable<string> sources)
             {
-                viewer.Root = new TreeItem { Name = "Root" };
-
-                foreach (var source in sources)
+                await viewer.Dispatcher.InvokeAsync(() =>
                 {
-                    if (Directory.Exists(source))
+                    viewer.Root = new TreeItem { Name = "Root" };
+
+                    foreach (var source in sources)
                     {
-                        var tree = TreeHelper.BuildTree(null, source, source);
-                        if (tree != null)
-                            viewer.Root.AddChild(tree);
+                        if (Directory.Exists(source))
+                        {
+                            var tree = TreeHelper.BuildTree(null, source, source);
+                            if (tree != null)
+                                viewer.Root.AddChild(tree);
+                        }
                     }
-                }
+                }, DispatcherPriority.ApplicationIdle);
             }
         }
 
