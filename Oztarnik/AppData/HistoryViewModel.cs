@@ -1,14 +1,14 @@
-﻿using Microsoft.VisualBasic;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using WpfLib.Helpers;
 using WpfLib.ViewModels;
 
-namespace Oztarnik.FavoritesAndSettings
+namespace Oztarnik.AppData
 {
     public class HistoryItem 
     {
@@ -26,37 +26,23 @@ namespace Oztarnik.FavoritesAndSettings
         private static void OnStaticPropertyChanged(string propertyName) =>
             StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
 
-        private static string AppName => AppDomain.CurrentDomain.BaseDirectory;
-        private const string Section = "Favorites";
-        private const string Key = "History";
+        static string DataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AppData");
+        static string JsonPath = Path.Combine(DataPath, "History.json");
 
-        static ObservableCollection<HistoryItem> _historyItems;
+        static ObservableCollection<HistoryItem> _historyItems = File.Exists(JsonPath) ?
+            JsonSerializer.Deserialize<ObservableCollection<HistoryItem>> (File.ReadAllText(JsonPath)) :
+                    new ObservableCollection<HistoryItem>();
 
         public static ObservableCollection<HistoryItem> HistoryItems
         {
-            get
-            {
-                if (_historyItems == null)
-                {
-                    string json = Interaction.GetSetting(AppName, Section, Key);
-                    if (!string.IsNullOrEmpty(json))
-                        _historyItems = JsonSerializer.Deserialize<ObservableCollection<HistoryItem>>(json);
-                    else
-                        _historyItems = new ObservableCollection<HistoryItem>();
-                }
-
-                return _historyItems;
-            }
+            get => _historyItems;
             set
             {
-                if (value != _historyItems)
-                {
-                    _historyItems = value;
-                    OnStaticPropertyChanged(nameof(HistoryItems));
-                }
+                if (_historyItems == value) return;
+                _historyItems = value;
+                OnStaticPropertyChanged(nameof(HistoryItems));
             }
         }
-
         public static RelayCommand DeleteAllCommand =>
             new RelayCommand(DeleteAll);
         public static RelayCommand<HistoryItem> RemoveHistoryItemCommand =>
@@ -67,7 +53,7 @@ namespace Oztarnik.FavoritesAndSettings
             var twoWeeksAgo = DateTime.Now.AddDays(-14);
             HistoryItems.RemoveAll(b => b.Path == path || b.Date < twoWeeksAgo);
 
-            string cleanedName = Regex.Replace(System.IO.Path.GetFileName(path), @"^\d+_", "");
+            string cleanedName = Regex.Replace(Path.GetFileName(path), @"^\d+_", "");
 
             var newItem = new HistoryItem
             {
@@ -79,27 +65,29 @@ namespace Oztarnik.FavoritesAndSettings
 
             HistoryItems.Add(newItem);
 
-            SaveHistoryItems();
+            Commit();
         }
 
         public static void RemoveHistoryItem(string path)
         {
             var twoWeeksAgo = DateTime.Now.AddDays(-14);
             HistoryItems.RemoveAll(b => b.Path == path || b.Date < twoWeeksAgo);
-            SaveHistoryItems();
+            Commit();
         }
 
         private static void DeleteAll()
         {
             HistoryItems = new ObservableCollection<HistoryItem>();
-            SaveHistoryItems();
+            Commit();
         }
 
-        private static void SaveHistoryItems()
+        private static void Commit()
         {
             HistoryItems = new ObservableCollection<HistoryItem>(HistoryItems.OrderByDescending(item => item.Date));
             string json = JsonSerializer.Serialize(HistoryItems);
-            Interaction.SaveSetting(AppName, Section, Key, json);
+            if(!Directory.Exists(DataPath)) Directory.CreateDirectory(DataPath);
+            File.WriteAllText(JsonPath, json);
+            OnStaticPropertyChanged(nameof(HistoryItems));
         }
     }
 }

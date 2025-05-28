@@ -1,9 +1,9 @@
-﻿<Window x:Class="OtzarnikDesktop.MainWindow"
+﻿<Window x:Class="Otzarnik.FileViewer.FileViewerWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:OtzarnikDesktop"
+        xmlns:local="clr-namespace:Otzarnik.FileViewer"
         xmlns:oz="clr-namespace:Oztarnik.Main;assembly=Oztarnik"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="350"
@@ -19,7 +19,4 @@
     <Window.Style>
         <Style TargetType="Window" BasedOn="{StaticResource ThemedWindowStyle}"/>
     </Window.Style>
-    <Grid>
-        <oz:OtzarnikView/>
-    </Grid>
 </Window>

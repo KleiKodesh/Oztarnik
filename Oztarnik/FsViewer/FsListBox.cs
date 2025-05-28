@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -110,30 +109,28 @@ namespace Otzarnik.FsViewer
         protected void OnNavigationRequested(TreeItem selectedItem) =>
             RaiseEvent(new RoutedEventArgs(NavigationRequestedEvent, selectedItem));
 
-        private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private async static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is FsListView viewer && e.NewValue is string newValue &&
                 Directory.Exists(newValue))
-                    viewer.Root = TreeHelper.BuildTree(null, newValue, newValue);
+                    viewer.Root = await Task.Run(() => TreeHelper.BuildTree(null, newValue, newValue));
         }
 
-        private static void OnSourceCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private async static void OnSourceCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is FsListView viewer && e.NewValue is IEnumerable<string> sources)
             {
-                var root = new TreeItem { Name = "Root" };
+                viewer.Root = new TreeItem { Name = "Root" };
 
                 foreach (var source in sources)
                 {
                     if (Directory.Exists(source))
                     {
-                        var tree = TreeHelper.BuildTree(null, source, source);
+                        var tree = await Task.Run(() => TreeHelper.BuildTree(null, source, source));
                         if (tree != null)
-                            root.AddChild(tree);
+                            viewer.Root.AddChild(tree);
                     }
                 }
-
-                viewer.Root = root;
             }
         }
 

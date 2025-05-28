@@ -1,11 +1,15 @@
 ﻿using Microsoft.Web.WebView2.Core;
-using Oztarnik.FavoritesAndSettings;
+using Oztarnik.AppData;
 using Oztarnik.Main;
 using System;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using WebViewLib;
 using WpfLib.Helpers;
 using WpfLib.ViewModels;
@@ -26,9 +30,29 @@ namespace Oztarnik.FileViewer
 
         public OtzarnikWebView()
         {
+            WebView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
             WebView.WebMessageReceived += WebView_WebMessageReceived;
             ThemeHelper.StaticPropertyChanged += ThemeHelper_StaticPropertyChanged;
             Settings.StaticPropertyChanged += Settings_StaticPropertyChanged;
+        }
+
+        private void WebView_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
+        {
+            WebView.CoreWebView2.ContextMenuRequested += CoreWebView2_ContextMenuRequested;
+        }
+
+        private void CoreWebView2_ContextMenuRequested(object sender, CoreWebView2ContextMenuRequestedEventArgs e)
+        {
+            var items = e.MenuItems.ToList();
+
+            for (int i = items.Count - 1; i >= 0; i--)
+            {
+                var item = items[i];
+                if (Regex.IsMatch(item.Label, @"(refresh)|(reload)|(רי?ענו?ן)", RegexOptions.IgnoreCase)) // Adjust label based on your locale
+                {
+                    e.MenuItems.RemoveAt(i);
+                }
+            }
         }
 
         private async void Settings_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -113,16 +137,16 @@ namespace Oztarnik.FileViewer
         }
 
         public void ShowFavorites() =>
-          WpfLib.Helpers.DependencyHelper.FindParent<OtzarnikView>(this)?.ShowFavorites();
+          DependencyHelper.FindParent<OtzarnikView>(this)?.ShowFavorites();
 
         public void OpenFile() =>
-            WpfLib.Helpers.DependencyHelper.FindParent<OtzarnikView>(this)?.OpenFile();
+            DependencyHelper.FindParent<OtzarnikView>(this)?.OpenFile();
 
         public void CloseCurrentTab() =>
-             WpfLib.Helpers.DependencyHelper.FindParent<OtzarnikView>(this)?.CloseCurrentTab();
+             DependencyHelper.FindParent<OtzarnikView>(this)?.CloseCurrentTab();
 
         public void CloseAllTabs() =>
-            WpfLib.Helpers.DependencyHelper.FindParent<OtzarnikView>(this)?.CloseAllTabs();
+            DependencyHelper.FindParent<OtzarnikView>(this)?.CloseAllTabs();
 
         public async Task<string> GetScrollIndex() => 
             await ExecuteScriptAsync("window.scrollY");

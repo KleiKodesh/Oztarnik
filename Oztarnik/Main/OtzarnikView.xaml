@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Oztarnik.Main"
              xmlns:ap="clr-namespace:WpfLib.AttachedProperties;assembly=WpfLib"
              xmlns:fs="clr-namespace:Otzarnik.FsViewer"
-             xmlns:fav="clr-namespace:Oztarnik.FavoritesAndSettings"
+             xmlns:appdata="clr-namespace:Oztarnik.AppData"
              xmlns:helpers="clr-namespace:WpfLib.Helpers;assembly=WpfLib"
              xmlns:controls="clr-namespace:WpfLib.Controls;assembly=WpfLib"
              mc:Ignorable="d" 
@@ -74,7 +74,7 @@
                                    BorderThickness="0,1,0,0"
                                    FocusVisualStyle="{x:Null}"
                                    NavigationRequested="fsViewer_NavigationRequested"
-                                   SourceCollection="{Binding DataContext.SourceFolders, ElementName=SettingsTab}"/>
+                                   Source="{Binding Path=(appdata:Settings.OtzariaFolder)}"/>
                 </Grid>
             </TabItem>
 
@@ -106,9 +106,6 @@
                         <Setter Property="Height" Value="0.5"/>
                     </Style>
                 </TabItem.Resources>
-                <TabItem.DataContext>
-                    <fav:SettingsViewModel/>
-                </TabItem.DataContext>
 
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                               VerticalScrollBarVisibility="Auto"
@@ -120,35 +117,35 @@
                             <TextBlock Text="הגדרות" FontSize="23"/>
                         </StackPanel>
 
-                        <!--<Separator Margin="0,5,0,10"/>-->
+                        <Separator Margin="0,5,0,10"/>
 
                         <!--<Button x:Name="OtzarnikFolder"
                                 
                                 HorizontalContentAlignment="Left"
-                                Command="{Binding SetFolderCommand}"
+                                Command="{Binding Path=(appdata:Settings.SetFolderCommand)}"
                                 CommandParameter="OtzarnikFolder">
                             <Grid ap:GridSetup.Columns="auto 3 *">
                                 <Path Stretch="Uniform" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z"/>
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="מיקום ספריית אוצרניק"/>
-                                    <TextBlock Text="{Binding OtzarnikFolder}" 
+                                    <TextBlock Text="{Binding Path=(appdata:Settings.OtzarnikFolder)}" 
                                                FlowDirection="LeftToRight"
                                                Opacity="0.5"/>
                                 </StackPanel>
                             </Grid>
-                        </Button>-->
+                        </Button>
 
-                        <Separator/>
+                        <Separator/>-->
 
                         <Button x:Name="OtzariaFolder" Margin="0,5"                                
                                 HorizontalContentAlignment="Left"
-                                Command="{Binding SetFolderCommand}"
+                                Command="{Binding Path=(appdata:Settings.SetFolderCommand)}"
                                 CommandParameter="OtzariaFolder">
                             <Grid ap:GridSetup.Columns="auto 3 *">
                                 <Path Stretch="Uniform" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z"/>
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="מיקום ספריית אוצריא"/>
-                                    <TextBlock Text="{Binding OtzariaFolder}" 
+                                    <TextBlock Text="{Binding Path=(appdata:Settings.OtzariaFolder)}" 
                                        FlowDirection="LeftToRight"
                                        Opacity="0.5"/>
                                 </StackPanel>
@@ -163,15 +160,15 @@
                             <Path Stretch="Uniform" Data="M17,8H20V20H21V21H17V20H18V17H14L12.5,20H14V21H10V20H11L17,8M18,9L14.5,16H18V9M5,3H10C11.11,3 12,3.89 12,5V16H9V11H6V16H3V5C3,3.89 3.89,3 5,3M6,5V9H9V5H6Z"/>
                             <TextBlock Text="גופן ברירת מחדל בספרים"
                                        Grid.Column="2"
-                                           FontFamily="{Binding DefaultFont}"
+                                           FontFamily="{Binding Path=(appdata:Settings.DefaultFont)}"
                                            VerticalAlignment="Center"/>
 
                             <ComboBox Grid.Column="4"
-                                      Margin="5"
-                                      Text="{Binding DefaultFont, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                                      ItemsSource="{Binding Fonts}"
+                                      Margin="5,5,7,5"
+                                      Text="{Binding Path=(appdata:Settings.DefaultFont), UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                                      ItemsSource="{Binding Path=(appdata:Settings.Fonts)}"
                                       IsEditable="True"
-                                      FontFamily="{Binding DefaultFont}"
+                                      FontFamily="{Binding Path=(appdata:Settings.DefaultFont)}"
                                       BorderThickness="0.5"
                                       VerticalAlignment="Center">
                                 <ComboBox.ItemsPanel>
@@ -200,7 +197,7 @@
                         <Slider x:Name="FontSlider" 
                                 Minimum="12" Maximum="72" 
                                 Margin="5"
-                                Value="{Binding DefaultFontSize}" SmallChange="1" AutomationProperties.ItemType="int"/>
+                                Value="{Binding Path=(appdata:Settings.DefaultFontSize)}" SmallChange="1" AutomationProperties.ItemType="int"/>
 
                         <Separator/>
 
@@ -213,7 +210,7 @@
 
                         <StackPanel Orientation="Horizontal" Margin="5">
                             <CheckBox Style="{StaticResource ToggleButtonCheckBox}" 
-                                     IsChecked="{Binding Path=(fav:Settings.DoNotChangeDocumentColors)}"
+                                     IsChecked="{Binding Path=(appdata:Settings.DoNotChangeDocumentColors)}"
                                       Margin="5"/>
                             <TextBlock Text="לעולם אל תשנה את צבע המסמכים"/>
                         </StackPanel>
@@ -223,7 +220,7 @@
                         <StackPanel Orientation="Horizontal" Margin="5,0">
                             <TextBlock Text="החלף ה' ב-ק' בתצוגת שם השם:"/>
                             <CheckBox Style="{StaticResource ToggleButtonCheckBox}" 
-                                     IsChecked="{Binding Path=(fav:ShemHashemSetting.ReplaceShemHashemMode)}"
+                                     IsChecked="{Binding Path=(appdata:ShemHashemSetting.ReplaceShemHashemMode)}"
                                       Margin="5"/>
                         </StackPanel>
 
@@ -290,7 +287,7 @@
                                  IsSelected="{Binding IsChecked, ElementName=HistoryToggle}">
                             <Grid>
                                 <ItemsControl x:Name="HistoryListBox"
-                                        ItemsSource="{Binding Path=(fav:HistoryViewModel.HistoryItems)}"
+                                        ItemsSource="{Binding Path=(appdata:HistoryViewModel.HistoryItems)}"
                                         Padding="0,0,0,25">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
@@ -305,7 +302,7 @@
                                                     </StackPanel>
                                                 </Button>
                                                 <Button Grid.Column="1"
-                                                     Command="{Binding Path=(fav:HistoryViewModel.RemoveHistoryItemCommand)}"
+                                                     Command="{Binding Path=(appdata:HistoryViewModel.RemoveHistoryItemCommand)}"
                                                      CommandParameter="{Binding}">
                                                     <Path Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
                                                 </Button>
@@ -315,7 +312,7 @@
                                 </ItemsControl>
                                 <Button Content="מחק הכל"
                                         Style="{StaticResource DeleteAllButton}"
-                                        Command="{Binding Path=(fav:HistoryViewModel.DeleteAllCommand)}"/>
+                                        Command="{Binding Path=(appdata:HistoryViewModel.DeleteAllCommand)}"/>
                             </Grid>
                         </TabItem>
 
@@ -324,7 +321,7 @@
                                  Padding="0">
                             <Grid>
                                 <ItemsControl x:Name="BookmarksListBox" 
-                                    ItemsSource="{Binding Path=(fav:BookmarksViewModel.Bookmarks)}">
+                                    ItemsSource="{Binding Path=(appdata:BookmarksViewModel.Bookmarks)}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Grid ap:GridSetup.Columns="* auto">
@@ -334,7 +331,7 @@
                                                     Click="BookMarkButton_Click"
                                                     Padding="5"/>
                                                 <Button Grid.Column="1"
-                                                        Command="{Binding Path=(fav:BookmarksViewModel.RemoveBookMark)}"
+                                                        Command="{Binding Path=(appdata:BookmarksViewModel.RemoveBookMark)}"
                                                         CommandParameter="{Binding}">
                                                     <Path  Fill="{Binding Path=(helpers:ThemeHelper.ForeGround)}" 
                                                            Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
@@ -345,7 +342,7 @@
                                 </ItemsControl>
                                 <Button Content="מחק הכל"
                                     Style="{StaticResource DeleteAllButton}"
-                                    Command="{Binding Path=(fav:BookmarksViewModel.DeleteAllCommand)}"/>
+                                    Command="{Binding Path=(appdata:BookmarksViewModel.DeleteAllCommand)}"/>
                             </Grid>
                         </TabItem>
 
@@ -353,7 +350,7 @@
                                  IsSelected="{Binding IsChecked, ElementName=EnvironmentsToggle}">
                             <Grid>
                                 <ItemsControl x:Name="EnvironmentsListBox"
-                                    ItemsSource="{Binding Path=(fav:EnvironmentsViewModel.Environments)}">
+                                    ItemsSource="{Binding Path=(appdata:EnvironmentsViewModel.Environments)}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Grid ap:GridSetup.Columns="* auto">
@@ -363,7 +360,7 @@
                                                  Padding="5"   
                                                  Click="EnvironmentButton_Click"/>
                                                 <Button  Grid.Column="1"
-                                                 Command="{Binding Path=(fav:EnvironmentsViewModel.RemoveEnvironmentCommand)}"
+                                                 Command="{Binding Path=(appdata:EnvironmentsViewModel.RemoveEnvironmentCommand)}"
                                                  CommandParameter="{Binding}">
                                                     <Path  Fill="{Binding Path=(helpers:ThemeHelper.ForeGround)}" 
                                                            Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
@@ -374,7 +371,7 @@
                                 </ItemsControl>
                                 <Button Content="מחק הכל"
                                      Style="{StaticResource DeleteAllButton}"
-                                     Command="{Binding Path=(fav:EnvironmentsViewModel.DeleteAllCommand)}"/>
+                                     Command="{Binding Path=(appdata:EnvironmentsViewModel.DeleteAllCommand)}"/>
                             </Grid>
                         </TabItem>
                         

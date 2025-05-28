@@ -1,13 +1,13 @@
-﻿using Microsoft.VisualBasic;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using WpfLib.Helpers;
 using WpfLib.ViewModels;
 
-namespace Oztarnik.FavoritesAndSettings
+namespace Oztarnik.AppData
 {
     public class BookMarkModel
     {
@@ -23,34 +23,21 @@ namespace Oztarnik.FavoritesAndSettings
         private static void OnStaticPropertyChanged(string propertyName) =>
             StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
 
-        private static string AppName => AppDomain.CurrentDomain.BaseDirectory;
-        private const string Section = "Favorites";
-        private const string Key = "BookMarks";
+        static string DataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AppData");
+        static string JsonPath = Path.Combine(DataPath, "Bookmarks.json");
 
-        static ObservableCollection<BookMarkModel> _bookmarks;
-        
+        public static ObservableCollection<BookMarkModel> _bookmarks = File.Exists(JsonPath) ?
+            JsonSerializer.Deserialize<ObservableCollection<BookMarkModel>>(File.ReadAllText(JsonPath)) :
+                    new ObservableCollection<BookMarkModel>();
+
         public static ObservableCollection<BookMarkModel> Bookmarks
         {
-            get
-            {
-                if (_bookmarks == null)
-                {
-                    string json = Interaction.GetSetting(AppName, Section, Key);
-                    if (!string.IsNullOrEmpty(json))
-                        _bookmarks = JsonSerializer.Deserialize<ObservableCollection<BookMarkModel>>(json);
-                    else
-                        _bookmarks = new ObservableCollection<BookMarkModel>();
-                }
-
-                return _bookmarks;
-            }
+            get => _bookmarks;
             set
             {
-                if (value != _bookmarks)
-                {
-                    _bookmarks = value;
-                    OnStaticPropertyChanged(nameof(Bookmarks));
-                }
+                if (_bookmarks == value) return;
+                _bookmarks = value;
+                OnStaticPropertyChanged(nameof(Bookmarks));
             }
         }
 
@@ -76,14 +63,14 @@ namespace Oztarnik.FavoritesAndSettings
                 });
             }
 
-            SaveBookmarks();
+            Commit();
         }
 
         public static void AddBookmark(BookMarkModel bookmark)
         {
             Bookmarks.RemoveAll(b => b.Path == bookmark.Path);
             Bookmarks.Add(bookmark);
-            SaveBookmarks();
+            Commit();
         }
 
         public static WpfLib.Controls.HebrewInputBox InputDialog(string defaultValue)
@@ -96,19 +83,20 @@ namespace Oztarnik.FavoritesAndSettings
         public static void RemoveBookmark(string path)
         {
             Bookmarks.RemoveAll(b => b.Path == path);
-            SaveBookmarks();
+            Commit();
         }
 
         private static void DeleteAll()
         {
             Bookmarks = new ObservableCollection<BookMarkModel>();
-            SaveBookmarks();
+            Commit();
         }
 
-        private static void SaveBookmarks()
+        private static void Commit()
         {
             string json = JsonSerializer.Serialize(Bookmarks);
-            Interaction.SaveSetting(AppName, Section, Key, json);
+            if(!Directory.Exists(DataPath)) Directory.CreateDirectory(DataPath);
+            File.WriteAllText(JsonPath, json);
             OnStaticPropertyChanged(nameof(Bookmarks));
         }
     }

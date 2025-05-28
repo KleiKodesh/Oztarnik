@@ -4,12 +4,11 @@ using Otzarnik.FsViewer;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Oztarnik.Main;
-using Oztarnik.FavoritesAndSettings;
+using Oztarnik.AppData;
 using System.Threading.Tasks;
 using WpfLib.Helpers;
-using Oztarnik.FsViewer;
-using System.Linq;
-using System.IO;
+using Otzarnik.FileViewer;
+using System.Windows;
 
 namespace Oztarnik.FileViewer
 {
@@ -130,6 +129,28 @@ namespace Oztarnik.FileViewer
                 RelativeBooksPopup.IsOpen = false;
                 RelativeBooksList.SelectedIndex = -1;
             }
+        }
+
+        private void OpenInNewWindow_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            FileViewerWindow window = new FileViewerWindow();
+            
+            if (this.Parent is TabItem tabItem && tabItem.Parent is TabControl tabControl)
+            {
+                tabControl.Items.Remove(tabItem);
+                tabItem.Content = null;
+                var owner = DependencyHelper.FindParent<Window>(tabControl);
+                if (owner != null) 
+                    window.Owner = owner;
+            }
+            else if (this.Parent is Window parentWindow)
+            {
+                parentWindow.Close();
+                window.Owner = parentWindow.Owner;
+            } 
+
+            window.Content = this;
+            window.Show();
         }
 
         //private bool _waitingForMouseRelease = false;

@@ -117,14 +117,17 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FavoritesAndSettings\EnvironmentsViewModel.cs" />
-    <Compile Include="FavoritesAndSettings\HistoryViewModel.cs" />
-    <Compile Include="FavoritesAndSettings\ShemHashemSetting.cs" />
+    <Compile Include="AppData\EnvironmentsViewModel.cs" />
+    <Compile Include="AppData\HistoryViewModel.cs" />
+    <Compile Include="AppData\ShemHashemSetting.cs" />
     <Compile Include="FileViewer\ContentParser.cs" />
     <Compile Include="FileViewer\FileView.xaml.cs">
       <DependentUpon>FileView.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileViewer\HtmlBuilder.cs" />
+    <Compile Include="FileViewer\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FsViewer\FsSearch.cs" />
     <Compile Include="FsViewer\FsSort.cs" />
     <Compile Include="FsViewer\HeadersListBox.cs" />
@@ -132,11 +135,11 @@
     <Compile Include="FsViewer\FsListBox.cs" />
     <Compile Include="FsViewer\TreeHelper.cs" />
     <Compile Include="FsViewer\TreeItem.cs" />
-    <Compile Include="FavoritesAndSettings\BookmarksViewModel.cs" />
+    <Compile Include="AppData\BookmarksViewModel.cs" />
     <Compile Include="Main\OtzarnikView.xaml.cs">
       <DependentUpon>OtzarnikView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FavoritesAndSettings\SettingsViewModel.cs" />
+    <Compile Include="AppData\SettingsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +170,10 @@
     <Page Include="FileViewer\FileView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileViewer\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="FsViewer\FsDictionary.xaml">
       <Generator>MSBuild:Compile</Generator>

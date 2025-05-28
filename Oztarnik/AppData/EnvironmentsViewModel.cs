@@ -1,13 +1,13 @@
-﻿using Microsoft.VisualBasic;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Text.Json;
 using WpfLib.Helpers;
 using WpfLib.ViewModels;
 
-namespace Oztarnik.FavoritesAndSettings
+namespace Oztarnik.AppData
 {
     public class EnvironmentModel
     {
@@ -22,38 +22,25 @@ namespace Oztarnik.FavoritesAndSettings
         private static void OnStaticPropertyChanged(string propertyName) =>
             StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
 
-        private static string AppName => AppDomain.CurrentDomain.BaseDirectory;
-        private const string Section = "Favorites";
-        private const string Key = "Environments";
-        static ObservableCollection<EnvironmentModel> _environment;
-       
+        static string DataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AppData");
+        static string JsonPath = Path.Combine(DataPath, "Environments.json");
+
+        public static ObservableCollection<EnvironmentModel> _environments = File.Exists(JsonPath) ?
+            JsonSerializer.Deserialize<ObservableCollection<EnvironmentModel>>(File.ReadAllText(JsonPath)) :
+                    new ObservableCollection<EnvironmentModel>();
+
         public static ObservableCollection<EnvironmentModel> Environments
         {
-            get
-            {
-                if (_environment == null)
-                {
-                    string json = Interaction.GetSetting(AppName, Section, Key);
-                    if (!string.IsNullOrEmpty(json))
-                        _environment = JsonSerializer.Deserialize<ObservableCollection<EnvironmentModel>>(json);
-                    else
-                        _environment = new ObservableCollection<EnvironmentModel>();
-                }
-
-                return _environment;
-            }
+            get => _environments;
             set
             {
-                if (value != _environment)
-                {
-                    _environment = value;
-                    OnStaticPropertyChanged(nameof(Environments));
-                }
+                if (value == _environments) return;
+                _environments = value;
+                OnStaticPropertyChanged(nameof(Environments));
             }
         }
 
-        public static RelayCommand DeleteAllCommand =>
-          new RelayCommand(DeleteAll);
+        public static RelayCommand DeleteAllCommand => new RelayCommand(DeleteAll);
         public static RelayCommand<EnvironmentModel> RemoveEnvironmentCommand =>
             new RelayCommand<EnvironmentModel>(value => RemoveEnvironment(value));
 
@@ -63,7 +50,7 @@ namespace Oztarnik.FavoritesAndSettings
             if (inputBox.DialogResult == true)
                 Environments.Add(new EnvironmentModel { Title = inputBox.Answer, Bookmarks = bookMarks});
 
-            SaveEnvironments();
+            Commit();
         }
 
         public static WpfLib.Controls.HebrewInputBox InputDialog(string defaultValue)
@@ -76,19 +63,20 @@ namespace Oztarnik.FavoritesAndSettings
         public static void RemoveEnvironment(EnvironmentModel Environment)
         {
             Environments.RemoveAll(e => e.Title == Environment.Title);
-            SaveEnvironments();
+            Commit();
         }
 
         private static void DeleteAll()
         {
             Environments = new ObservableCollection<EnvironmentModel>();
-            SaveEnvironments();
+            Commit();
         }
 
-        private static void SaveEnvironments()
+        private static void Commit()
         {
             string json = JsonSerializer.Serialize(Environments);
-            Interaction.SaveSetting(AppName, Section, Key, json);
+            if (!Directory.Exists(DataPath)) Directory.CreateDirectory(DataPath);
+            File.WriteAllText(JsonPath, json);
             OnStaticPropertyChanged(nameof(Environments));
         }
     }

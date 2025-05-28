@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.ComponentModel;
-using System.Configuration;
 using System.Text.RegularExpressions;
-using WpfLib.Helpers;
 
-namespace Oztarnik.FavoritesAndSettings
+namespace Oztarnik.AppData
 {
     public static class ShemHashemSetting
     {
@@ -14,7 +13,7 @@ namespace Oztarnik.FavoritesAndSettings
             StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
         }
 
-        private static bool _replaceShemHashemMode = ConfigurationManagerWrapper.GetAppSetting("ShemHashem", false);
+        private static bool _replaceShemHashemMode =  bool.TryParse(Interaction.GetSetting(AppDomain.CurrentDomain.BaseDirectory, "Settings", "ShemHashem", "false"), out var result) && result;
         public static bool ReplaceShemHashemMode
         {
             get => _replaceShemHashemMode;
@@ -23,7 +22,7 @@ namespace Oztarnik.FavoritesAndSettings
                 if (value != _replaceShemHashemMode)
                 {
                     _replaceShemHashemMode = value;
-                    ConfigurationManagerWrapper.SetAppSetting("ShemHashem", value.ToString());
+                    Interaction.SaveSetting(AppDomain.CurrentDomain.BaseDirectory, "Settings", "ShemHashem", value.ToString());
                     OnStaticPropertyChanged(nameof(ReplaceShemHashemMode));
                 }
             }

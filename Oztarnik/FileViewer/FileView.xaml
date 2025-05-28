@@ -27,16 +27,15 @@
     </UserControl.Resources>
 
     <Grid ap:GridSetup.Rows="auto auto *">
-        <Grid x:Name="Titlebar" ap:GridSetup.Columns="* auto">
-            <StackPanel Orientation="Horizontal">
-                <UniformGrid Rows="1" Margin="3">
+        <StackPanel x:Name="Titlebar" Orientation="Horizontal">
+            <UniformGrid Rows="1" Margin="3" MinWidth="300">
                     <UniformGrid.Resources>
-                        <Style TargetType="Path" BasedOn="{StaticResource {x:Type Path}}">
-                            <d:Setter Property="Fill" Value="Black"/>
-                            <Setter Property="MaxHeight" Value="12"/>
-                            <Setter Property="MaxWidth" Value="12"/>
-                        </Style>
-                    </UniformGrid.Resources>
+                    <Style TargetType="Path" BasedOn="{StaticResource {x:Type Path}}">
+                        <d:Setter Property="Fill" Value="Black"/>
+                        <Setter Property="MaxHeight" Value="12"/>
+                        <Setter Property="MaxWidth" Value="12"/>
+                    </Style>
+                </UniformGrid.Resources>
                     
                     <ToggleButton x:Name="HeadersToggleButton"
                                   x:FieldModifier="public"
@@ -142,23 +141,27 @@
                               StrokeThickness="0.5"/>
                     </RepeatButton>
 
-                    <RepeatButton Style="{StaticResource FlatRepeatButton}"
+                <RepeatButton Style="{StaticResource FlatRepeatButton}"
                                   ToolTip="הקטע הבא"
                             Command="{Binding ScrollToNextHeaderCommand, ElementName=viewer}">
-                        <Path Data="M768 903.2 717.6 960 256 512 717.6 64 768 120.8 364.9 512Z"
+                    <Path Data="M768 903.2 717.6 960 256 512 717.6 64 768 120.8 364.9 512Z"
                               Height="10"
                               Stroke="{Binding Path=(helpers:ThemeHelper.ForeGround)}"
                               StrokeThickness="0.5"/>
-                    </RepeatButton>
-                </UniformGrid>
+                </RepeatButton>
+
+                <Button x:Name="OpenInNewWindow" Style="{StaticResource FlatButton}" ToolTip="פתח בחלונית חדשה"
+                        Click="OpenInNewWindow_Click">
+                    <Path Data="M18 18V20H4A2 2 0 0 1 2 18V8H4V18M22 6V14A2 2 0 0 1 20 16H8A2 2 0 0 1 6 14V6A2 2 0 0 1 8 4H20A2 2 0 0 1 22 6M20 6H8V14H20Z"/>
+                </Button>
+            </UniformGrid>
 
                 <!--<TextBlock Grid.Column="1"
                        Margin="3"
                 VerticalAlignment="Center"
                 Opacity="0.5"
                 Text="{Binding CurrentTitle, ElementName=viewer}"/>-->
-            </StackPanel>
-        </Grid>
+        </StackPanel>
 
         <Border Background="LightGray" Height="0.5" Grid.Row="1" Grid.Column="1">
             <Border.Effect>

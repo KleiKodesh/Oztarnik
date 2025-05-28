@@ -1,4 +1,5 @@
-﻿using Oztarnik.FavoritesAndSettings;
+﻿using Otzarnik.FsViewer;
+using Oztarnik.AppData;
 using Oztarnik.FileViewer;
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Otzarnik.FsViewer
+namespace Otzarnik.FileViewer
 {
     public class FileContentModel
     {

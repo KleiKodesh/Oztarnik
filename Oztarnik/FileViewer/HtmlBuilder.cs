@@ -1,9 +1,6 @@
 ﻿using Microsoft.VisualBasic;
-using Oztarnik.FavoritesAndSettings;
-using Oztarnik.Main;
+using Oztarnik.AppData;
 using System;
-using System.Drawing.Printing;
-using System.Windows.Input;
 using WpfLib.Helpers;
 
 namespace Oztarnik.FileViewer
@@ -35,11 +32,8 @@ namespace Oztarnik.FileViewer
             string color = Settings.DoNotChangeDocumentColors ? "" : ThemeHelper.ForeGround.ToRgbString();
             string backGround = Settings.DoNotChangeDocumentColors ? "" : ThemeHelper.BackGround.ToRgbString();
 
-            string fontFamily = Interaction.GetSetting(AppDomain.CurrentDomain.BaseDirectory, "Settings", "DeafultFont", "Times New Roman");
-            string fontSize = Interaction.GetSetting(AppDomain.CurrentDomain.BaseDirectory, "Settings", "DefaultFontSize", "16");
-
             return $@"
-                body {{line-height: 1.3; text-align: justify; font-family: '{fontFamily}'; font-size: {fontSize}px; 
+                body {{line-height: 1.3; text-align: justify; font-family: '{Settings.DefaultFont}'; font-size: {Settings.DefaultFontSize}px; 
                        color:{color}; background-color:{backGround};}}
                 line {{ display: block; }}
                 header {{ margin-top: 10px; margin-bottom: 10px;  color:#000066; }}
@@ -51,8 +45,8 @@ namespace Oztarnik.FileViewer
                 h4 {{ font-size: 125%; /* 20px */ }}
                 h5 {{ font-size: 112.5%; /* 18px */ }}
                 h6 {{font-size: 100%; /* 16px */  }}
-                #title-bar {{position: fixed; left: 0; top: 0; width: 100%; opacity: 0.9; background: #333; color: white; font-size: 12px; text-align: center;}} 
-                #content {{padding-top: 10px;}}               
+                #title-bar {{ position: fixed; left: 0; top: 0; font-size:70%; opacity:0.8; background: #333; color: white; writing-mode: vertical-rl; text-orientation: mixed; padding: 3px 0; text-align: center; transform: rotate(180deg); }}            
+                #content{{ padding = 20px; }}
             ";
         }
 
