@@ -130,54 +130,63 @@ namespace Oztarnik.Main
 
         public void LoadFile(TreeItem treeItem, string scrollIndex)
         {
-            if (!Regex.IsMatch(treeItem.Extension, @"^\.(pdf|txt|html)$"))
-                return;
-
-            if (treeItem.Extension.Contains("pdf"))
+            try
             {
-                var webview = new WebViewLib.WebViewHost();
-                var tab = new TabItem
-                {
-                    Header = treeItem.Name?? Path.GetFileNameWithoutExtension(treeItem.Path),
-                    Content = webview,
-                    IsSelected = true
-                };
+                if (!Regex.IsMatch(treeItem.Extension, @"^\.(pdf|txt|html)$"))
+                    return;
 
-                FileViewerTabControl.Items.Add(tab);
-                webview.Navigate(treeItem.Path);
-
-                Dispatcher.BeginInvoke(new Action(() =>
+                if (treeItem.Extension.Contains("pdf"))
                 {
-                    FileViewerTabControl.Focus();
-                    Keyboard.Focus(FileViewerTabControl);
-                }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-            }
-            else
-            {
-                var fileView = new FileView(treeItem, scrollIndex);
-                FileViewerTabControl.Items.Add(new TabItem
-                {
-                    Header = treeItem.Name ?? Path.GetFileNameWithoutExtension(treeItem.Path),
-                    Content = fileView,
-                    IsSelected = true
-                });
-                
-                string groupId = FsSort.FileOrder.FirstOrDefault(id => treeItem.Name.Contains(id)) ?? string.Empty;
-                fileView.RelativeBooksList.ItemsSource = fsViewer.Root.EnumerateItems()
-                    .Where(item => item.Path != treeItem.Path &&  item.Name.Contains(groupId))
-                    .OrderBy(t => t.Name);
+                    var webview = new WebViewLib.WebViewHost();
+                    var tab = new TabItem
+                    {
+                        Header = treeItem.Name ?? Path.GetFileNameWithoutExtension(treeItem.Path),
+                        Content = webview,
+                        IsSelected = true
+                    };
 
-                if (!Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
+                    FileViewerTabControl.Items.Add(tab);
+                    webview.Navigate(treeItem.Path);
+
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
                         FileViewerTabControl.Focus();
                         Keyboard.Focus(FileViewerTabControl);
                     }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                }
+                else
+                {
+                    var fileView = new FileView(treeItem, scrollIndex);
+                    FileViewerTabControl.Items.Add(new TabItem
+                    {
+                        Header = treeItem.Name ?? Path.GetFileNameWithoutExtension(treeItem.Path),
+                        Content = fileView,
+                        IsSelected = true
+                    });
+
+                    string groupId = FsSort.FileOrder.FirstOrDefault(id => treeItem.Name.Contains(id)) ?? string.Empty;
+                    fileView.RelativeBooksList.ItemsSource = fsViewer.Root.EnumerateItems()
+                        .Where(item => item.Path != treeItem.Path && item.Name.Contains(groupId))
+                        .OrderBy(t => t.Name);
+
+                    if (!Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
+                        Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            FileViewerTabControl.Focus();
+                            Keyboard.Focus(FileViewerTabControl);
+                        }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                }
+
+                HistoryViewModel.AddHistoryItem(treeItem.Path);
             }
-
-            HistoryViewModel.AddHistoryItem(treeItem.Path);
-
-            MainTabControl.SelectedIndex = 1;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                FileViewToggleButton.IsChecked = true;
+            }
         }
 
         private void HistoryButton_Click(object sender, RoutedEventArgs e)

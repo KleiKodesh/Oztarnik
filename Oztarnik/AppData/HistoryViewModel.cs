@@ -26,7 +26,7 @@ namespace Oztarnik.AppData
         private static void OnStaticPropertyChanged(string propertyName) =>
             StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
 
-        static string DataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AppData");
+        static string DataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AppData");
         static string JsonPath = Path.Combine(DataPath, "History.json");
 
         static ObservableCollection<HistoryItem> _historyItems = File.Exists(JsonPath) ?

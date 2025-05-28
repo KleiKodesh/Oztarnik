@@ -23,7 +23,7 @@ namespace Oztarnik.AppData
         private static void OnStaticPropertyChanged(string propertyName) =>
             StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
 
-        static string DataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AppData");
+        static string DataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AppData");
         static string JsonPath = Path.Combine(DataPath, "Bookmarks.json");
 
         public static ObservableCollection<BookMarkModel> _bookmarks = File.Exists(JsonPath) ?

@@ -22,7 +22,7 @@ namespace Oztarnik.AppData
         private static void OnStaticPropertyChanged(string propertyName) =>
             StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
 
-        static string DataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AppData");
+        static string DataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AppData");
         static string JsonPath = Path.Combine(DataPath, "Environments.json");
 
         public static ObservableCollection<EnvironmentModel> _environments = File.Exists(JsonPath) ?

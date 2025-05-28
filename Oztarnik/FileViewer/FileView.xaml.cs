@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using WpfLib.Helpers;
 using Otzarnik.FileViewer;
 using System.Windows;
+using Otzarnik.Helpers;
 
 namespace Oztarnik.FileViewer
 {
@@ -131,22 +132,29 @@ namespace Oztarnik.FileViewer
             }
         }
 
-        private void OpenInNewWindow_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void OpenInNewWindow_Click(object sender, RoutedEventArgs e)
         {
             FileViewerWindow window = new FileViewerWindow();
             
             if (this.Parent is TabItem tabItem && tabItem.Parent is TabControl tabControl)
             {
+                window.Title = tabItem.Header.ToString();
                 tabControl.Items.Remove(tabItem);
                 tabItem.Content = null;
+
                 var owner = DependencyHelper.FindParent<Window>(tabControl);
-                if (owner != null) 
+                if (owner != null)
                     window.Owner = owner;
+
+                WdWpfWindowHelper.SetWordWindowOwner(window);
             }
             else if (this.Parent is Window parentWindow)
             {
+                parentWindow.Content = null;
+                window.Title = parentWindow.Title;
                 parentWindow.Close();
                 window.Owner = parentWindow.Owner;
+                WdWpfWindowHelper.SetWordWindowOwner(window);
             } 
 
             window.Content = this;

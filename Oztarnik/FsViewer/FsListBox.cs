@@ -109,14 +109,14 @@ namespace Otzarnik.FsViewer
         protected void OnNavigationRequested(TreeItem selectedItem) =>
             RaiseEvent(new RoutedEventArgs(NavigationRequestedEvent, selectedItem));
 
-        private async static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is FsListView viewer && e.NewValue is string newValue &&
                 Directory.Exists(newValue))
-                    viewer.Root = await Task.Run(() => TreeHelper.BuildTree(null, newValue, newValue));
+                    viewer.Root = TreeHelper.BuildTree(null, newValue, newValue);
         }
 
-        private async static void OnSourceCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private  static void OnSourceCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is FsListView viewer && e.NewValue is IEnumerable<string> sources)
             {
@@ -126,7 +126,7 @@ namespace Otzarnik.FsViewer
                 {
                     if (Directory.Exists(source))
                     {
-                        var tree = await Task.Run(() => TreeHelper.BuildTree(null, source, source));
+                        var tree = TreeHelper.BuildTree(null, source, source);
                         if (tree != null)
                             viewer.Root.AddChild(tree);
                     }
