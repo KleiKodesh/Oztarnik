@@ -78,7 +78,7 @@ namespace Otzarnik.FsViewer
         public TreeItem Root
         {
             get => (TreeItem)GetValue(RootProperty);
-            set { SetValue(RootProperty, value); CurrentItem = value; }
+            set { SetValue(RootProperty, value); CurrentItem = value; Root.IsChecked = true; }
         }
 
 

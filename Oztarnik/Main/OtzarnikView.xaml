@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Oztarnik.Main"
+             xmlns:search="clr-namespace:Otzarnik.Search"
              xmlns:ap="clr-namespace:WpfLib.AttachedProperties;assembly=WpfLib"
              xmlns:fs="clr-namespace:Otzarnik.FsViewer"
              xmlns:appdata="clr-namespace:Oztarnik.AppData"
@@ -15,7 +16,7 @@
              FontSize="13"
              FontFamily="Tahoma"
              PreviewKeyDown="UserControl_PreviewKeyDown"
-             Background="{Binding Path=(helpers:ThemeHelper.BackGround)}">
+             Background="{Binding Path=(helpers:ThemeHelper.Background)}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -87,7 +88,8 @@
                             SelectionChanged="FileViewerTabControl_SelectionChanged"
                             PreviewKeyDown="FileViewerTabControl_PreviewKeyDown"
                             Style="{StaticResource ListStripTabControl}"
-                            Background="Transparent">
+                            Background="Transparent"
+                            x:FieldModifier="public">
                         <TabControl.Resources>
                             <Style TargetType="TabItem" BasedOn="{StaticResource X_ButtonTabStyle}">
                                 <Setter Property="Padding" Value="0"/>
@@ -99,6 +101,113 @@
                 </Grid>
             </TabItem>
 
+            <TabItem x:Name="SearchTab">
+                <TabItem.DataContext>
+                    <search:SearchViewModel/>
+                </TabItem.DataContext>
+                <Grid ap:GridSetup.Rows="auto *">
+                    
+                    <Border BorderThickness="1"
+                            BorderBrush="{StaticResource Generic.Clicked}"
+                            Margin="3">
+
+                        <Grid  ap:GridSetup.Columns="* auto">
+                            <ProgressBar Value="{Binding ProgressValue}" 
+                                      Maximum="100"
+                                      Background="Transparent"
+                                      BorderThickness="0"
+                                      Margin="3"/>
+
+                            <TextBox x:Name="RegexInput" 
+                                   Style="{StaticResource WaterMarkTextBox}"
+                                   ToolTip="חיפוש: '*' = תווים כלשהם, '?' = כתיב חסר, '|' = חלופות"
+                                   Padding="3"
+                                   AcceptsReturn="False"
+                                   Text="{Binding SearchPattern, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Return" Command="{Binding SearchCommand}" CommandParameter="{Binding Root, ElementName=fsViewer}"/>
+                                    <KeyBinding Key="Esc" Command="{Binding CancelSearchCommand}"/>
+                                </TextBox.InputBindings>
+                            </TextBox>
+
+                            <UniformGrid Rows="1" Grid.Column="1">
+                                <Button Style="{StaticResource FlatButton}"
+                                        Command="{Binding SearchCommand}"
+                                        CommandParameter="{Binding Root, ElementName=fsViewer}">
+                                    <Path Data="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+                                </Button>
+                            </UniformGrid>
+                        </Grid>
+                    </Border>
+
+                    <TabControl Grid.Row="1"
+                                BorderThickness="0"
+                                SelectedIndex="1">
+                        <TabControl.Resources>
+                            <Style TargetType="TabItem" BasedOn="{StaticResource FlatTabItemStyle}"/>
+                        </TabControl.Resources>
+                        
+                        <TabItem>
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding Root.IsChecked, ElementName=fsViewer}"/>
+                                    <TextBlock Text="בחר ספרים" Margin="3,0,0,0"/>
+                                </StackPanel>
+                            </TabItem.Header>
+
+                            <TreeView Background="Transparent"
+                                      Margin="0,5"
+                                      BorderThickness="0,0.5,0,0"
+                                      ItemsSource="{Binding Root.Items, ElementName=fsViewer}">
+                                <TreeView.ItemTemplate>
+                                    <HierarchicalDataTemplate
+                                            DataType="{x:Type fs:TreeItem}"
+                                            ItemsSource="{Binding Items}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <StackPanel Orientation="Horizontal">
+                                                <CheckBox IsChecked="{Binding IsChecked}"
+                                                      Margin="0,3"
+                                                      VerticalContentAlignment="Center"/>
+                                                <TextBlock Text="{Binding}" 
+                                                        Margin="3,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="{Binding Path=(helpers:ThemeHelper.Foreground)}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </HierarchicalDataTemplate>
+                                </TreeView.ItemTemplate>
+                            </TreeView>
+                        </TabItem>
+
+                        <TabItem Header="תוצאות" 
+                                 BorderThickness="0,0.5,0,0">
+                            <ListView x:Name="SearchResultsListView"
+                                ItemsSource="{Binding Results}"
+                                   Grid.Row="2"
+                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                   Background="Transparent"
+                                   BorderThickness="0,0.5,0,0"
+                                   SelectionChanged="SearchResultsListView_SelectionChanged">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="0,5">
+                                            <TextBlock TextWrapping="Wrap"
+                                                       Text="{Binding TreeItem.Name}" Opacity="0.6"/>
+                                            <TextBlock TextWrapping="Wrap" TextAlignment="Justify">
+                                                 <Run Text="{Binding Pre, Mode=OneTime}"/><Run Text="{Binding MatchValue, Mode=OneTime}" Foreground="Magenta"/><Run Text="{Binding Post, Mode=OneTime}"/>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </TabItem>
+
+                    </TabControl>
+                </Grid>
+
+               
+            </TabItem>
+            
             <TabItem Name="SettingsTab">
                 <TabItem.Resources>
                     <Style TargetType="Separator">
@@ -276,7 +385,7 @@
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
                                 <Setter Property="Margin" Value="5"/>
                                 <Setter Property="Padding" Value="7,3,7,3"/>
-                                <Setter Property="Background" Value="{Binding Path=(helpers:ThemeHelper.BackGround)}"/>
+                                <Setter Property="Background" Value="{Binding Path=(helpers:ThemeHelper.Background)}"/>
                             </Style>
                             <Style TargetType="ItemsControl">
                                 <Setter Property="Padding" Value="0,0,0,30"/>
@@ -333,7 +442,7 @@
                                                 <Button Grid.Column="1"
                                                         Command="{Binding Path=(appdata:BookmarksViewModel.RemoveBookMark)}"
                                                         CommandParameter="{Binding}">
-                                                    <Path  Fill="{Binding Path=(helpers:ThemeHelper.ForeGround)}" 
+                                                    <Path  Fill="{Binding Path=(helpers:ThemeHelper.Foreground)}" 
                                                            Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
                                                 </Button>
                                             </Grid>
@@ -362,7 +471,7 @@
                                                 <Button  Grid.Column="1"
                                                  Command="{Binding Path=(appdata:EnvironmentsViewModel.RemoveEnvironmentCommand)}"
                                                  CommandParameter="{Binding}">
-                                                    <Path  Fill="{Binding Path=(helpers:ThemeHelper.ForeGround)}" 
+                                                    <Path  Fill="{Binding Path=(helpers:ThemeHelper.Foreground)}" 
                                                            Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
                                                 </Button>
                                             </Grid>
@@ -404,11 +513,17 @@
             </ToggleButton>
 
             <ToggleButton x:Name="FavoritesToggleButton"
-               ToolTip="מועדפים"
-               IsChecked="{Binding IsSelected, ElementName=FavoritesTabItem}">
+                   ToolTip="חיפוש בתוכן הקבצים"
+                   IsChecked="{Binding IsSelected, ElementName=SearchTab}">
+                <Path Data="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+            </ToggleButton>
+
+            <ToggleButton x:Name="SearchToggleButton"
+                   ToolTip="חיפוש"
+                   IsChecked="{Binding IsSelected, ElementName=FavoritesTabItem}">
                 <Path Data="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/>
             </ToggleButton>
-            
+
             <ToggleButton x:Name="SettingsToggleButton"
                           ToolTip="הגדרות"
                           IsChecked="{Binding IsSelected, ElementName=SettingsTab}">

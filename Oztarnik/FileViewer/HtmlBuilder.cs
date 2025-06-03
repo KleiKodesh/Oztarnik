@@ -7,8 +7,9 @@ namespace Oztarnik.FileViewer
 {
     public static class HtmlBuilder
     {
-        public static string HtmlDoc(string content, string scrollIndex)
+        public static string HtmlDoc(string content, string scrollIndex, bool scrollToMatch)
         {
+            string spinner = scrollToMatch ? "<div id=\"spinner-overlay\">\r\n<span class=\"loader\"></span>\r\n</div>" : "";
             return $@"<!DOCTYPE html>
                 <html lang=""he"" dir=""auto"">
                     <head>
@@ -18,24 +19,26 @@ namespace Oztarnik.FileViewer
                         </style>
                     </head>            
                       <body dir=""auto"">
+                        {spinner}
                         <div id=""title-bar""></div>
                             <div id=""content"">
                         {content}
                             </div>
-                        {Js(scrollIndex)}
+                        {Js(scrollIndex, scrollToMatch)}
+                        
                   </body>
                 </html>";
         }
 
         public static string css()
         {
-            string color = Settings.DoNotChangeDocumentColors ? "" : ThemeHelper.ForeGround.ToRgbString();
-            string backGround = Settings.DoNotChangeDocumentColors ? "" : ThemeHelper.BackGround.ToRgbString();
+            string color = Settings.DoNotChangeDocumentColors ? "" : ThemeHelper.Foreground.ToRgbString();
+            string Background = Settings.DoNotChangeDocumentColors ? "" : ThemeHelper.Background.ToRgbString();
 
             return $@"
                 body {{line-height: 1.3; text-align: justify; font-family: '{Settings.DefaultFont}'; font-size: {Settings.DefaultFontSize}px; 
-                       color:{color}; background-color:{backGround};}}
-                line {{ display: block; }}
+                       color:{color}; Background-color:{Background};}}
+                line {{ display: block;  margin: 5px 0; }}
                 header {{ margin-top: 10px; margin-bottom: 10px;  color:#000066; }}
                 h1,h2,h3,h4,h5,h6 {{ opacity: 0.75; }}
                 ot {{ color:#000066; }}
@@ -45,15 +48,21 @@ namespace Oztarnik.FileViewer
                 h4 {{ font-size: 125%; /* 20px */ }}
                 h5 {{ font-size: 112.5%; /* 18px */ }}
                 h6 {{font-size: 100%; /* 16px */  }}
-                #title-bar {{ position: fixed; left: 0; top: 0; font-size:70%; opacity:0.8; background: #333; color: white; writing-mode: vertical-rl; text-orientation: mixed; padding: 3px 0; text-align: center; transform: rotate(180deg); }}            
+                #title-bar {{ position: fixed; left: 0; top: 0; font-size:70%; opacity:0.8; Background: #333; color: white; writing-mode: vertical-rl; text-orientation: mixed; padding: 3px 0; text-align: center; transform: rotate(180deg); }}            
                 #content{{ padding = 20px; }}
+                #spinner-overlay {{ position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.9); display: flex; justify-content: center; align-items: center; z-index: 9999; font-size: 24px; color: #333; user-select: none; }} 
+                .loader {{ display: block; position: relative; height: 12px; width: 80%; border: 1px solid #fff; border-radius: 10px; overflow: hidden; }} 
+                .loader:after {{ content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 0; background: #FF3D00; animation: 6s prog ease-in infinite; }} 
+                @keyframes prog {{ to {{ width: 100%; }} }}
             ";
         }
 
        
-        public static string Js(string scrollIndex, string targetHeaderIndex = "")
+        public static string Js(string scrollIndex, bool scrollToMatch, string targetHeaderIndex = "")
         {
+            string matchJs = scrollToMatch ? ScrollToMatchJs() : "";
             return $@"<script>
+            {matchJs}
             window.addEventListener('DOMContentLoaded', () => {{
                 const scrollindex = parseFloat('{scrollIndex}');
                 if (!isNaN(scrollindex) && scrollindex >= 0) {{
@@ -85,6 +94,32 @@ namespace Oztarnik.FileViewer
                 document.body.style.zoom = zoomLevel;
               }}
             </script>";
+        }
+
+        static string ScrollToMatchJs()
+        {
+            return @"(function () {
+                function scrollToMatch() {
+                    var el = document.getElementById('match');
+                    if (el) {
+                        el.scrollIntoView({ block: 'center' });
+
+                        const spinner = document.getElementById('spinner-overlay');
+                        if (spinner) spinner.style.display = 'none';
+
+                        return true;
+              
+                    }
+                    return false;
+                }
+
+                if (!scrollToMatch()) {
+                    var observer = new MutationObserver(function () {
+                        if (scrollToMatch()) observer.disconnect();
+                    });
+                    observer.observe(document.documentElement, { childList: true, subtree: true });
+                }
+            })();";
         }
 
         static string LinesJs()

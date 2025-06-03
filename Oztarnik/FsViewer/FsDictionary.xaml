@@ -31,7 +31,7 @@
                                                   Data="M20,18H4V8H20M20,6H12L10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6Z"
                                                   Margin="5,0"
                                                   Height="12"
-                                                  Fill="{Binding Path=(helpers:ThemeHelper.ForeGround)}"
+                                                  Fill="{Binding Path=(helpers:ThemeHelper.Foreground)}"
                                                   Stretch="Uniform"/>
                                             <TextBlock Text="{Binding Name}"/>
                                             <TextBlock Text="{Binding Extension}" Opacity="0.5"/>
@@ -81,7 +81,7 @@
                                              CommandParameter="{Binding}"
                                              HorizontalContentAlignment="Center"
                                              VerticalContentAlignment="Center">
-                                        <Path Fill="{Binding Path=(helpers:ThemeHelper.ForeGround)}" 
+                                        <Path Fill="{Binding Path=(helpers:ThemeHelper.Foreground)}" 
                                               Stretch="Fill"
                                               Data="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/>
                                     </Button>

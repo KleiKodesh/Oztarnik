@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using Otzarnik.FsViewer;
+using Otzarnik.Search;
 using Oztarnik.AppData;
 using Oztarnik.FileViewer;
 using Oztarnik.FsViewer;
@@ -128,7 +129,7 @@ namespace Oztarnik.Main
                 LoadFile(treeItem, "");
         }
 
-        public void LoadFile(TreeItem treeItem, string scrollIndex)
+        public void LoadFile(TreeItem treeItem, string scrollIndex, ResultModel resultModel = null)
         {
             try
             {
@@ -156,7 +157,9 @@ namespace Oztarnik.Main
                 }
                 else
                 {
-                    var fileView = new FileView(treeItem, scrollIndex);
+                    var fileView = resultModel == null ? new FileView(treeItem, scrollIndex) :
+                        new FileView(resultModel, scrollIndex);
+
                     FileViewerTabControl.Items.Add(new TabItem
                     {
                         Header = treeItem.Name ?? Path.GetFileNameWithoutExtension(treeItem.Path),
@@ -245,6 +248,15 @@ namespace Oztarnik.Main
                     Path = openFileDialog.FileName, 
                     Name = Path.GetFileNameWithoutExtension(openFileDialog.FileName) 
                 }, "");
+        }
+
+        private void SearchResultsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is ListView listView && listView.SelectedItem is ResultModel resultModel)
+            {
+                LoadFile(resultModel.TreeItem, "", resultModel);
+                listView.SelectedIndex = -1;
+            }
         }
     }
 }

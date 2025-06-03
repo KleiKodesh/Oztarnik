@@ -1,6 +1,8 @@
 ﻿using Otzarnik.FsViewer;
+using Otzarnik.Search;
 using Oztarnik.AppData;
 using Oztarnik.FileViewer;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -18,7 +20,7 @@ namespace Otzarnik.FileViewer
     
     public static class ContentParser
     {
-        public static Task <FileContentModel> Parse (TreeItem treeItem, bool getContent)
+        public static Task <FileContentModel> Parse (TreeItem treeItem, bool getContent, ResultModel resultModel)
         {
             FileContentModel result = new FileContentModel { TreeItem = treeItem };
 
@@ -30,7 +32,15 @@ namespace Otzarnik.FileViewer
             if (!File.Exists(treeItem.Path))
                 return Task.FromResult(result);
 
-            foreach (var line in File.ReadLines(treeItem.Path))
+            string content = File.ReadAllText(treeItem.Path);
+            
+            if (resultModel != null && resultModel.MatchIndex >= 0 && resultModel.MatchIndex + resultModel.MatchValue.Length <= content.Length)
+            {
+                content = content.Insert(resultModel.MatchIndex + resultModel.MatchValue.Length, "</mark>");
+                content = content.Insert(resultModel.MatchIndex, "<mark id=\"match\">");
+            }
+
+            foreach (var line in content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None))
             {
                 lineIndex++;
 

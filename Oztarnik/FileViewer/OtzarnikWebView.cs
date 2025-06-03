@@ -3,13 +3,11 @@ using Oztarnik.AppData;
 using Oztarnik.Main;
 using System;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using WebViewLib;
 using WpfLib.Helpers;
 using WpfLib.ViewModels;
@@ -66,8 +64,8 @@ namespace Oztarnik.FileViewer
                 }
                 else
                 {
-                    await ExecuteScriptAsync($@"document.body.style.color = ""{ThemeHelper.ForeGround.ToRgbString()}"";");
-                    await ExecuteScriptAsync($@" document.body.style.backgroundColor = ""{ThemeHelper.BackGround.ToRgbString()}"";");
+                    await ExecuteScriptAsync($@"document.body.style.color = ""{ThemeHelper.Foreground.ToRgbString()}"";");
+                    await ExecuteScriptAsync($@" document.body.style.backgroundColor = ""{ThemeHelper.Background.ToRgbString()}"";");
                 }
             }
         }
@@ -77,10 +75,10 @@ namespace Oztarnik.FileViewer
             if (Settings.DoNotChangeDocumentColors)
                 return;
 
-            if (e.PropertyName == nameof(ThemeHelper.ForeGround))
-                await ExecuteScriptAsync($@" document.body.style.color = ""{ThemeHelper.ForeGround.ToRgbString()}"";");
-            else if (e.PropertyName == nameof(ThemeHelper.BackGround))
-                await ExecuteScriptAsync($@"document.body.style.backgroundColor = ""{ThemeHelper.BackGround.ToRgbString()}"";");
+            if (e.PropertyName == nameof(ThemeHelper.Foreground))
+                await ExecuteScriptAsync($@" document.body.style.color = ""{ThemeHelper.Foreground.ToRgbString()}"";");
+            else if (e.PropertyName == nameof(ThemeHelper.Background))
+                await ExecuteScriptAsync($@"document.body.style.backgroundColor = ""{ThemeHelper.Background.ToRgbString()}"";");
         }
 
 
@@ -130,9 +128,9 @@ namespace Oztarnik.FileViewer
             }
         }
 
-        public void LoadDocument(string content, string scrollIndex)
+        public void LoadDocument(string content, string scrollIndex, bool scrollToMatch)
         {
-            var htmlDoc = HtmlBuilder.HtmlDoc(content, scrollIndex);
+            var htmlDoc = HtmlBuilder.HtmlDoc(content, scrollIndex, scrollToMatch);
             DocumentWrite(htmlDoc);
         }
 

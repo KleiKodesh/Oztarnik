@@ -135,7 +135,7 @@
     <Compile Include="FsViewer\FsSort.cs" />
     <Compile Include="FsViewer\HeadersListBox.cs" />
     <Compile Include="FileViewer\OtzarnikWebView.cs" />
-    <Compile Include="FsViewer\FsListBox.cs" />
+    <Compile Include="FsViewer\FsListView.cs" />
     <Compile Include="FsViewer\TreeHelper.cs" />
     <Compile Include="FsViewer\TreeItem.cs" />
     <Compile Include="AppData\BookmarksViewModel.cs" />
@@ -145,6 +145,9 @@
     </Compile>
     <Compile Include="AppData\SettingsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Search\RegexExtension.cs" />
+    <Compile Include="Search\ResultModel.cs" />
+    <Compile Include="Search\SearchViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -173,7 +176,7 @@
   <ItemGroup>
     <Page Include="FileViewer\FileView.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="FileViewer\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

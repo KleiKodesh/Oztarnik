@@ -137,7 +137,7 @@
                             Command="{Binding ScrollToPreviousHeaderCommand, ElementName=viewer}">
                         <Path Data="M256 120.8 306.4 64 768 512 306.4 960 256 903.2 659.1 512Z"
                               Height="10"
-                              Stroke="{Binding Path=(helpers:ThemeHelper.ForeGround)}"
+                              Stroke="{Binding Path=(helpers:ThemeHelper.Foreground)}"
                               StrokeThickness="0.5"/>
                     </RepeatButton>
 
@@ -146,11 +146,11 @@
                             Command="{Binding ScrollToNextHeaderCommand, ElementName=viewer}">
                     <Path Data="M768 903.2 717.6 960 256 512 717.6 64 768 120.8 364.9 512Z"
                               Height="10"
-                              Stroke="{Binding Path=(helpers:ThemeHelper.ForeGround)}"
+                              Stroke="{Binding Path=(helpers:ThemeHelper.Foreground)}"
                               StrokeThickness="0.5"/>
                 </RepeatButton>
 
-                <Button x:Name="OpenInNewWindow" Style="{StaticResource FlatButton}" ToolTip="פתח בחלונית חדשה"
+                <Button x:Name="OpenInNewWindow" Style="{StaticResource FlatButton}" ToolTip="פתח בחלונית חדשה \ השב לחלונית המקור"
                         Click="OpenInNewWindow_Click">
                     <Path Data="M18 18V20H4A2 2 0 0 1 2 18V8H4V18M22 6V14A2 2 0 0 1 20 16H8A2 2 0 0 1 6 14V6A2 2 0 0 1 8 4H20A2 2 0 0 1 22 6M20 6H8V14H20Z"/>
                 </Button>
@@ -185,7 +185,7 @@
              FocusManager.FocusedElement="{Binding ElementName=NavigationTextBox}"
              x:FieldModifier="public">
             <Border BorderThickness="1" BorderBrush="LightGray" 
-                    Background="{Binding Path=(helpers:ThemeHelper.BackGround)}">
+                    Background="{Binding Path=(helpers:ThemeHelper.Background)}">
                 <Grid x:Name="NavigationPanel"
                        ap:GridSetup.Rows="auto *"
                        MinWidth="162"
@@ -224,7 +224,7 @@
                AllowsTransparency="True"
                MaxHeight="250">
             <Border BorderThickness="1" BorderBrush="LightGray" 
-                    Background="{Binding Path=(helpers:ThemeHelper.BackGround)}">
+                    Background="{Binding Path=(helpers:ThemeHelper.Background)}">
                 <ListBox x:Name="RelativeBooksList"
                          Background="Transparent"
                      SelectionChanged="RelativeBooksList_SelectionChanged"

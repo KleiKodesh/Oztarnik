@@ -10,12 +10,15 @@ using WpfLib.Helpers;
 using Otzarnik.FileViewer;
 using System.Windows;
 using Otzarnik.Helpers;
+using Otzarnik.Search;
 
 namespace Oztarnik.FileViewer
 {
     public partial class FileView : UserControl
     {
         HeaderTreeItem _root;
+        OtzarnikView _mainView;
+        
         public TreeItem TreeItem {get; set;}
 
         public FileView(TreeItem treeItem, string scrollIndex)
@@ -26,7 +29,15 @@ namespace Oztarnik.FileViewer
             LoadFile(treeItem, scrollIndex);
         }
 
-        private void FileView_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        public FileView(ResultModel result, string scrollIndex)
+        {
+            this.Loaded += FileView_Loaded;
+            this.TreeItem = result.TreeItem;
+            InitializeComponent();
+            LoadResult(result, scrollIndex);
+        }
+
+        private void FileView_Loaded(object sender, RoutedEventArgs e)
         {
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
                 FocusHeadersTextBox();
@@ -49,13 +60,22 @@ namespace Oztarnik.FileViewer
             }), DispatcherPriority.ApplicationIdle);
         }
 
+        async void LoadResult(ResultModel result, string scrollIndex)
+        {
+            var contentModel = await ContentParser.Parse(result.TreeItem, true, result);
+
+            _root = contentModel.RootHeader;
+            headersListBox.Root = contentModel.RootHeader;
+            viewer.LoadDocument(contentModel.Content, scrollIndex, true);
+            NavigationTextBox.Focus();
+        }
 
         async void LoadFile(TreeItem treeItem, string scrollIndex)
         {
-            var contentModel = await ContentParser.Parse(treeItem, true);
+            var contentModel = await ContentParser.Parse(treeItem, true, null);
             _root = contentModel.RootHeader;
             headersListBox.Root = contentModel.RootHeader;           
-            viewer.LoadDocument(contentModel.Content, scrollIndex);
+            viewer.LoadDocument(contentModel.Content, scrollIndex, false);
             NavigationTextBox.Focus();  
         }
 
@@ -132,15 +152,17 @@ namespace Oztarnik.FileViewer
             }
         }
 
-        private void OpenInNewWindow_Click(object sender, RoutedEventArgs e)
+        private async void OpenInNewWindow_Click(object sender, RoutedEventArgs e)
         {
             FileViewerWindow window = new FileViewerWindow();
-            
+
             if (this.Parent is TabItem tabItem && tabItem.Parent is TabControl tabControl)
             {
                 window.Title = tabItem.Header.ToString();
                 tabControl.Items.Remove(tabItem);
                 tabItem.Content = null;
+
+                _mainView = DependencyHelper.FindParent<OtzarnikView>(tabControl);
 
                 var owner = DependencyHelper.FindParent<Window>(tabControl);
                 if (owner != null)
@@ -150,11 +172,19 @@ namespace Oztarnik.FileViewer
             }
             else if (this.Parent is Window parentWindow)
             {
+                if (_mainView != null)
+                {
+                    _mainView.LoadFile(this.TreeItem, await viewer.GetScrollIndex());
+                    parentWindow.Close();
+                    return;
+                }
+
                 parentWindow.Content = null;
                 window.Title = parentWindow.Title;
-                parentWindow.Close();
                 window.Owner = parentWindow.Owner;
                 WdWpfWindowHelper.SetWordWindowOwner(window);
+                parentWindow.Close();
+
             } 
 
             window.Content = this;

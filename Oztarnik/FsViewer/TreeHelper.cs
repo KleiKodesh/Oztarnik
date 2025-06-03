@@ -13,6 +13,7 @@ namespace Otzarnik.FsViewer
     public static class TreeHelper
     {
         static readonly Collection<string> _validExtensions = new Collection<string> { ".txt", ".html", ".pdf"};
+       
         public static TreeItem BuildTree(TreeItem parent, string path, string rootPath)
         {
             string strippedPath = Regex.Replace(path, @"\d+_", "");

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Otzarnik.Search;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,5 +14,9 @@ namespace OtzarnikDesktop
     /// </summary>
     public partial class App : Application
     {
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            new MainWindow().Show();
+        }
     }
 }
