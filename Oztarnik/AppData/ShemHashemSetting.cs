@@ -29,7 +29,12 @@ namespace Oztarnik.AppData
         }
 
         private static readonly Regex ShemHashemRegex = new Regex(@"(י\p{Mn}*)ה(\p{Mn}*)(ו\p{Mn}*)ה(\p{Mn}*)", RegexOptions.Compiled);
-        private static readonly Regex ShemElokimRegex = new Regex(@"(א\p{Mn}*ל\p{Mn}*ו?\p{Mn}*)ה(\p{Mn}*ים)", RegexOptions.Compiled);
+        //private static readonly Regex ShemElokimRegex = new Regex(@"(א\p{Mn}*ל\p{Mn}*ו?\p{Mn}*)ה(\p{Mn}*ים)", RegexOptions.Compiled);
+
+        private static readonly Regex ShemElokimRegex = new Regex(
+            @"(?<!\S)(א[\p{Mn}]*ל[\p{Mn}]*ו?[\p{Mn}]*)(ה)([\p{Mn}]*ים)(?![\p{Mn}\s]*(אחרים|מצרים|הגוים|העמים))",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
 
         public static string ReplaceShemHashem(this string input)
         {
@@ -40,9 +45,10 @@ namespace Oztarnik.AppData
 
         public static string ReplaceShemElokim(this string input)
         {
-            if (ReplaceShemHashemMode)
-                return ShemElokimRegex.Replace(input, "$1ק$2");
-            return input;
+            if (!ReplaceShemHashemMode)
+                return input;
+
+            return ShemElokimRegex.Replace(input, "$1ק$3");
         }
     }
 }
