@@ -27,7 +27,7 @@ namespace Otzarnik.FileViewer
             var stb = new StringBuilder();
             Stack<HeaderTreeItem> headerStack = new Stack<HeaderTreeItem>();            
             int lineIndex = -1;
-            int headerIndex = 0;
+            int headerIndex = -1;
 
             if (!File.Exists(treeItem.Path))
                 return Task.FromResult(result);
@@ -109,8 +109,7 @@ namespace Otzarnik.FileViewer
             }
 
             result.Content = stb.ToString()
-                .ReplaceShemHashem()
-                .ReplaceShemElokim();
+                .ReplaceShemHashem();
 
             return Task.FromResult(result);
         }

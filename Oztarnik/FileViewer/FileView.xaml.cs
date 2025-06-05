@@ -21,12 +21,12 @@ namespace Oztarnik.FileViewer
         
         public TreeItem TreeItem {get; set;}
 
-        public FileView(TreeItem treeItem, string scrollIndex)
+        public FileView(TreeItem treeItem, string scrollIndex, string targetHeaderIndex)
         {
             this.Loaded += FileView_Loaded;
             this.TreeItem = treeItem;
             InitializeComponent();
-            LoadFile(treeItem, scrollIndex);
+            LoadFile(treeItem, scrollIndex, targetHeaderIndex);
         }
 
         public FileView(ResultModel result, string scrollIndex)
@@ -66,16 +66,16 @@ namespace Oztarnik.FileViewer
 
             _root = contentModel.RootHeader;
             headersListBox.Root = contentModel.RootHeader;
-            viewer.LoadDocument(contentModel.Content, scrollIndex, true);
+            viewer.LoadDocument(contentModel.Content, scrollIndex, true, "");
             NavigationTextBox.Focus();
         }
 
-        async void LoadFile(TreeItem treeItem, string scrollIndex)
+        async void LoadFile(TreeItem treeItem, string scrollIndex, string targetHeaderIndex)
         {
             var contentModel = await ContentParser.Parse(treeItem, true, null);
             _root = contentModel.RootHeader;
             headersListBox.Root = contentModel.RootHeader;           
-            viewer.LoadDocument(contentModel.Content, scrollIndex, false);
+            viewer.LoadDocument(contentModel.Content, scrollIndex, false, targetHeaderIndex);
             NavigationTextBox.Focus();  
         }
 

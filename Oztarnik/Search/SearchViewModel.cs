@@ -88,7 +88,7 @@ namespace Otzarnik.Search
         private void SearchFiles(TreeItem treeItem, string pattern, CancellationToken token, IProgress<ResultCollection> progress)
         {
             var files = treeItem.EnumerateCheckedItems()
-                .Where(f => f.IsFile && AllowedExtensions.Contains(f.Extension))
+                .Where(f => f.IsFile == true && AllowedExtensions.Contains(f.Extension))
                 .ToList();
 
             _totalFiles = files.Count;
@@ -128,17 +128,17 @@ namespace Otzarnik.Search
             {
                 if (result?.Match == null || result.Match.Value == null) continue;
 
-                result.MatchValue = result.Match.Value.ReplaceShemHashem().ReplaceShemElokim();
+                result.MatchValue = result.Match.Value.ReplaceShemHashem();
                 result.MatchIndex = result.Match.Index;
 
                 int preStart = Math.Max(0, result.MatchIndex - snippetLength);
                 result.Pre = htmlCleanupRegex.Replace(batch.Content.Substring(preStart, result.MatchIndex - preStart), "")
-                    .ReplaceShemHashem().ReplaceShemElokim();
+                    .ReplaceShemHashem();
 
                 int postStart = result.MatchIndex + result.MatchValue.Length;
                 int postLength = Math.Min(snippetLength, batch.Content.Length - postStart);
                 result.Post = postLength > 0 ? htmlCleanupRegex.Replace(batch.Content.Substring(postStart, postLength), "")
-                    .ReplaceShemHashem().ReplaceShemElokim() : string.Empty;
+                    .ReplaceShemHashem() : string.Empty;
 
                 result.Match = null;
                 Results.Add(result);

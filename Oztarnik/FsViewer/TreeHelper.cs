@@ -23,6 +23,7 @@ namespace Otzarnik.FsViewer
                 Path = path,
                 Name = Path.GetFileNameWithoutExtension(strippedPath).Trim(),
                 Tags = GetTags(strippedPath, rootPath),
+                IsFile = false
             };
 
             var directories = Directory.GetDirectories(path)

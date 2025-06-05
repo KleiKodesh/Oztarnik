@@ -7,7 +7,7 @@ namespace Oztarnik.FileViewer
 {
     public static class HtmlBuilder
     {
-        public static string HtmlDoc(string content, string scrollIndex, bool scrollToMatch)
+        public static string HtmlDoc(string content, string scrollIndex, bool scrollToMatch, string targetHeaderIndex)
         {
             string spinner = scrollToMatch ? "<div id=\"spinner-overlay\">\r\n<span class=\"loader\"></span>\r\n</div>" : "";
             return $@"<!DOCTYPE html>
@@ -24,7 +24,7 @@ namespace Oztarnik.FileViewer
                             <div id=""content"">
                         {content}
                             </div>
-                        {Js(scrollIndex, scrollToMatch)}
+                        {Js(scrollIndex, scrollToMatch, targetHeaderIndex)}
                         
                   </body>
                 </html>";
@@ -58,7 +58,7 @@ namespace Oztarnik.FileViewer
         }
 
        
-        public static string Js(string scrollIndex, bool scrollToMatch, string targetHeaderIndex = "")
+        public static string Js(string scrollIndex, bool scrollToMatch, string targetHeaderIndex)
         {
             string matchJs = scrollToMatch ? ScrollToMatchJs() : "";
             return $@"<script>
@@ -167,7 +167,7 @@ let currentHeaderIndex = -1;
 
 function scrollToHeader(index) {
   if (index >= 0 && index < headings.length) {
-    headings[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    headings[index].scrollIntoView({ block: 'start' });
     currentHeaderIndex = index;
     setTitle();
   }

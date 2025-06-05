@@ -128,9 +128,9 @@ namespace Oztarnik.FileViewer
             }
         }
 
-        public void LoadDocument(string content, string scrollIndex, bool scrollToMatch)
+        public void LoadDocument(string content, string scrollIndex, bool scrollToMatch, string targetHeaderIndex)
         {
-            var htmlDoc = HtmlBuilder.HtmlDoc(content, scrollIndex, scrollToMatch);
+            var htmlDoc = HtmlBuilder.HtmlDoc(content, scrollIndex, scrollToMatch, targetHeaderIndex);
             DocumentWrite(htmlDoc);
         }
 

@@ -1,4 +1,5 @@
-﻿using Oztarnik.FsViewer;
+﻿using Otzarnik.FileViewer;
+using Oztarnik.FsViewer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -148,6 +149,7 @@ namespace Otzarnik.FsViewer
 
         // Commands
         public RelayCommand<TreeItem> GoToCommand => new RelayCommand<TreeItem>(item => Goto(item));
+        public RelayCommand<TreeItem> LoadHeadersCommand => new RelayCommand<TreeItem>(item => LoadHeaders(item));
         public RelayCommand GoBackCommand => new RelayCommand(() => GoBack());
         public RelayCommand ResetCommand => new RelayCommand(() => Reset());
         public RelayCommand SearchCommand => new RelayCommand(() => Search(SearchString));
@@ -199,13 +201,28 @@ namespace Otzarnik.FsViewer
 
         public virtual void Goto(TreeItem item)
         {
-            if (item == null) 
+            if (item == null)
                 return;
 
-            if (item.IsFile)
-                OnNavigationRequested(item);         
+            if (item.IsFile == false)
+                CurrentItem = item;       
             else
-                CurrentItem = item;
+                OnNavigationRequested(item);
+        }
+
+        async void LoadHeaders(TreeItem treeItem)
+        {
+            if (treeItem is HeaderTreeItem headerTreeItem)
+                CurrentItem = headerTreeItem;
+            else if (File.Exists(treeItem.Path))
+            {
+                var headers = await ContentParser.Parse(treeItem, false, null);
+                var newItem = treeItem.Clone();
+                newItem.Items = headers.RootHeader.Items;
+                foreach (var item in newItem.Items)
+                    item.Parent = newItem;
+                CurrentItem = newItem;
+            }
         }
 
         public async void Search(string searchTerm)

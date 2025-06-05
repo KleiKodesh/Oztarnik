@@ -125,11 +125,13 @@ namespace Oztarnik.Main
 
         private void fsViewer_NavigationRequested(object sender, RoutedEventArgs e)
         {
+            if (e.OriginalSource is HeaderTreeItem headerTreeItem)
+                LoadFile(headerTreeItem.GetParent(), "", headerTreeItem.HeaderIndex.ToString());
             if (e.OriginalSource is TreeItem treeItem)
                 LoadFile(treeItem, "");
         }
 
-        public void LoadFile(TreeItem treeItem, string scrollIndex, ResultModel resultModel = null)
+        public void LoadFile(TreeItem treeItem, string scrollIndex, string targetHeaderIndex = "", ResultModel resultModel = null)
         {
             try
             {
@@ -157,7 +159,7 @@ namespace Oztarnik.Main
                 }
                 else
                 {
-                    var fileView = resultModel == null ? new FileView(treeItem, scrollIndex) :
+                    var fileView = resultModel == null ? new FileView(treeItem, scrollIndex, targetHeaderIndex) :
                         new FileView(resultModel, scrollIndex);
 
                     FileViewerTabControl.Items.Add(new TabItem
@@ -254,7 +256,7 @@ namespace Oztarnik.Main
         {
             if (sender is ListView listView && listView.SelectedItem is ResultModel resultModel)
             {
-                LoadFile(resultModel.TreeItem, "", resultModel);
+                LoadFile(resultModel.TreeItem, "", "", resultModel);
                 listView.SelectedIndex = -1;
             }
         }
