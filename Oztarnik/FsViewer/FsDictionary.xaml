@@ -117,7 +117,8 @@
                                              Background="Transparent" BorderThickness="0"
                                              HorizontalContentAlignment="Left"
                                              Command="{Binding NavigateCommand, RelativeSource={RelativeSource AncestorType=fs:HeadersListView}}"
-                                             CommandParameter="{Binding}">
+                                             CommandParameter="{Binding}"
+                                            Foreground="{Binding Path=(helpers:ThemeHelper.Foreground)}">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock x:Name="tagsBlock" Text="{Binding Tags, Converter={StaticResource ListToStringConverter}}"
                                                        Opacity="0.5" Visibility="Collapsed"/>

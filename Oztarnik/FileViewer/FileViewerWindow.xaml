@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Otzarnik.FileViewer"
         xmlns:oz="clr-namespace:Oztarnik.Main;assembly=Oztarnik"
+        xmlns:helpers="clr-namespace:WpfLib.Helpers;assembly=WpfLib"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="350"
         FlowDirection="RightToLeft">
@@ -19,4 +20,16 @@
     <Window.Style>
         <Style TargetType="Window" BasedOn="{StaticResource ThemedWindowStyle}"/>
     </Window.Style>
+
+    <TabControl x:Name="tabControl" x:FieldModifier="public"
+                Background="Transparent"
+                BorderThickness="0">
+        <TabControl.Resources>
+            <Style TargetType="TabItem">
+                <Setter Property="Visibility" Value="Collapsed"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+            </Style>
+        </TabControl.Resources>
+    </TabControl>
 </Window>

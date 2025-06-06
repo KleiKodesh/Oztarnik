@@ -128,8 +128,8 @@
       <DependentUpon>FileView.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileViewer\HtmlBuilder.cs" />
-    <Compile Include="FileViewer\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="FileViewer\FileViewerWindow.xaml.cs">
+      <DependentUpon>FileViewerWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="FsViewer\FsSearch.cs" />
     <Compile Include="FsViewer\FsSort.cs" />
@@ -178,7 +178,7 @@
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
-    <Page Include="FileViewer\MainWindow.xaml">
+    <Page Include="FileViewer\FileViewerWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

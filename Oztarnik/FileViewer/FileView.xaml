@@ -13,7 +13,9 @@
              d:DesignHeight="450" d:DesignWidth="350"
              Background="Transparent"
              Margin="0"
-             BorderThickness="0">
+             BorderThickness="0"
+             FontSize="13"
+             FontFamily="Tahoma">
     
     <UserControl.Resources>
         <ResourceDictionary>
@@ -175,7 +177,7 @@
 
 
         <Popup x:Name="HeadersPopup" 
-             Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
+             Height="{Binding ActualHeight, ElementName=viewer}"
              PlacementTarget="{Binding ElementName=Titlebar}"
              StaysOpen="False"
              IsOpen="{Binding IsChecked, ElementName=HeadersToggleButton}"
@@ -197,7 +199,8 @@
                               Margin="0,3,3,3"
                               Style="{StaticResource FlatButton}"
                               Command="{Binding GoBackCommand, ElementName=headersListBox}">
-                            <Path Data="M13,20H11V8L5.5,13.5L4.08,12.08L12,4.16L19.92,12.08L18.5,13.5L13,8V20Z"/>
+                            <Path Fill="{Binding Path=(helpers:ThemeHelper.Foreground)}"
+                                  Data="M13,20H11V8L5.5,13.5L4.08,12.08L12,4.16L19.92,12.08L18.5,13.5L13,8V20Z"/>
                         </Button>
 
                         <TextBox x:Name="NavigationTextBox" 
@@ -205,10 +208,13 @@
                                ToolTip="חיפוש..."
                                Margin="3"
                                BorderThickness="0.5"
-                               Text="{Binding SearchString, ElementName=headersListBox, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                               Text="{Binding SearchString, ElementName=headersListBox, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                               Foreground="{Binding Path=(helpers:ThemeHelper.Foreground)}"/>
                     </Grid>
 
-                    <fs:HeadersListView x:Name="headersListBox" Background="Transparent"
+                    <fs:HeadersListView x:Name="headersListBox" 
+                          Background="Transparent"
+                          Foreground="{Binding Path=(helpers:ThemeHelper.Foreground)}"
                           BorderThickness="0,0.5,0,0"
                           Grid.Row="1"
                           NavigationRequested="headersListBox_NavigationRequested"/>

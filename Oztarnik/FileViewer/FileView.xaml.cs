@@ -18,6 +18,8 @@ namespace Oztarnik.FileViewer
     {
         HeaderTreeItem _root;
         OtzarnikView _mainView;
+        TabItem _parentTab;
+        Window _parentWindow;
         
         public TreeItem TreeItem {get; set;}
 
@@ -152,43 +154,36 @@ namespace Oztarnik.FileViewer
             }
         }
 
-        private async void OpenInNewWindow_Click(object sender, RoutedEventArgs e)
+        private void OpenInNewWindow_Click(object sender, RoutedEventArgs e)
         {
-            FileViewerWindow window = new FileViewerWindow();
-
             if (this.Parent is TabItem tabItem && tabItem.Parent is TabControl tabControl)
             {
-                window.Title = tabItem.Header.ToString();
-                tabControl.Items.Remove(tabItem);
-                tabItem.Content = null;
-
-                _mainView = DependencyHelper.FindParent<OtzarnikView>(tabControl);
-
-                var owner = DependencyHelper.FindParent<Window>(tabControl);
-                if (owner != null)
-                    window.Owner = owner;
-
-                WdWpfWindowHelper.SetWordWindowOwner(window);
-            }
-            else if (this.Parent is Window parentWindow)
-            {
-                if (_mainView != null)
+                if (tabControl.Parent is Window window && _mainView != null)
                 {
-                    _mainView.LoadFile(this.TreeItem, await viewer.GetScrollIndex());
-                    parentWindow.Close();
-                    return;
+                    tabControl.Items.Remove(tabItem);
+                    _mainView.FileViewerTabControl.Items.Add(tabItem);
+                    _mainView.MainTabControl.SelectedIndex = 1;
+                    window.Close();
                 }
+                else
+                {
+                    _mainView = DependencyHelper.FindParent<OtzarnikView>(tabControl);
 
-                parentWindow.Content = null;
-                window.Title = parentWindow.Title;
-                window.Owner = parentWindow.Owner;
-                WdWpfWindowHelper.SetWordWindowOwner(window);
-                parentWindow.Close();
+                    var parentWindow = new FileViewerWindow();
+                    var owner = DependencyHelper.FindParent<Window>(tabControl);
+                    if (owner != null)
+                        parentWindow.Owner = owner;
 
-            } 
+                    WdWpfWindowHelper.SetWordWindowOwner(parentWindow);
 
-            window.Content = this;
-            window.Show();
+                    parentWindow.Title = tabItem.Header.ToString();
+                    tabControl.Items.Remove(tabItem);
+                    parentWindow.tabControl.Items.Add(tabItem);
+
+                    parentWindow.Show();
+                }
+                tabItem.IsSelected = true;
+            }
         }
 
         //private bool _waitingForMouseRelease = false;
