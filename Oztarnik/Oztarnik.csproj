@@ -139,6 +139,7 @@
     <Compile Include="FsViewer\TreeHelper.cs" />
     <Compile Include="FsViewer\TreeItem.cs" />
     <Compile Include="AppData\BookmarksViewModel.cs" />
+    <Compile Include="Helpers\PathExtensions.cs" />
     <Compile Include="Helpers\WdWpfWindowHelper.cs" />
     <Compile Include="Main\OtzarnikView.xaml.cs">
       <DependentUpon>OtzarnikView.xaml</DependentUpon>

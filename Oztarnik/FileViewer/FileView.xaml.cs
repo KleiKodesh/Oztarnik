@@ -147,8 +147,11 @@ namespace Oztarnik.FileViewer
         private void RelativeBooksList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (RelativeBooksList.SelectedItem is TreeItem treeItem)
-            {                
-                DependencyHelper.FindParent<OtzarnikView>(this).LoadFile(treeItem, "");
+            {
+                if (_mainView == null)
+                    _mainView = DependencyHelper.FindParent<OtzarnikView>(this);
+
+                _mainView.LoadFile(treeItem, "");
                 RelativeBooksPopup.IsOpen = false;
                 RelativeBooksList.SelectedIndex = -1;
             }
@@ -167,7 +170,8 @@ namespace Oztarnik.FileViewer
                 }
                 else
                 {
-                    _mainView = DependencyHelper.FindParent<OtzarnikView>(tabControl);
+                    if (_mainView == null)
+                        _mainView = DependencyHelper.FindParent<OtzarnikView>(tabControl);
 
                     var parentWindow = new FileViewerWindow();
                     var owner = DependencyHelper.FindParent<Window>(tabControl);
