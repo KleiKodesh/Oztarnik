@@ -1,0 +1,29 @@
+rlative books too broad
+shortcut for ניווט
+fix headers so that it wiil display full header by getting header index and setting header in wpf through binding etc.
+
+ברכות נח: opened to ברכות נח.
+
+big bug closing the naigation panel checkbox remains inactve.
+תופסות חגיגה עדיין מופיע כותרות "שורה: וגם הדיבור המתחיל לא מודגש
+
+
+ברשותך אציין 2 שיפורים: א' - המספר פרק מסתיר את הטקסט
+
+github issues
+
+add code to remove also the appdata and registry entries with the uninstaller
+
+check what enviremoent the webview is using?
+
+pdf in history not loading?
+add margin to line elemnt
+
+larger line margin
+header margins too large??
+flow direction of fonts box needs to be ltr
+seaoge ui light not found....
+default david? or calibre?
+
+
+maybe create a bloom filter for every file

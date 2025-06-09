@@ -10,6 +10,7 @@
              xmlns:appdata="clr-namespace:Oztarnik.AppData"
              xmlns:helpers="clr-namespace:WpfLib.Helpers;assembly=WpfLib"
              xmlns:controls="clr-namespace:WpfLib.Controls;assembly=WpfLib"
+             xmlns:otzarnikhelpers="clr-namespace:Oztarnik.Helpers"
              mc:Ignorable="d" 
              FlowDirection="RightToLeft"
              d:DesignHeight="450" d:DesignWidth="350"
@@ -159,10 +160,14 @@
                                       Margin="0,5"
                                       BorderThickness="0,0.5,0,0"
                                       ItemsSource="{Binding Root.Items, ElementName=fsViewer}">
+                                <TreeView.Resources>
+                                    <Style TargetType="TreeViewItem">
+                                        <Setter Property="otzarnikhelpers:TreeItemVirtualizationBehavior.EnableVirtualization" Value="True"/>
+                                    </Style>
+                                </TreeView.Resources>
                                 <TreeView.ItemTemplate>
                                     <HierarchicalDataTemplate
-                                            DataType="{x:Type fs:TreeItem}"
-                                            ItemsSource="{Binding Items}">
+                                            DataType="{x:Type fs:TreeItem}">
                                         <StackPanel Orientation="Horizontal">
                                             <StackPanel Orientation="Horizontal">
                                                 <CheckBox IsChecked="{Binding IsChecked}"

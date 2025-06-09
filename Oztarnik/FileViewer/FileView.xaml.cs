@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 using WpfLib.Helpers;
 using Otzarnik.FileViewer;
 using System.Windows;
-using Otzarnik.Helpers;
 using Otzarnik.Search;
+using Oztarnik.Helpers;
 
 namespace Oztarnik.FileViewer
 {

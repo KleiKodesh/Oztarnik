@@ -5,7 +5,7 @@ using System.Windows.Interop;
 using System;
 using Microsoft.Office.Interop.Word;
 
-namespace Otzarnik.Helpers
+namespace Oztarnik.Helpers
 {
     public static class WdWpfWindowHelper
     {
