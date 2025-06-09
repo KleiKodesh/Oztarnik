@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Xml.XPath;
 
 namespace Oztarnik.Main
 {
@@ -170,9 +171,13 @@ namespace Oztarnik.Main
                     });
 
                     string groupId = FsSort.FileOrder.FirstOrDefault(id => treeItem.Name.Contains(id)) ?? string.Empty;
+
+                    string[] order = { "תרגומים", "גאונים", "ראשונים", "אחרונים", "על", "מפרשים", "פרשנות", "מחברי זמננו", "ספרות עזר" };
+
                     fileView.RelativeBooksList.ItemsSource = fsViewer.Root.EnumerateItems()
-                        .Where(item => item.Path != treeItem.Path && item.Name.Contains(groupId))
-                        .OrderBy(t => t.Name);
+                        .Where(i => i.Path != treeItem.Path && i.Name.Contains(groupId))
+                        .OrderBy(i =>
+                        { var idx = Array.FindIndex(order, s => i.Path.Contains(s)); return idx < 0 ? int.MaxValue : idx; });
 
                     if (!Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
                         Dispatcher.BeginInvoke(new Action(() =>

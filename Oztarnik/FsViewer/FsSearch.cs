@@ -62,7 +62,7 @@ namespace Oztarnik.FsViewer
             }
         }
 
-        private static int GetScore(TreeItem item, string[] terms)
+        public static int GetScore(TreeItem item, string[] terms)
         {
             int nameScore = terms.Sum(term =>
             {
