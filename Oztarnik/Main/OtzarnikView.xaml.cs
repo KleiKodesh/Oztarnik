@@ -149,7 +149,7 @@ namespace Oztarnik.Main
                         IsSelected = true
                     };
 
-                    FileViewerTabControl.Items.Add(tab);
+                    FileViewerTabControl.Items.Insert(0, tab);
                     webview.Navigate(treeItem.Path);
 
                     Dispatcher.BeginInvoke(new Action(() =>
@@ -163,7 +163,7 @@ namespace Oztarnik.Main
                     var fileView = resultModel == null ? new FileView(treeItem, scrollIndex, targetHeaderIndex) :
                         new FileView(resultModel, scrollIndex);
 
-                    FileViewerTabControl.Items.Add(new TabItem
+                    FileViewerTabControl.Items.Insert(0, new TabItem
                     {
                         Header = treeItem.Name ?? Path.GetFileNameWithoutExtension(treeItem.Path),
                         Content = fileView,

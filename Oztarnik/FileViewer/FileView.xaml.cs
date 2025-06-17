@@ -122,10 +122,11 @@ namespace Oztarnik.FileViewer
 
         public async Task<BookMarkModel> CreateBookMark()
         {
+            string scrollIndex = await viewer.GetScrollIndex();
             return new BookMarkModel
             {
                 Path = TreeItem.Path,
-                ScrollIndex = await viewer.GetScrollIndex(),
+                ScrollIndex = scrollIndex,
             };
         }
 

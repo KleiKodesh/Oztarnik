@@ -25,13 +25,15 @@ namespace Oztarnik.AppData
         static string DataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AppData");
         static string JsonPath = Path.Combine(DataPath, "Environments.json");
 
-        public static ObservableCollection<EnvironmentModel> _environments = File.Exists(JsonPath) ?
-            JsonSerializer.Deserialize<ObservableCollection<EnvironmentModel>>(File.ReadAllText(JsonPath)) :
-                    new ObservableCollection<EnvironmentModel>();
-
+        public static ObservableCollection<EnvironmentModel> _environments;
         public static ObservableCollection<EnvironmentModel> Environments
         {
-            get => _environments;
+            get
+            {
+                if (_environments == null)
+                    LoadEnvironments();
+                return   _environments;
+            }
             set
             {
                 if (value == _environments) return;
@@ -43,6 +45,13 @@ namespace Oztarnik.AppData
         public static RelayCommand DeleteAllCommand => new RelayCommand(DeleteAll);
         public static RelayCommand<EnvironmentModel> RemoveEnvironmentCommand =>
             new RelayCommand<EnvironmentModel>(value => RemoveEnvironment(value));
+
+        static void LoadEnvironments()
+        {
+            _environments = File.Exists(JsonPath) ?
+            JsonSerializer.Deserialize<ObservableCollection<EnvironmentModel>>(File.ReadAllText(JsonPath)) :
+                    new ObservableCollection<EnvironmentModel>();
+        }
 
         public static void AddEnvironment(List<BookMarkModel> bookMarks)
         {

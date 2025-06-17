@@ -284,7 +284,8 @@
                                       IsEditable="True"
                                       FontFamily="{Binding Path=(appdata:Settings.DefaultFont)}"
                                       BorderThickness="0.5"
-                                      VerticalAlignment="Center">
+                                      VerticalAlignment="Center"
+                                      ScrollViewer.VerticalScrollBarVisibility="Auto">
                                 <ComboBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <VirtualizingStackPanel/>
@@ -395,35 +396,41 @@
                             <Style TargetType="ItemsControl">
                                 <Setter Property="Padding" Value="0,0,0,30"/>
                             </Style>
+                            <Style TargetType="ScrollViewer">
+                                <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+                                <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+                            </Style>
                         </TabControl.Resources>
 
                         <TabItem x:Name="HistoryTab"
                                  IsSelected="{Binding IsChecked, ElementName=HistoryToggle}">
                             <Grid>
-                                <ItemsControl x:Name="HistoryListBox"
+                                <ScrollViewer>
+                                    <ItemsControl x:Name="HistoryListBox"
                                         ItemsSource="{Binding Path=(appdata:HistoryViewModel.HistoryItems)}"
                                         Padding="0,0,0,25">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid ap:GridSetup.Columns="* auto">
-                                                <Button x:Name="HistoryButton"
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid ap:GridSetup.Columns="* auto">
+                                                    <Button x:Name="HistoryButton"
                                                  HorizontalContentAlignment="Left"
                                                  Padding="5"   
                                                  Click="HistoryButton_Click">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding}" Margin="0,0,5,0"/>
-                                                        <TextBlock Text="{Binding HebrewDateTime}" Opacity="0.5"/>
-                                                    </StackPanel>
-                                                </Button>
-                                                <Button Grid.Column="1"
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding}" Margin="0,0,5,0"/>
+                                                            <TextBlock Text="{Binding HebrewDateTime}" Opacity="0.5"/>
+                                                        </StackPanel>
+                                                    </Button>
+                                                    <Button Grid.Column="1"
                                                      Command="{Binding Path=(appdata:HistoryViewModel.RemoveHistoryItemCommand)}"
                                                      CommandParameter="{Binding}">
-                                                    <Path Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
-                                                </Button>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                                        <Path Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
+                                                    </Button>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
                                 <Button Content="מחק הכל"
                                         Style="{StaticResource DeleteAllButton}"
                                         Command="{Binding Path=(appdata:HistoryViewModel.DeleteAllCommand)}"/>
@@ -434,26 +441,32 @@
                                  IsSelected="{Binding IsChecked, ElementName=BookMarksToggle}"
                                  Padding="0">
                             <Grid>
-                                <ItemsControl x:Name="BookmarksListBox" 
+                                <ScrollViewer>
+                                    <ItemsControl x:Name="BookmarksListBox" 
                                     ItemsSource="{Binding Path=(appdata:BookmarksViewModel.Bookmarks)}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid ap:GridSetup.Columns="* auto">
-                                                <Button x:Name="BookMarkButton"
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid ap:GridSetup.Columns="* auto">
+                                                    <Button x:Name="BookMarkButton"
                                                     Content="{Binding Title}"
                                                     HorizontalContentAlignment="Left"
                                                     Click="BookMarkButton_Click"
                                                     Padding="5"/>
-                                                <Button Grid.Column="1"
+                                                    <Button Grid.Column="1"
+                                                             Margin="3"
+                                                             Padding="3"
+                                                             HorizontalContentAlignment="Center"
+                                                             VerticalContentAlignment="Center"
                                                         Command="{Binding Path=(appdata:BookmarksViewModel.RemoveBookMark)}"
                                                         CommandParameter="{Binding}">
-                                                    <Path  Fill="{Binding Path=(helpers:ThemeHelper.Foreground)}" 
+                                                        <Path  Fill="{Binding Path=(helpers:ThemeHelper.Foreground)}" 
                                                            Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
-                                                </Button>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                                    </Button>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
                                 <Button Content="מחק הכל"
                                     Style="{StaticResource DeleteAllButton}"
                                     Command="{Binding Path=(appdata:BookmarksViewModel.DeleteAllCommand)}"/>
@@ -463,26 +476,33 @@
                         <TabItem Name="EnvironmentsTab"
                                  IsSelected="{Binding IsChecked, ElementName=EnvironmentsToggle}">
                             <Grid>
-                                <ItemsControl x:Name="EnvironmentsListBox"
+                                <ScrollViewer>
+                                    <ItemsControl x:Name="EnvironmentsListBox"
                                     ItemsSource="{Binding Path=(appdata:EnvironmentsViewModel.Environments)}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid ap:GridSetup.Columns="* auto">
-                                                <Button x:Name="EnvironmentButton"
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid ap:GridSetup.Columns="* auto">
+                                                    <Button x:Name="EnvironmentButton"
                                                  Content="{Binding Title}"
                                                  HorizontalContentAlignment="Left"
                                                  Padding="5"   
                                                  Click="EnvironmentButton_Click"/>
-                                                <Button  Grid.Column="1"
-                                                 Command="{Binding Path=(appdata:EnvironmentsViewModel.RemoveEnvironmentCommand)}"
-                                                 CommandParameter="{Binding}">
-                                                    <Path  Fill="{Binding Path=(helpers:ThemeHelper.Foreground)}" 
+                                                    <Button  Grid.Column="1"
+                                                             Margin="3"
+                                                             Padding="3"
+                                                             HorizontalContentAlignment="Center"
+                                                             VerticalContentAlignment="Center"
+                                                             Command="{Binding Path=(appdata:EnvironmentsViewModel.RemoveEnvironmentCommand)}"
+                                                             CommandParameter="{Binding}">
+                                                        <Path  Fill="{Binding Path=(helpers:ThemeHelper.Foreground)}" 
+                                                               Stretch="Uniform"
                                                            Data="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
-                                                </Button>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                                    </Button>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
                                 <Button Content="מחק הכל"
                                      Style="{StaticResource DeleteAllButton}"
                                      Command="{Binding Path=(appdata:EnvironmentsViewModel.DeleteAllCommand)}"/>
@@ -517,14 +537,14 @@
                 <Path Data="M17.5 14.33C18.29 14.33 19.13 14.41 20 14.57V16.07C19.38 15.91 18.54 15.83 17.5 15.83C15.6 15.83 14.11 16.16 13 16.82V15.13C14.17 14.6 15.67 14.33 17.5 14.33M13 12.46C14.29 11.93 15.79 11.67 17.5 11.67C18.29 11.67 19.13 11.74 20 11.9V13.4C19.38 13.24 18.54 13.16 17.5 13.16C15.6 13.16 14.11 13.5 13 14.15M17.5 10.5C15.6 10.5 14.11 10.82 13 11.5V9.84C14.23 9.28 15.73 9 17.5 9C18.29 9 19.13 9.08 20 9.23V10.78C19.26 10.59 18.41 10.5 17.5 10.5M21 18.5V7C19.96 6.67 18.79 6.5 17.5 6.5C15.45 6.5 13.62 7 12 8V19.5C13.62 18.5 15.45 18 17.5 18C18.69 18 19.86 18.16 21 18.5M17.5 4.5C19.85 4.5 21.69 5 23 6V20.56C23 20.68 22.95 20.8 22.84 20.91C22.73 21 22.61 21.08 22.5 21.08C22.39 21.08 22.31 21.06 22.25 21.03C20.97 20.34 19.38 20 17.5 20C15.45 20 13.62 20.5 12 21.5C10.66 20.5 8.83 20 6.5 20C4.84 20 3.25 20.36 1.75 21.07C1.72 21.08 1.68 21.08 1.63 21.1C1.59 21.11 1.55 21.12 1.5 21.12C1.39 21.12 1.27 21.08 1.16 21C1.05 20.89 1 20.78 1 20.65V6C2.34 5 4.18 4.5 6.5 4.5C8.83 4.5 10.66 5 12 6C13.34 5 15.17 4.5 17.5 4.5Z"/>
             </ToggleButton>
 
-            <ToggleButton x:Name="FavoritesToggleButton"
+            <ToggleButton x:Name="SearchToggleButton"
                    ToolTip="חיפוש בתוכן הקבצים"
                    IsChecked="{Binding IsSelected, ElementName=SearchTab}">
                 <Path Data="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
             </ToggleButton>
 
-            <ToggleButton x:Name="SearchToggleButton"
-                   ToolTip="חיפוש"
+            <ToggleButton x:Name="FavoritesToggleButton"
+                   ToolTip="מועדפים"
                    IsChecked="{Binding IsSelected, ElementName=FavoritesTabItem}">
                 <Path Data="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/>
             </ToggleButton>

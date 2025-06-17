@@ -31,6 +31,7 @@ namespace Oztarnik.Helpers
                 {
                     item.Expanded -= OnItemExpanded;
                     item.Collapsed -= OnItemCollapsed;
+                    item.Loaded -= Item_Loaded;
                 }
             }
         }

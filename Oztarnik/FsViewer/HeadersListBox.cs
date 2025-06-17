@@ -13,11 +13,16 @@ namespace Otzarnik.FsViewer
     internal class HeadersListView : FsListView
     {
         public RelayCommand<TreeItem> NavigateCommand => new RelayCommand<TreeItem>(item => Navigate(item));
-
         public virtual void Navigate(TreeItem item)
         {
             if (item != null)
                 OnNavigationRequested(item);
+        }
+
+        public override void Goto(TreeItem item)
+        {
+            if (item != null)
+                CurrentItem = item;
         }
     }
 }

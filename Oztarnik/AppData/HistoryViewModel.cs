@@ -29,13 +29,16 @@ namespace Oztarnik.AppData
         static string DataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AppData");
         static string JsonPath = Path.Combine(DataPath, "History.json");
 
-        static ObservableCollection<HistoryItem> _historyItems = File.Exists(JsonPath) ?
-            JsonSerializer.Deserialize<ObservableCollection<HistoryItem>> (File.ReadAllText(JsonPath)) :
-                    new ObservableCollection<HistoryItem>();
+        static ObservableCollection<HistoryItem> _historyItems;
 
         public static ObservableCollection<HistoryItem> HistoryItems
         {
-            get => _historyItems;
+            get
+            {
+                if (_historyItems == null)
+                    LoadItems();
+                return _historyItems;
+            }
             set
             {
                 if (_historyItems == value) return;
@@ -47,6 +50,14 @@ namespace Oztarnik.AppData
             new RelayCommand(DeleteAll);
         public static RelayCommand<HistoryItem> RemoveHistoryItemCommand =>
             new RelayCommand<HistoryItem>(value => RemoveHistoryItem(value.Path));
+
+
+        static void LoadItems()
+        {
+            _historyItems = File.Exists(JsonPath) ?
+            JsonSerializer.Deserialize<ObservableCollection<HistoryItem>>(File.ReadAllText(JsonPath)) :
+                    new ObservableCollection<HistoryItem>();
+        }
 
         public static void AddHistoryItem(string path)
         {           

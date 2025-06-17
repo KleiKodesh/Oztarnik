@@ -26,13 +26,15 @@ namespace Oztarnik.AppData
         static string DataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AppData");
         static string JsonPath = Path.Combine(DataPath, "Bookmarks.json");
 
-        public static ObservableCollection<BookMarkModel> _bookmarks = File.Exists(JsonPath) ?
-            JsonSerializer.Deserialize<ObservableCollection<BookMarkModel>>(File.ReadAllText(JsonPath)) :
-                    new ObservableCollection<BookMarkModel>();
-
+        public static ObservableCollection<BookMarkModel> _bookmarks;
         public static ObservableCollection<BookMarkModel> Bookmarks
         {
-            get => _bookmarks;
+            get
+            {
+                if (_bookmarks == null)
+                    LoadBookmarks();
+                return _bookmarks;
+            }
             set
             {
                 if (_bookmarks == value) return;
@@ -46,6 +48,13 @@ namespace Oztarnik.AppData
         public static RelayCommand<BookMarkModel> RemoveBookMark =>
             new RelayCommand<BookMarkModel>(value => RemoveBookmark(value.Path));
 
+        static void LoadBookmarks()
+        {
+            _bookmarks = File.Exists(JsonPath) ?
+            JsonSerializer.Deserialize<ObservableCollection<BookMarkModel>>(File.ReadAllText(JsonPath)) :
+                    new ObservableCollection<BookMarkModel>();
+        }
+
         public static void AddBookmark(string path, string scrollIndex)
         {
             string cleanedName = Regex.Replace(System.IO.Path.GetFileName(path), @"^_\d+", "");
@@ -53,7 +62,7 @@ namespace Oztarnik.AppData
             var inputBox = InputDialog(cleanedName);
             if (inputBox.DialogResult == true)
             {
-                Bookmarks.RemoveAll(b => b.Path == path);
+                Bookmarks.RemoveAll(b => b.Path == path && b.Title == inputBox.Answer);
 
                 Bookmarks.Add(new BookMarkModel
                 {
