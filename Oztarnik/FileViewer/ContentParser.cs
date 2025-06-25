@@ -1,7 +1,6 @@
 ﻿using Otzarnik.FsViewer;
 using Otzarnik.Search;
 using Oztarnik.AppData;
-using Oztarnik.FileViewer;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -49,12 +48,12 @@ namespace Otzarnik.FileViewer
                     if (Regex.IsMatch(line, $@"<h\d>(שורה|{Regex.Escape(treeItem.Name)})</h\d>"))
                     {
                         string updatedLine = Regex.Replace(line, @"<h\d>(.*?)</h\d>", "<span>$1</span>");
-                        stb.AppendLine($"<line style=\"display: none;\">{updatedLine}</line>");
+                        stb.AppendLine($"<div class=\"line\" dir=\"auto\" style=\"display: none;\">{updatedLine}</div>");
                         continue;
                     }
 
                     else
-                        stb.AppendLine($"<line>{line}</line>");
+                        stb.AppendLine($"<div class=\"line\" dir=\"auto\">{line}</div>");
                     
                 }
                     

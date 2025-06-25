@@ -38,7 +38,7 @@ namespace Oztarnik.FileViewer
             return $@"
                 body {{line-height: 1.3; text-align: justify; font-family: '{Settings.DefaultFont}'; font-size: {Settings.DefaultFontSize}px; 
                        color:{color}; Background-color:{Background};}}
-                line {{ display: block;  margin: 5px 0; }}
+                .line {{ display: block;  margin: 5px 0; }}
                 header {{ margin-top: 10px; margin-bottom: 10px;  color:#000066; }}
                 h1,h2,h3,h4,h5,h6 {{ opacity: 0.75; }}
                 ot {{ color:#000066; }}
@@ -127,7 +127,7 @@ namespace Oztarnik.FileViewer
             return @"
                 function toggleInline()
                 {
-                    const lines = document.querySelectorAll('line');
+                    const lines = document.querySelectorAll('.line');
                     isInline = !isInline;
                     lines.forEach(line => {
                         line.style.display = isInline ? 'inline' : 'block';
@@ -136,7 +136,7 @@ namespace Oztarnik.FileViewer
 
                 function navigateToLine(lineNumberString) {
                     const lineNumber = parseInt(lineNumberString);
-                    const lines = document.querySelectorAll('line');
+                    const lines = document.querySelectorAll('.line');
 
                     if (isNaN(lineNumber) || lineNumber < 1 || lineNumber > lines.length) {
                         console.log('Invalid line number');
