@@ -286,7 +286,7 @@ window.addEventListener('load', updateTitle);
                 let text = originalTexts.get(node); // Get original text
 
                 if (isVowelsReversed) {{
-                    text = text.replace(/[\u05B0-\u05BD\u05C1\u05C2\u05C4\u05C5,;?!.:]/g, """");
+                    text = text.replace(/[\u05B0-\u05BD\u05C1\u05C2\u05C4\u05C5]/g, """");
                 }}
 
                 if (isCantillationReversed) {{
