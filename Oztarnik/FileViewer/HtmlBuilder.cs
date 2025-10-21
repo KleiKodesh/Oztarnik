@@ -11,7 +11,7 @@ namespace Oztarnik.FileViewer
         {
             string spinner = scrollToMatch ? "<div id=\"spinner-overlay\">\r\n<span class=\"loader\"></span>\r\n</div>" : "";
             return $@"<!DOCTYPE html>
-                <html lang=""he"" dir=""auto"">
+                <html lang=""he"" dir=""rtl"">
                     <head>
                         <meta charset=UTF-8>
                         <style>
